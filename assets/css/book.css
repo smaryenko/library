@@ -1,0 +1,592 @@
+:root { color-scheme: light; }
+* {
+  box-sizing: border-box;
+  /* no blue tap-flash on touch/click, no text-selection highlight anywhere */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* never paint a selection highlight (the blue flash when a drag selects text) */
+::selection { background: transparent; }
+::-moz-selection { background: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  /* clip any element that reaches past the viewport edge (the book is
+     intentionally wider than the screen on phones) so there's no sideways
+     scroll. Clipping on BOTH html and body covers mobile where body's own
+     overflow:hidden isn't always honoured. */
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  /* deep winter night sky */
+  background: linear-gradient(180deg, #0a1b3a 0%, #122a52 42%, #1c3a66 100%);
+  font: 15px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  color: #eaf2ff;
+  overflow: hidden;
+  position: relative;
+  /* no browser gesture nav / scroll on the touch dashboards */
+  overscroll-behavior: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ---- Winter atmosphere (behind the book) -------------------------------- */
+.winter-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.winter-bg .winter-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+/* Moon: CSS-positioned so it's always on-screen (the sliced scene used to crop
+   it off on portrait). Top-right on wide screens. */
+.winter-bg .moon {
+  position: absolute;
+  top: 2vh;
+  right: 3vw;
+  width: clamp(140px, 22vw, 320px);
+  aspect-ratio: 1 / 1;
+}
+.winter-bg .moon svg { width: 100%; height: 100%; display: block; }
+/* snowfall sits above the scene but still behind the book */
+canvas.snow {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* The root sets the perspective; the book lies flat inside it. */
+.book-stage {
+  perspective: 1900px;
+  perspective-origin: 50% 42%;
+  /* ~75% of screen width, taller so the open spread keeps real page depth */
+  width: 75vw;
+  height: min(84vh, 760px);
+  position: relative;
+  z-index: 10;        /* above the winter backdrop + snow */
+  cursor: pointer;
+  outline: none;      /* no focus frame around the stage */
+}
+.book-stage:focus,
+.book-stage:focus-visible { outline: none; }
+
+/* The book itself, tilted back so it "lies flat" on the table. */
+.book {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(54deg);   /* less tilt: pages keep visible depth */
+  transition: transform .12s ease-out;
+}
+.book.bump-r { transform: rotateX(54deg) translateX(10px); }
+.book.bump-l { transform: rotateX(54deg) translateX(-10px); }
+
+/* Two-page spread: the flat open pages. The paper itself keeps its rounded
+   corners, but we DON'T clip here so raised objects can overflow the frame. */
+.spread {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  transform-style: preserve-3d;
+}
+
+/* The paper surface drawn as a backdrop behind both panels, so the page edge
+   reads cleanly while objects on top are free to break past it. */
+.spread::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: #fffdf6;
+  box-shadow: 0 40px 70px rgba(0,0,0,.55);
+  transform: translateZ(0);
+}
+
+/* ---- Book thickness: a stack of page-edge slabs under each half, stepped in
+   -Z so the tilt shows them as page edges. Each half's stack leans OUTWARD so
+   it's thin at the centre gutter and thicker toward the outer edge. The slabs
+   only peek out at the bottom rim (the spread surface sits on top). */
+.book-stack {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  z-index: 0;
+}
+.book-stack .half {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 50%;
+  transform-style: preserve-3d;
+}
+.book-stack .half.left  { left: 0;  }
+.book-stack .half.right { right: 0; }
+
+.book-stack .sheet {
+  position: absolute;
+  inset: 0;
+  background: #f4ecda;
+}
+.book-stack .half.left  .sheet { border-radius: 14px 0 0 14px; }
+.book-stack .half.right .sheet { border-radius: 0 14px 14px 0; }
+
+/* Step each slab a little deeper + down + outward. translateX sign differs per
+   half so the thickness grows toward the outer edge, staying thin at the spine. */
+.book-stack .half.left  .s1 { transform: translate3d(-1px, 2px,  -4px); background:#faf3e2; }
+.book-stack .half.left  .s2 { transform: translate3d(-2px, 4px,  -8px); background:#f5edda; }
+.book-stack .half.left  .s3 { transform: translate3d(-3px, 6px, -12px); background:#efe5cf; }
+.book-stack .half.left  .s4 { transform: translate3d(-4px, 8px, -16px); background:#e9dcc2; }
+.book-stack .half.left  .s5 { transform: translate3d(-5px,10px, -20px); background:#e2d2b3; }
+.book-stack .half.right .s1 { transform: translate3d( 1px, 2px,  -4px); background:#faf3e2; }
+.book-stack .half.right .s2 { transform: translate3d( 2px, 4px,  -8px); background:#f5edda; }
+.book-stack .half.right .s3 { transform: translate3d( 3px, 6px, -12px); background:#efe5cf; }
+.book-stack .half.right .s4 { transform: translate3d( 4px, 8px, -16px); background:#e9dcc2; }
+.book-stack .half.right .s5 { transform: translate3d( 5px,10px, -20px); background:#e2d2b3; }
+
+/* hard cover beneath everything: deepest, slightly larger, darker slab */
+.book-stack .cover {
+  position: absolute;
+  inset: -6px -9px -10px -9px;         /* small overhang past the pages */
+  border-radius: 16px;
+  background: linear-gradient(180deg, #7a2d26 0%, #5e211b 100%);
+  box-shadow: 0 46px 80px rgba(0,0,0,.6);
+  transform: translateZ(-24px);
+}
+
+/* A single page face: warm paper with a soft inner gutter shadow. Not clipped,
+   so the pseudo-3D object can pop out past the edge of the page. */
+.page-panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 4% 6%;
+  overflow: visible;
+}
+.page-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 0%, #fffef9 0%, #f6efe0 100%);
+}
+.page-panel.left::before  { border-radius: 14px 0 0 14px; }
+.page-panel.right::before { border-radius: 0 14px 14px 0; }
+.page-panel.left::before  { box-shadow: inset -26px 0 40px -24px rgba(90,60,20,.45); }
+.page-panel.right::before { box-shadow: inset  26px 0 40px -24px rgba(90,60,20,.45); }
+
+/* ---- Flat object overlay -------------------------------------------------
+   The pseudo-3D object is rendered here, NOT inside the tilted .book. This
+   overlay has NO perspective and NO tilt, so the deer stands standalone and
+   screen-facing exactly like the index.html preview. The overlay just covers
+   the same box as the stage; its two slots sit over each page's centre. */
+.obj-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;   /* clicks fall through to the book (prev/next) */
+  /* flat: explicitly no 3D context so nothing inherits book perspective */
+}
+.obj-slot {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+}
+/* Object slot (deer): square, centred over its page half. Bigger now. */
+.obj-slot.is-image {
+  width: 58%;
+  aspect-ratio: 1 / 1;
+}
+/* Text slot: upright, flat text centred over its page half. */
+.obj-slot.is-text {
+  width: 40%;
+}
+.obj-slot.left  { left: 25%; transform: translate(-50%, -52%); }
+.obj-slot.right { left: 75%; transform: translate(-50%, -52%); }
+/* Lift the deer higher on the page than the text. */
+.obj-slot.is-image.left  { transform: translate(-50%, -66%); }
+.obj-slot.is-image.right { transform: translate(-50%, -66%); }
+
+/* The object host itself: just a flat square filled by the SVG, standing
+   upright and facing the viewer. No book coupling at all. */
+.obj-host {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  filter: drop-shadow(0 18px 14px rgba(0,0,0,.28)); /* "standing on the page" */
+}
+.obj-host .scene {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+}
+.obj-host .layer {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.obj-host .layer svg { width: 100%; height: 100%; display: block; }
+
+/* Two-line text block: big title / small body. Flat in the overlay now, so it
+   reads upright (no page tilt / slant). */
+.text-block {
+  text-align: center;
+  color: #2b1d0e;
+}
+.title-line {
+  font-weight: 800;
+  font-size: clamp(34px, 6vw, 72px);
+  letter-spacing: .5px;
+  color: #b23b2e;
+  text-shadow: 0 2px 0 rgba(0,0,0,.08);
+  line-height: 1.05;
+}
+.body-line {
+  margin-top: .35em;
+  font-size: clamp(16px, 2.4vw, 26px);
+  color: #5a4632;
+}
+/* inline key-word highlight: the title's red + bold, but inline (same size as
+   the surrounding body text) so emphasised words sit within the sentence. */
+.body-line .hl {
+  color: #b23b2e;
+  font-weight: 800;
+  letter-spacing: .3px;
+}
+
+/* Spine down the middle. */
+.spine {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 10px;
+  transform: translateX(-50%) translateZ(2px);
+  background: linear-gradient(90deg,
+    rgba(90,60,20,0) 0%, rgba(90,60,20,.35) 45%,
+    rgba(90,60,20,.55) 50%, rgba(90,60,20,.35) 55%, rgba(90,60,20,0) 100%);
+  pointer-events: none;
+}
+
+/* The turning leaf: a half-page that rotates about the spine. */
+.leaf {
+  position: absolute;
+  top: 0; bottom: 0; left: 50%;
+  width: 50%;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  pointer-events: none;
+  opacity: 0;               /* hidden until a flip runs */
+  z-index: 5;
+}
+.leaf-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 0 14px 14px 0;
+  background: radial-gradient(120% 90% at 0% 0%, #fffef9 0%, #f3ead9 100%);
+  box-shadow: inset 18px 0 40px -24px rgba(90,60,20,.5);
+}
+.leaf-face.back {
+  transform: rotateY(180deg);
+  border-radius: 14px 0 0 14px;
+  box-shadow: inset -18px 0 40px -24px rgba(90,60,20,.5);
+}
+
+/* Forward flip: right leaf swings left over the spine (0 -> -180). */
+.leaf.flipping { opacity: 1; will-change: transform; }
+.leaf.flipping.forward {
+  /* gentle accel/decel: a real page has a touch more ease-out than ease-in */
+  animation: leaf-forward var(--flip, 650ms) cubic-bezier(.45, .05, .3, 1) forwards;
+}
+.leaf.flipping.backward {
+  transform-origin: left center;
+  animation: leaf-backward var(--flip, 650ms) cubic-bezier(.45, .05, .3, 1) forwards;
+}
+@keyframes leaf-forward {
+  0%   { transform: rotateY(0deg);    box-shadow: 0 0 0 rgba(0,0,0,0); }
+  50%  { box-shadow: -30px 0 60px rgba(0,0,0,.35); }
+  100% { transform: rotateY(-180deg); box-shadow: 0 0 0 rgba(0,0,0,0); }
+}
+@keyframes leaf-backward {
+  0%   { transform: rotateY(-180deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+/* Content swap: fast dissolve out, then pop in. Text lives on the spread;
+   the object lives in the flat overlay. Both dissolve/pop together. */
+.obj-overlay.dissolve .obj-host,
+.obj-overlay.dissolve .text-block {
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+.obj-overlay.pop-run .obj-host {
+  /* softer settle: a little overshoot, then an easy glide to rest */
+  animation: pop-obj 520ms cubic-bezier(.22, 1, .32, 1.1) both;
+  will-change: transform, opacity;
+}
+.obj-overlay.pop-run .text-block {
+  animation: pop-text 520ms cubic-bezier(.22, 1, .32, 1.1) both;
+  will-change: transform, opacity;
+}
+/* Flat, screen-facing pop: the standalone object grows and rises slightly,
+   no 3D rotation (it never lies on the page now). */
+@keyframes pop-obj {
+  0%   { opacity: 0; transform: translateY(14px) scale(.82); }
+  60%  { opacity: 1; }
+  100% { transform: translateY(0) scale(1); }
+}
+@keyframes pop-text {
+  0%   { opacity: 0; transform: translateY(14px) scale(.86); }
+  60%  { opacity: 1; }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Page nav bar: fixed near the bottom of the viewport — prev button, the
+   counter pill, next button — so it's reachable on touch dashboards and clear
+   at any resolution (it no longer rides on the book's stack edge). */
+.page-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 12;
+}
+.page-status {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(10, 22, 44, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+  min-width: 56px;
+  text-align: center;
+  white-space: nowrap;   /* never wrap "14 / 14" onto two lines */
+  flex: 0 0 auto;
+}
+.page-btn { flex: 0 0 auto; }
+/* round prev/next buttons flanking the counter */
+.page-btn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(10, 22, 44, 0.6);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: background .15s ease, transform .12s ease, opacity .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.page-btn svg { width: 22px; height: 22px; display: block; }
+.page-btn:hover { background: rgba(28, 48, 84, 0.85); }
+.page-btn:active { transform: scale(0.92); }
+.page-btn:focus-visible { outline: 2px solid #9ec2ff; outline-offset: 2px; }
+.page-btn.is-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Music toggle: fixed in the TOP-right, clear of the bottom nav bar so the two
+   never overlap. Matches the nav-button look; off by default (muted-speaker
+   icon), lights up warm when playing. */
+.music-btn {
+  position: fixed;
+  right: 24px;
+  top: 24px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  /* light outline + a darker, more opaque fill so the button stays legible
+     against the night sky and the moon's glow */
+  border: 1.5px solid rgba(207, 224, 246, 0.55);
+  border-radius: 999px;
+  color: #cfe0f6;
+  background: rgba(10, 22, 44, 0.78);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  z-index: 12;
+  transition: background .15s ease, color .15s ease, transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.music-btn svg { width: 22px; height: 22px; display: block; }
+.music-btn:hover { background: rgba(28, 48, 84, 0.85); }
+.music-btn:active { transform: scale(0.92); }
+.music-btn:focus-visible { outline: 2px solid #9ec2ff; outline-offset: 2px; }
+/* playing: warm gold glow so it's clear music is on */
+.music-btn.is-on {
+  color: #1b1205;
+  background: #e3b543;
+  box-shadow: 0 0 0 3px rgba(227, 181, 67, 0.35), 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+@media (max-aspect-ratio: 3 / 4), (max-width: 800px) {
+  /* stay TOP-RIGHT on phones too, just tucked tighter to the corner */
+  .music-btn { right: 12px; left: auto; top: 12px; width: 40px; height: 40px; }
+}
+
+/* ---- Back-to-library button (top-left on every book page) --------------- */
+/* Mirrors the music button chrome so the two corners feel like a set. Links
+   back to the shelf; a back-arrow icon plus a short label. */
+.library-btn {
+  position: fixed;
+  left: 24px;
+  top: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 16px 0 12px;
+  border: 1.5px solid rgba(207, 224, 246, 0.55);
+  border-radius: 999px;
+  color: #cfe0f6;
+  background: rgba(10, 22, 44, 0.78);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  text-decoration: none;
+  font: 600 15px/1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  cursor: pointer;
+  z-index: 12;
+  transition: background .15s ease, color .15s ease, transform .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.library-btn svg { width: 20px; height: 20px; display: block; }
+.library-btn:hover { background: rgba(28, 48, 84, 0.85); }
+.library-btn:active { transform: scale(0.96); }
+.library-btn:focus-visible { outline: 2px solid #9ec2ff; outline-offset: 2px; }
+.library-btn .label { white-space: nowrap; }
+
+@media (max-aspect-ratio: 3 / 4), (max-width: 800px) {
+  /* tuck into the corner; drop the text label, keep the arrow as a round btn */
+  .library-btn {
+    left: 12px; top: 12px; height: 40px; width: 40px;
+    padding: 0; justify-content: center; gap: 0;
+  }
+  .library-btn .label { display: none; }
+}
+
+/* On-screen hint + nav (kept minimal for the POC). */
+.hint {
+  position: fixed;
+  left: 0; right: 0; bottom: 14px;
+  text-align: center;
+  color: #cfe0f6;
+  font-size: 12px;
+  z-index: 11;
+  pointer-events: none;
+}
+/* ---- Narrow / portrait screens (phones) --------------------------------
+   On a skinny portrait viewport, a 75vw book becomes a tall thin column that
+   looks cramped. Instead let the book be WIDER than the screen (it runs off
+   the left/right edges) so each page keeps a readable proportion, and make the
+   deer much bigger + popping above the page so it stays the star. */
+@media (max-aspect-ratio: 3 / 4), (max-width: 800px) {
+  .book-stage {
+    /* narrow enough that BOTH pages (and their centred content) fit inside the
+       viewport, so the text sits mid-page like desktop without clipping. */
+    width: 94vw;
+    height: min(56vh, 500px);
+    perspective: 1300px;
+    perspective-origin: 50% 50%;
+  }
+
+  /* more tilt so the book lies flatter on the table */
+  .book { transform: rotateX(66deg); }
+  .book.bump-r { transform: rotateX(66deg) translateX(10px); }
+  .book.bump-l { transform: rotateX(66deg) translateX(-10px); }
+
+  /* moon moves to the top where it's clear of the book, and stays on-screen */
+  .winter-bg .moon {
+    top: 3vh;
+    right: 6vw;
+    width: clamp(120px, 34vw, 200px);
+  }
+
+  /* Deer centred on its page half. */
+  .obj-slot.is-image.left  { left: 26%; transform: translate(-50%, -66%); }
+  .obj-slot.is-image.right { left: 74%; transform: translate(-50%, -66%); }
+
+  /* TEXT: centred on its page half like desktop. The body line wraps inside
+     the slot, so we can keep it near the page centre at a readable size. */
+  .obj-slot.is-text.right { left: 75%; }
+  .obj-slot.is-text.left  { left: 25%; }
+  .obj-slot.is-text { width: 46%; max-width: 44vw; }
+  .obj-slot.is-text .text-block { width: 100%; }
+  .title-line { font-size: clamp(26px, 7.2vw, 44px); }
+  .body-line  { font-size: clamp(15px, 4vw, 22px); line-height: 1.25; }
+
+  /* Bottom controls: the long keyboard hint is desktop-oriented and collides
+     with the nav bar on a phone — hide it (the on-screen buttons cover it). */
+  .hint { display: none; }
+
+  /* Tighten the nav bar so all six controls fit a narrow screen without
+     overlapping or wrapping. Sit it a touch higher off the bottom edge. */
+  .page-nav {
+    bottom: 20px;
+    gap: 7px;
+    max-width: 96vw;
+  }
+  .page-btn { width: 38px; height: 38px; }
+  .page-btn svg { width: 20px; height: 20px; }
+  .page-status {
+    font-size: 13px;
+    letter-spacing: 1px;
+    padding: 5px 10px;
+    min-width: 48px;
+  }
+}
+
+/* ---- Reduced motion ----------------------------------------------------
+   Honour the OS "reduce motion" preference. We keep the book readable and
+   still swap pages, but drop the large/animated movement: the leaf-flip
+   collapses to a quick cross-fade, the pop becomes a plain fade, and the
+   bump nudge is removed. (The idle sway is also disabled in storybook.js.) */
+@media (prefers-reduced-motion: reduce) {
+  .book,
+  .book.bump-r,
+  .book.bump-l {
+    transform: rotateX(54deg);   /* no sideways bump */
+    transition: none;
+  }
+
+  /* leaf flip -> instant, just let the content cross-fade underneath */
+  .leaf.flipping.forward,
+  .leaf.flipping.backward {
+    animation-duration: 1ms;
+  }
+
+  /* pop -> simple fade, no scale/translate overshoot */
+  .obj-overlay.pop-run .obj-host,
+  .obj-overlay.pop-run .text-block {
+    animation: rm-fade 220ms ease-out both;
+  }
+  @keyframes rm-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+}

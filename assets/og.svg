@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Social / Open Graph preview for the Stories shelf (1200x630). Original
+       vector: night sky, falling snow dots, a bookshelf, and the wordmark. -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#0a1b3a"/>
+      <stop offset="55%" stop-color="#122a52"/>
+      <stop offset="100%" stop-color="#1c3a66"/>
+    </linearGradient>
+    <radialGradient id="moon" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"  stop-color="#eef5ff"/>
+      <stop offset="70%" stop-color="#d7e6ff"/>
+      <stop offset="100%" stop-color="rgba(215,230,255,0)"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#sky)"/>
+
+  <!-- moon -->
+  <circle cx="1010" cy="140" r="120" fill="url(#moon)"/>
+  <circle cx="1010" cy="140" r="52" fill="#f2f7ff"/>
+
+  <!-- scattered stars / snow -->
+  <g fill="#dce9ff" opacity="0.85">
+    <circle cx="120" cy="90" r="3"/><circle cx="260" cy="150" r="2.2"/>
+    <circle cx="420" cy="80" r="2.6"/><circle cx="640" cy="120" r="2"/>
+    <circle cx="780" cy="70" r="2.4"/><circle cx="520" cy="200" r="2"/>
+    <circle cx="180" cy="230" r="2"/><circle cx="900" cy="250" r="2.4"/>
+  </g>
+
+  <!-- a little bookshelf of coloured spines, centered above the wordmark -->
+  <g transform="translate(468 150)">
+    <rect x="0"   y="0"   width="34" height="120" rx="6" fill="#e2574e"/>
+    <rect x="40"  y="-12" width="30" height="132" rx="6" fill="#f2c94c"/>
+    <rect x="76"  y="6"   width="34" height="114" rx="6" fill="#5fbf6a"/>
+    <rect x="116" y="0"   width="30" height="120" rx="6" fill="#6fb7d6"
+          transform="rotate(9 131 120)"/>
+    <rect x="160" y="-8"  width="36" height="128" rx="6" fill="#d98cc4"/>
+    <rect x="204" y="4"   width="30" height="116" rx="6" fill="#e2574e"/>
+    <rect x="-14" y="120" width="262" height="18" rx="6" fill="#6b4a2c"/>
+  </g>
+
+  <!-- wordmark: two bouncy comic words, each a single centered <text> so the
+       font controls spacing (robust to whichever face loads). A thick dark
+       outline via paint-order; a slight whole-word tilt for playfulness. Kept
+       well inside the 1200x630 frame so nothing clips. -->
+  <g font-family="'Comic Sans MS','Chalkboard SE','Baloo 2','Fredoka',
+                  'Trebuchet MS',system-ui,sans-serif"
+     font-weight="800" font-size="118" text-anchor="middle"
+     style="paint-order:stroke fill" stroke="#2a1a4a"
+     stroke-width="11" stroke-linejoin="round">
+    <text x="600" y="400" fill="#ffd54a"
+          transform="rotate(-2 600 400)">Story</text>
+    <text x="600" y="512" fill="#8fd6ff"
+          transform="rotate(2 600 512)">Library</text>
+  </g>
+  <!-- tagline -->
+  <text x="600" y="580" text-anchor="middle"
+        font-family="'Comic Sans MS','Chalkboard SE','Baloo 2','Fredoka',
+                     'Trebuchet MS',system-ui,sans-serif"
+        font-size="34" font-weight="700" fill="#ffffff"
+        style="paint-order:stroke fill" stroke="#2a1a4a" stroke-width="5"
+        stroke-linejoin="round">Pick a book and watch it pop to life!</text>
+</svg>

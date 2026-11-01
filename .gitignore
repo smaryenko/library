@@ -1,0 +1,10 @@
+# OS / editor cruft
+.DS_Store
+*.swp
+
+# Kiro workspace config (steering, etc.) — keep local, do not publish
+.kiro/
+
+# Scratch / preview artifacts (write these to /tmp, never the repo)
+/tmp/
+*.scratch.*

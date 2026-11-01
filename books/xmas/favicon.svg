@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Christmas storybook favicon: original vector, night-sky disc with a
+       reindeer head + red nose. Matches the app's palette. -->
+  <defs>
+    <radialGradient id="sky" cx="50%" cy="38%" r="70%">
+      <stop offset="0%"  stop-color="#1c3a66"/>
+      <stop offset="100%" stop-color="#0a1b3a"/>
+    </radialGradient>
+    <radialGradient id="nose" cx="40%" cy="35%" r="70%">
+      <stop offset="0%"  stop-color="#ff7b6b"/>
+      <stop offset="55%" stop-color="#e23b2e"/>
+      <stop offset="100%" stop-color="#b2271c"/>
+    </radialGradient>
+  </defs>
+
+  <!-- night-sky disc -->
+  <circle cx="32" cy="32" r="31" fill="url(#sky)"/>
+
+  <!-- a couple of faint stars -->
+  <circle cx="14" cy="16" r="1.4" fill="#dce9ff"/>
+  <circle cx="50" cy="14" r="1.1" fill="#dce9ff"/>
+  <circle cx="52" cy="40" r="1"   fill="#dce9ff"/>
+
+  <!-- antlers -->
+  <g fill="none" stroke="#8a5a33" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 24 C23 18 21 16 18 15 M23 20 C20 20 18 21 16 20 M23 20 C22 17 21 15 22 12"/>
+    <path d="M38 24 C41 18 43 16 46 15 M41 20 C44 20 46 21 48 20 M41 20 C42 17 43 15 42 12"/>
+  </g>
+
+  <!-- ears -->
+  <ellipse cx="21" cy="30" rx="5" ry="7" fill="#8a5a28" transform="rotate(-24 21 30)"/>
+  <ellipse cx="43" cy="30" rx="5" ry="7" fill="#8a5a28" transform="rotate(24 43 30)"/>
+
+  <!-- head -->
+  <ellipse cx="32" cy="36" rx="13" ry="14" fill="#a9743b"/>
+  <!-- muzzle -->
+  <ellipse cx="32" cy="44" rx="8.5" ry="7.5" fill="#e9cba0"/>
+
+  <!-- eyes -->
+  <circle cx="27" cy="34" r="2" fill="#2b1d0e"/>
+  <circle cx="37" cy="34" r="2" fill="#2b1d0e"/>
+  <circle cx="27.7" cy="33.3" r=".6" fill="#fff"/>
+  <circle cx="37.7" cy="33.3" r=".6" fill="#fff"/>
+
+  <!-- shiny red nose -->
+  <circle cx="32" cy="45" r="4.2" fill="url(#nose)"/>
+  <circle cx="30.6" cy="43.6" r="1.1" fill="#fff" opacity=".8"/>
+</svg>
