@@ -26,28 +26,28 @@
       build: () => buildStartGrid()
     },
     {
-      // 2 — Turbo (red) — renamed from Blaze
+      // 2 — Turbo (red): first off the line — a hard wheelie launch.
       title: 'Turbo', body: 'is first off the line.',
       build: car({ body: '#E23B2E', cabin: '#b2271c', number: '1',
-        spoiler: 'wing', stripe: 'center' })
+        spoiler: 'wing', stripe: 'center', anim: 'wheelie' })
     },
     {
-      // 3 — Bolt (blue), the chaser
+      // 3 — Bolt (blue), the chaser: a quick vroom forward and back.
       title: 'Bolt', body: 'is right on his tail!',
       build: car({ body: '#2F7DE0', cabin: '#235fab', number: '7',
-        spoiler: 'tall', stripe: 'center' })
+        spoiler: 'tall', stripe: 'center', anim: 'vroom' })
     },
     {
-      // 4 — Rusty (yellow/orange), the funny underdog
+      // 4 — Rusty (yellow/orange), the underdog: rattles and shakes.
       title: 'Rusty', body: 'rattles up from the back.',
       build: car({ body: '#E0B24A', cabin: '#b98a2c', number: '3',
-        spoiler: 'low', stripe: 'flames' })
+        spoiler: 'low', stripe: 'flames', anim: 'shake' })
     },
     {
-      // 5 — Jade (green), clever on the corners
+      // 5 — Jade (green), clever on the corners: a revving squat.
       title: 'Jade', body: 'takes the corners clean.',
       build: car({ body: '#5AA469', cabin: '#3f7d4e', number: '8',
-        spoiler: 'wing', stripe: 'center' })
+        spoiler: 'wing', stripe: 'center', anim: 'rev' })
     },
     {
       // 6 — text-only start interlude: the countdown + the rev line

@@ -134,6 +134,20 @@ function buildFireplace() {
         <stop offset="100%" stop-color="rgba(0,0,0,0.12)"/>
       </linearGradient>
     </defs>
+    ${buildAnim(uid, { tracks: [
+      // the fire ROARS up and flickers hard, licking and bending side to side
+      { parts: 'fire', origin: '180px 306px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:scaleY(1) scaleX(1) rotate(0)}18%{transform:scaleY(1.32) scaleX(.9) rotate(-2deg)}40%{transform:scaleY(1.05) scaleX(1.04) rotate(2deg)}62%{transform:scaleY(1.24) scaleX(.93) rotate(-1.5deg)}82%{transform:scaleY(1.1) scaleX(1)}' },
+      // the glow swells and the embers brighten with each flare-up
+      { parts: ['glow','embers'], origin: '180px 296px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{opacity:.85;transform:scale(1)}20%{opacity:1;transform:scale(1.2)}55%{opacity:.7;transform:scale(1.05)}80%{opacity:1;transform:scale(1.16)}' },
+      // the warm draught stirs the stockings into a bigger swing
+      { parts: 'stockings', origin: '180px 120px', timing: '1.4s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}25%{transform:rotate(5deg)}60%{transform:rotate(-4.5deg)}85%{transform:rotate(2deg)}' },
+      // the pine garland + mantel dressing sway with the heat
+      { parts: 'garland', origin: '180px 110px', timing: '1.4s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0) translateY(0)}30%{transform:rotate(1.4deg) translateY(1px)}65%{transform:rotate(-1.2deg)}' }
+    ] })}
 
     <!-- scale the whole scene down so it sits within the viewBox like the
          other objects (it was overflowing the page). Scaling an ancestor <g>

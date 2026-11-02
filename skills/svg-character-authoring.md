@@ -1,4 +1,4 @@
-# Skill: original SVG character authoring (flat-cartoon style)
+# Skill: original SVG character authoring (detailed, kid-friendly style)
 
 **When to use:** drawing any new character or prop builder — a function that
 returns a layered `data-part` SVG string for the pseudo-3D rig.
@@ -6,18 +6,58 @@ returns a layered `data-part` SVG string for the pseudo-3D rig.
 This is the house style. It keeps every book visually consistent and keeps the
 parts ready for `mountObject`.
 
-## House style
+## Detailed & believable, within a kid-friendly style
 
-- **Flat-cartoon, fill-first.** Solid filled silhouettes. No stroked squiggle
-  outlines, no busy inner hatching.
-- **Volume via radial gradients**, not many layers: a top-left highlight, a
-  darker lower-right rim, and soft contact shadows where parts join (head↔body,
-  body↔belly). This is what makes a flat shape read as rounded.
-- **Chunky and cute over realistic.** Scale detail down to the body; oversized
-  realistic features look wrong. Small, bold shapes win.
-- **Warm, saturated-but-soft palette.** Give each character a distinct fur/coat
-  tone plus a lighter belly/accent and a darker rim colour, so a family of
-  characters reads as varied (as the nine reindeer do via cfg).
+The target is a **warm, kid-friendly storybook illustration that is RICHLY
+DETAILED and believable** — not stark photorealism, and not a flat, minimal
+cartoon either. It can still be a little stylised/cute so it's friendly for
+children, but it must have the detail and shading of a real illustration.
+
+The thing to avoid is **under-detailed, flat, "placeholder" art**: a rug that is
+one plain rectangle, a face that is two dots, an object with a single flat fill.
+Those read as unfinished. Push toward detail and volume.
+
+Where the line sits:
+
+- **Detailed over minimal.** A shaggy rug has hundreds of pile strands, a fringe,
+  and soft pile shading — not one rectangle. A tree has layered boughs, baubles,
+  lights, a star — not a green triangle. Add the small, characterful details a
+  real version would have.
+- **Believable form and lighting.** Rounded, dimensional shapes built with
+  layered gradients, core shadows, occlusion where parts join, and considered
+  highlights from a consistent light direction — not a single flat fill.
+- **Faces with real structure.** Eyes with lids, a catchlight and a hint of iris
+  depth; a nose with bridge, shadow and highlight; natural brows; soft,
+  non-circular cheek shading. Big friendly cartoon eyes are fine — but drawn
+  with structure, never flat dots or hard sticker-blush circles.
+- **Read the material.** Fur, wood, metal, glass, fabric should each look like
+  their material (grain, sheen, weave, specular), not a uniform colour swatch.
+- **Stylised proportions are OK**; flat/under-detailed execution is not. Keep it
+  cute and approachable, but always finish it with real detail and shading.
+
+> This supersedes the earlier "chunky-cute, keep-it-flat/minimal" guidance. If
+> you find older notes favouring flat or deliberately simplified shapes, treat
+> "detailed & believable, kid-friendly" as the current rule and update them when
+> you touch them.
+
+## How to achieve it (technique)
+
+- **Fill-first silhouettes, then shade.** Still build each part as a clean
+  filled shape — but carry real volume inside it. **No stroked squiggle
+  outlines or scribbly inner hatching**; depth comes from gradient and shadow
+  shaping, the way a painted illustration does.
+- **Volume via layered gradients + occlusion.** A radial/linear base gradient
+  (lit side → core → shadow rim) plus soft contact shadows where parts meet
+  (head↔body, body↔belly, object↔ground). Add a secondary bounce/ambient tone
+  so shadows aren't dead flat. This is what sells a form as solid.
+- **Rich, naturalistic palette.** Give each character a believable base tone
+  with a lighter lit value and a darker shadow value (plus subtle hue shift in
+  shadow, not just a darker version of the same hex). A warm, friendly palette
+  is welcome — just back it with real shading. Families of characters still vary
+  by cfg (as the reindeer do), and each should look detailed and material.
+- **Details are not optional.** Whatever a real version would have — texture,
+  trim, fringe, seams, baubles, strands, catchlights — include a considered
+  amount of it. If a part looks like a flat placeholder, it isn't done.
 
 ## Builder contract
 
@@ -47,6 +87,67 @@ width function (`offsetStrip`), smooth with Catmull-Rom, enforce
 branches-point-outward, author one side and mirror. Do not hand-place Bézier
 handles for antlers/twigs/flames.
 
+## Click animation — every picture gets one (REQUIRED)
+
+Every builder MUST ship a **one-shot click animation**, and that animation
+**lives inside the object's own SVG**. Tapping a pop-up image plays it (instead
+of turning the page — the storybook engine routes image taps to the object's
+`play()`); tapping anywhere else still flips the page.
+
+- **The animation belongs to the character, and is distinct per character.** It
+  expresses who they are: Dancer dances, Prancer prances (airy hoof-paw) while
+  Donner's loudest stomp *quakes* the ground, an acrobat does a salto, Rudolph's
+  nose glows, Turbo pops a wheelie, the kitchen car slips, the loop car laps the
+  loop. Two characters must NOT reuse the same animation — pick a motion that
+  fits each one's one-line caption.
+- **Use the whole page.** Make the motion rich and large — travel across the
+  spread, even off the page and back (cars drive off and return; a reindeer
+  bolts off-left and gallops back in from the right). Add secondary motion
+  (shadow squash/stretch, trailing parts, a glint) and **spawned effect
+  elements** (crack, smoke, sparkles — see below) so it reads as alive, not a
+  tiny shudder.
+- **No shared/duplicated animations and no central keyframe registry.** Because
+  each one is unique to its object, it ships with that object — not in a global
+  CSS file. If two pages happen to want the same feel, each still authors its
+  own (keyed to its own `uid`).
+- **The animation may SPAWN new elements — it's not limited to the existing
+  parts.** Add effect-only bits that appear just for the animation: a crack
+  splitting the page under a stomp, exhaust/gas clouds puffing from a revving
+  car, a sparkle burst, dust, speed lines, snow kicked up. Draw each as its own
+  `data-part="fx-…"` group, **hidden at rest** (`opacity="0"`), and let the
+  keyframes reveal + move + fade it only while `is-playing` (end back at
+  opacity 0 so it vanishes when idle). Give `fx-*` parts a depth in `OBJ_DEPTH`
+  (there are ready-made keys: `fx-ground`, `fx-back`, `fx-mid`, `fx-front`,
+  `fx-spark`) so they sit on the right plane. A small helper that emits only the
+  FX for the current anim key keeps the builder tidy (see `animFX()` in
+  `reindeer.js`/`car.js`). These extras are what make a beat feel rich — lean
+  on them.
+- **How to author it:** use the shared `buildAnim(uid, { tracks: [...] })`
+  helper (`assets/js/anim.js`). Each track names the `parts` that move, a
+  `transform-origin`, the keyframe body, and the timing. It returns a scoped
+  `<style>` block (keyframe names carry the builder's `uid` so several objects
+  on one spread never collide). Drop the returned string inside the `<svg>`,
+  right after `</defs>` — it has no `data-part`, so the rig copies it into every
+  split layer and the per-part rules fire on the matching layer.
+- **How it fires:** the engine adds `is-playing` to each layer's `<svg>` on tap
+  and clears it once every track has ended, so it can replay. By default
+  `buildAnim` uses `transform-box: view-box`, so a track's `transform-origin` is
+  in the SVG's own viewBox coordinates and several parts can share one pivot
+  (e.g. all the legs swing about the hooves). Pass `box: 'fill-box'` on a track
+  when a part should pivot about ITSELF (a wheel spinning on its hub: origin
+  `50% 50%`).
+- Keep it **self-contained** (returns to rest) and reasonably snappy
+  (~0.8–1.8s). It can be a big, full-page beat — just land back where it
+  started so a re-tap always replays cleanly.
+- **Off-page travel:** to make an object drive/leap off one side and return
+  from the other, jump between two adjacent keyframe stops while it's
+  off-screen (e.g. `34%{…translateX(-420px)…} 35%{…translateX(420px)…}`). The
+  stage/viewport clips the overflow, so it genuinely exits and re-enters.
+
+A single-page prop/scene (tree, fireplace, a track section) counts as a picture
+too — animate its most alive element (the star twinkles, the fire flickers, the
+scene's car does the thing the caption says).
+
 ## Licensing
 
 Original vector only. Stock images are **style references**, never traced,
@@ -54,8 +155,20 @@ embedded, or shipped. See `asset-licensing.md`.
 
 ## Checklist
 
+- [ ] **Detailed & believable, kid-friendly** — never a flat, under-detailed
+      placeholder (no one-rectangle rug, no two-dot face).
+- [ ] **Faces with real structure** (eyes with lids/catchlight, shaded nose,
+      natural brows, soft non-circular cheeks) — friendly, but not flat dots.
+- [ ] Material + detail present (texture, trim, strands, highlights) as a real
+      version would have.
 - [ ] One builder, cfg-driven; no forked copies per variant.
 - [ ] Every part a `data-part` group, named for the depth map.
-- [ ] Fill-first shapes; volume via gradients + contact shadows.
+- [ ] Fill-first shapes; real volume via layered gradients, core shadows, and
+      contact/occlusion at joins (not a single flat fill).
 - [ ] Independent axes kept as separate cfg fields (never merged).
-- [ ] Chunky-to-host scale; original vector; nothing traced or shipped.
+- [ ] Original vector; nothing traced or shipped.
+- [ ] **A one-shot click animation, authored via `buildAnim`, embedded in the
+      object's own SVG, fitting the character/caption. Never shared or global.**
+- [ ] Rich & full-page: large travel (off-page OK), secondary motion, and
+      **spawned `fx-*` effect elements** (crack, smoke, sparkle…) where they add
+      life — hidden at rest, revealed only while playing.

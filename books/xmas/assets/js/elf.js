@@ -86,6 +86,24 @@ function buildElf() {
         <stop offset="0%" stop-color="${GREENL}"/><stop offset="100%" stop-color="${GREEND}"/>
       </linearGradient>
     </defs>
+    ${buildAnim(uid, { tracks: [
+      // a big excited double-bounce of the whole elf, with a squash on landing.
+      // The hat rides in this SAME track (and head cluster) so it never leaves
+      // the head.
+      { parts: ['legs','side-gift','tunic','arms','held-gift','head','ears','face','hair','hat'],
+        origin: '180px 314px', timing: '1.2s cubic-bezier(.3,.7,.3,1)',
+        keyframes: '0%,100%{transform:translateY(0) scaleY(1)}12%{transform:translateY(3px) scaleY(.95)}38%{transform:translateY(-40px) scaleY(1.05)}55%{transform:translateY(0) scaleY(.96)}72%{transform:translateY(-22px) scaleY(1.02)}88%{transform:translateY(0)}' },
+      // the head (WITH its hat + hair) gives a little nod on the bounce — hat
+      // and head share one pivot so the hat stays put on his head.
+      { parts: ['head','ears','face','hair','hat'], origin: '180px 150px', timing: '1.2s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}38%{transform:rotate(-5deg)}72%{transform:rotate(4deg)}' },
+      // ...and he hoists the gift high overhead, triumphant, turning it
+      { parts: 'held-gift', origin: '180px 265px', timing: '1.2s ease-in-out',
+        keyframes: '0%,100%{transform:translateY(0) rotate(0)}38%{transform:translateY(-34px) rotate(-12deg)}72%{transform:translateY(-16px) rotate(8deg)}' },
+      // arms raise to lift it
+      { parts: 'arms', origin: '180px 210px', timing: '1.2s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}38%{transform:rotate(-8deg) translateY(-6px)}72%{transform:rotate(5deg)}' }
+    ] })}
 
     <g data-part="shadow"><ellipse cx="180" cy="326" rx="94" ry="15" fill="rgba(0,0,0,0.16)"/></g>
 

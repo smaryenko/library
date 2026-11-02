@@ -47,6 +47,19 @@ const OBJ_DEPTH = {
   'prop-base': -40, road: -10, ramp: 0, loop: 0, tiles: -6,
   kerb: 14, 'finish-line': 16, car: 24, bunting: 46, podium: 6, trophy: 30,
 
+  // click-animation EFFECT parts (hidden at rest, revealed only while playing).
+  // Any `data-part` whose name starts with `fx-` is an effect spawned by the
+  // object's own animation (a ground crack, exhaust clouds, a sparkle burst) —
+  // not part of the resting picture. Placed on sensible planes: ground effects
+  // sit back near the shadow, mid puffs float around the body, sparkles pop
+  // closest. Builders may also use these generic keys directly.
+  'fx-ground': -55, 'fx-back': -24, 'fx-mid': 12, 'fx-front': 36,
+  'fx-spark': 56,
+  // a ground crack sits on the floor plane (just above the shadow)
+  'fx-crack': -52,
+  // car exhaust clouds sit just behind the body (over the shadow, under the car)
+  'fx-smoke1': -16, 'fx-smoke2': -18, 'fx-smoke3': -20,
+
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };
@@ -54,7 +67,17 @@ const OBJ_DEPTH = {
 const OBJ_MAX_TILT = 16;   // degrees at the pointer extremes
 const OBJ_PARALLAX = 0.12; // px shift per depth unit per pointer unit
 
-// Build a pseudo-3D object inside `host`. Returns { scene, apply }.
+// Build a pseudo-3D object inside `host`. Returns { scene, apply, play }.
+//
+// Click animation: each object ships its OWN animation inside its SVG — the
+// builder embeds a scoped `<style>` (keyed to its unique gradient `uid`) with
+// `@keyframes` and rules like `svg.is-playing [data-part="front-leg-r"] {...}`.
+// Animations are never shared between objects, so they live with the object
+// that uses them (no central keyframe registry). Here we only drive the
+// trigger: `play()` mirrors an `is-playing` class onto every split layer's
+// inner <svg>, which starts that object's embedded keyframes once, then clears
+// it on animationend so a later click can re-trigger. The storybook engine
+// calls play() when a tap lands on the pop-up image.
 function mountObject(host, svgString, opts = {}) {
   const maxTilt = opts.maxTilt ?? OBJ_MAX_TILT;
   const parallax = opts.parallax ?? OBJ_PARALLAX;
@@ -108,8 +131,50 @@ function mountObject(host, svgString, opts = {}) {
     });
   }
 
+  // Each split layer carries a full copy of the SVG (one part shown, the rest
+  // removed) INCLUDING the root <style> the builder embedded. So the object's
+  // own keyframes are present in every layer; we just flip the trigger class
+  // (`is-playing`) on every inner <svg> at once to start them, and clear it
+  // once all tracks have finished (see the start/end counting below).
+  const innerSvgs = () => Array.from(scene.querySelectorAll('.layer > svg'));
+
+  // One object can run SEVERAL tracks of different durations at once (e.g. a
+  // body move plus a shorter wheel spin). Clearing on the FIRST animationend
+  // would cut the longer tracks short, so instead we clear only once EVERY
+  // running animation has ended: count starts vs ends and clear at zero. A
+  // safety timer also clears in case an animationend is ever missed.
+  let running = 0;
+  let safety = null;
+
+  function clearPlaying() {
+    innerSvgs().forEach(s => s.classList.remove('is-playing'));
+    running = 0;
+    if (safety) { clearTimeout(safety); safety = null; }
+  }
+
+  function play() {
+    const svgs = innerSvgs();
+    if (!svgs.length) return;
+    // Clear first so a mid-run click restarts cleanly, then force reflow and
+    // re-add on the next frame so the animation re-fires from 0%.
+    clearPlaying();
+    void scene.offsetWidth;
+    requestAnimationFrame(() => {
+      svgs.forEach(s => s.classList.add('is-playing'));
+      // hard cap: clear ~2.5s after start even if an end event is lost. Keep
+      // this comfortably above the longest keyframe duration used by builders.
+      safety = setTimeout(clearPlaying, 2500);
+    });
+  }
+
+  scene.addEventListener('animationstart', () => { running++; });
+  scene.addEventListener('animationend', () => {
+    running--;
+    if (running <= 0) clearPlaying();
+  });
+
   apply(0, 0);
-  return { scene, apply };
+  return { scene, apply, play };
 }
 
 if (typeof module !== 'undefined') module.exports = { mountObject, OBJ_DEPTH };

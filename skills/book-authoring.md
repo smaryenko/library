@@ -82,7 +82,10 @@ Each book's `pages.js` exports a `PAGES` array in the same shape the engine
 already consumes (see `storybook.js`). Each page is either:
 
 - an **object page**: `{ title, body, build }`, where `build()` returns a
-  layered `data-part` SVG string (via your character builders); or
+  layered `data-part` SVG string (via your character builders). Every object
+  page's picture must be **detailed & believable** (kid-friendly but never a
+  flat, under-detailed placeholder) and must ship its **own one-shot click
+  animation** inside the SVG — see `svg-character-authoring.md`; or
 - a **text-only page**: `{ textOnly: true, left: {...}, right: {...} }`.
 
 Text format per page is two lines: a big **title** word/name and a smaller
@@ -117,6 +120,10 @@ turn — the engine handles that; you only supply content.
 - [ ] One entry added to `assets/js/stories.js`.
 - [ ] Characters authored as layered `data-part` SVG (follow
       `3d-animation-from-reference.md` + `svg-character-authoring.md`).
+- [ ] **Detailed & believable look** — real form, materials, and faces with
+      real structure; kid-friendly but never flat/under-detailed.
+- [ ] **Every picture ships a one-shot click animation** (via `buildAnim`,
+      embedded in its own SVG, fitting the character/caption).
 - [ ] Depth keys for any NEW parts added to `OBJ_DEPTH` in
       `pseudo3d-object.js` (shared, so additive only — don't break other books).
 - [ ] Card shows on the shelf and links to the book; favicon + og resolve.

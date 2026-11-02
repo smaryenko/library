@@ -228,9 +228,12 @@
     // Both the object AND the text live in the FLAT overlay so neither
     // inherits the book's tilt (text was slanting on the page before).
     const host = document.createElement('div');
-    host.className = 'obj-host';
+    host.className = 'obj-host is-tappable';   // clickable: taps PLAY, not turn
     const obj = mountObject(host, page.build());
     activeObjects.push(obj);
+    // Remember this spread's object so a tap on its image can trigger the
+    // object's own one-shot animation (instead of a page turn).
+    host.__obj = obj;
 
     const imgSlot = imgLeft ? objLeftSlot : objRightSlot;
     const txtSlot = imgLeft ? objRightSlot : objLeftSlot;
@@ -400,9 +403,18 @@
         target.closest('.page-nav, .music-btn, .library-btn'));
     }
 
+    // The pop-up pseudo-3D image under the pointer, or null. A tap here PLAYS
+    // the object's own animation rather than turning the page.
+    function objHostAt(target) {
+      return target && target.closest ? target.closest('.obj-host') : null;
+    }
+
     window.addEventListener('pointerdown', e => {
       if (onControl(e.target)) { down = null; return; }  // let controls handle it
-      down = { x: e.clientX, y: e.clientY, id: e.pointerId, moved: false };
+      down = {
+        x: e.clientX, y: e.clientY, id: e.pointerId, moved: false,
+        objHost: objHostAt(e.target)   // press started on the image?
+      };
       pointer.active = false;        // a press suppresses hover-tilt
       clearTimeout(hoverTimer);
     });
@@ -434,10 +446,21 @@
 
       if (horizontal && Math.abs(dx) >= SWIPE_PX) {
         // swipe: distance+direction only, NOT speed. slow drag == flick.
+        // A swipe still turns the page even if it started on the image.
         if (dx < 0) next();          // right-to-left -> next
         else prev();                 // left-to-right -> back
       } else if (!down.moved) {
-        // tap / click: which half of the SCREEN was hit? left -> back,
+        // tap / click that STAYED on the pop-up image: play that object's own
+        // animation and do NOT turn the page. (Confirm the pointer both began
+        // and ended on the same image host.)
+        const upHost = objHostAt(e.target);
+        if (down.objHost && upHost === down.objHost && upHost.__obj &&
+            typeof upHost.__obj.play === 'function') {
+          upHost.__obj.play();
+          down = null;
+          return;
+        }
+        // otherwise: which half of the SCREEN was hit? left -> back,
         // right -> forward. The divide is the viewport centre (the spine).
         if (e.clientX < window.innerWidth / 2) prev();
         else next();

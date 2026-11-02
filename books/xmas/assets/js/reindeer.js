@@ -3,9 +3,13 @@
 // can offset parts in Z for a pseudo-3D tilt/parallax effect.
 //
 // buildReindeer(cfg) -> SVG string.
-// cfg: { fur, furDark, belly, antler, nose, accessory }
+// cfg: { fur, furDark, belly, antler, nose, accessory, anim }
 //   accessory: one of 'none' | 'scarf-red' | 'scarf-green' | 'collar' | 'vest-green' | 'vest-red' | 'santa-hat'
 //   nose: 'brown' | 'red'
+//   anim: the click animation this reindeer performs (ships inside the SVG,
+//     see animStyle below). One of 'nod' (default) | 'dash' | 'comet' |
+//     'dance' | 'prance' | 'quake' | 'hop' | 'salto' | 'sweet' | 'glow'.
+//     Every picture gets one, and each reindeer's should be distinct.
 
 const PARTS = ['shadow', 'back-legs', 'body', 'belly', 'front-legs', 'accessory', 'head', 'ears', 'antlers', 'face', 'nose'];
 
@@ -166,6 +170,159 @@ function buildReindeer(cfg) {
     </g>`;
   }
 
+  // --- click animation (ships INSIDE this reindeer's SVG) -------------------
+  // Every reindeer carries its OWN one-shot animation, keyed to a distinct
+  // personality via cfg.anim (see books/xmas/pages.js). On tap the engine adds
+  // `is-playing` to each layer's <svg>; the keyframes (built via the shared
+  // buildAnim helper, uid-scoped) run once and clear on animationend. All body
+  // parts, in draw order, for whole-body moves:
+  const ALL = ['shadow','back-legs','body','belly','front-legs','accessory',
+    'head','ears','antlers','face','nose','hat'];
+  // the whole body WITHOUT the shadow — for fly-off/teleport moves where the
+  // shadow should stay grounded (and get its own track) instead of flying away.
+  const BODY_NS = ['back-legs','body','belly','front-legs','accessory',
+    'head','ears','antlers','face','nose','hat'];
+  const HEAD = ['head','ears','antlers','face','nose','hat'];
+  const BODY = ['shadow','back-legs','body','belly','front-legs','accessory'];
+
+  function animStyle() {
+    const key = cfg.anim || 'nod';
+    const SPECS = {
+      // default happy nod of the head
+      nod: { tracks: [
+        { parts: HEAD, origin: '180px 200px', timing: '.7s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}' }
+      ] },
+      // dash: BOLTS off the page to the left, then gallops back in from the
+      // right and skids to a stop. It FADES OUT while fully off-screen so the
+      // teleport from left to right is never seen (that cross-screen jump was
+      // the "blink"). Opacity hits 0 before the jump and returns after.
+      dash: { tracks: [
+        { parts: BODY_NS, origin: '180px 300px', timing: '1.2s cubic-bezier(.5,0,.3,1)',
+          keyframes: '0%{opacity:1;transform:translateX(0) rotate(0)}24%{opacity:1}30%{opacity:0;transform:translateX(-420px) rotate(-8deg)}34%{opacity:0;transform:translateX(420px) rotate(-8deg)}40%{opacity:1;transform:translateX(300px) rotate(-6deg)}70%{opacity:1;transform:translateX(24px) rotate(5deg)}100%{opacity:1;transform:translateX(0) rotate(0)}' },
+        // shadow stays on the ground, fading out while he's away
+        { parts: 'shadow', origin: '180px 330px', timing: '1.2s ease-in-out',
+          keyframes: '0%,24%{opacity:1;transform:scaleX(1)}31%,39%{opacity:0}70%{opacity:1;transform:scaleX(1.1)}100%{opacity:1;transform:scaleX(1)}' }
+      ] },
+      // comet (Comet — zooms by like a star): streaks diagonally UP-and-away
+      // off the top of the page, then swoops back down into place, scaling down
+      // as it shoots into the distance like a star. The WHOLE deer (nose
+      // included) rides this one track — the nose is NOT given a second track,
+      // because a part can only run one animation, and a separate nose rule
+      // would override this transform and leave the nose behind. It fades out
+      // while off-screen so the up/down jump isn't seen. A sparkle (fx-spark)
+      // is spawned separately for the glint.
+      comet: { tracks: [
+        { parts: BODY_NS, origin: '180px 250px', timing: '1.3s cubic-bezier(.5,0,.35,1)',
+          keyframes: '0%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}30%{opacity:1}36%{opacity:0;transform:translate(360px,-340px) rotate(20deg) scale(.26)}42%{opacity:0;transform:translate(-360px,340px) rotate(20deg) scale(.26)}50%{opacity:1;transform:translate(-120px,120px) rotate(10deg) scale(.7)}74%{opacity:1;transform:translate(18px,-12px) rotate(-6deg) scale(1.04)}100%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}' },
+        // shadow stays grounded, fading while he's streaking through the air
+        { parts: 'shadow', origin: '180px 330px', timing: '1.3s ease-in-out',
+          keyframes: '0%,30%{opacity:1;transform:scaleX(1)}37%,49%{opacity:0;transform:scaleX(.6)}74%{opacity:1;transform:scaleX(1)}100%{opacity:1}' },
+        { parts: 'fx-spark', box: 'fill-box', origin: '50% 50%', timing: '1.3s ease-out',
+          keyframes: '0%,74%,100%{opacity:0;transform:scale(.3)}82%{opacity:1;transform:scale(1)}90%{opacity:0;transform:scale(1.4)}' }
+      ] },
+      // dance: a big joyful jig — legs sway hard one way, head/antlers the
+      // other, hips rocking, with a little hop in the middle.
+      dance: { tracks: [
+        { parts: BODY, origin: '180px 322px', timing: '1.4s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(12deg) translateY(0)}45%{transform:rotate(-3deg) translateY(-14px)}70%{transform:rotate(-12deg) translateY(0)}85%{transform:rotate(5deg)}' },
+        { parts: HEAD, origin: '180px 210px', timing: '1.4s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0) translateY(0)}20%{transform:rotate(-13deg) translateY(-6px)}45%{transform:rotate(4deg) translateY(-18px)}70%{transform:rotate(13deg) translateY(-6px)}' }
+      ] },
+      // prance: a proud SINGLE front-hoof prance — the front legs lift and
+      // paw the air while the deer rears back and bobs, head held high.
+      prance: { tracks: [
+        { parts: 'front-legs', origin: '180px 270px', timing: '1.1s cubic-bezier(.4,0,.5,1)',
+          keyframes: '0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-30px) rotate(-14deg)}50%{transform:translateY(-18px) rotate(-6deg)}70%{transform:translateY(-26px) rotate(-11deg)}' },
+        { parts: ['body','belly','accessory','head','ears','antlers','face','nose','hat'],
+          origin: '180px 300px', timing: '1.1s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0) translateY(0)}30%{transform:rotate(-9deg) translateY(-6px)}60%{transform:rotate(2deg)}' }
+      ] },
+      // quake (Donner — the loudest stomp): a HEAVY double hoof-stomp that
+      // slams the whole reindeer down and shakes the ground (and the shadow)
+      // on each impact. Distinct from Prancer's airy prance.
+      quake: { tracks: [
+        { parts: ['back-legs','body','belly','front-legs','accessory','head','ears','antlers','face','nose','hat'],
+          origin: '180px 322px', timing: '1.3s cubic-bezier(.3,0,.2,1)',
+          keyframes: '0%{transform:translateY(0)}18%{transform:translateY(-28px)}30%{transform:translateY(0)}33%{transform:translateY(-2px) scaleY(.97)}40%{transform:translateY(0)}58%{transform:translateY(-24px)}70%{transform:translateY(0)}73%{transform:translateY(-2px) scaleY(.97)}80%{transform:translateY(0)}' },
+        // impact head-shake / whole-frame judder on each landing
+        { parts: HEAD, origin: '180px 200px', timing: '1.3s ease-out',
+          keyframes: '0%,18%{transform:translate(0,0) rotate(0)}30%{transform:translate(0,4px) rotate(0)}33%{transform:translate(-3px,0) rotate(-2deg)}37%{transform:translate(3px,0) rotate(2deg)}40%{transform:translate(0,0)}58%,70%{transform:translate(0,4px)}73%{transform:translate(-3px,0) rotate(-2deg)}77%{transform:translate(3px,0) rotate(2deg)}80%{transform:translate(0,0)}' },
+        // ground shadow splats wide on each stomp
+        { parts: 'shadow', origin: '180px 330px', timing: '1.3s ease-out',
+          keyframes: '0%,18%{transform:scaleX(1)}30%{transform:scaleX(1.22)}40%{transform:scaleX(1)}58%{transform:scaleX(1)}70%{transform:scaleX(1.22)}80%{transform:scaleX(1)}' },
+        // SPAWNED EFFECT: a crack cracks open across the page on the first
+        // stomp, jolts wider on the second, then fades as he settles.
+        { parts: 'fx-crack', origin: '180px 328px', timing: '1.3s ease-out',
+          keyframes: '0%,24%{opacity:0;transform:scaleX(.5)}30%{opacity:1;transform:scaleX(1)}64%{opacity:1;transform:scaleX(1)}70%{opacity:1;transform:scaleX(1.12)}85%{opacity:1}100%{opacity:0}' }
+      ] },
+      // playful: a big bouncy hop with squash-and-stretch, landing with a
+      // little wiggle — much higher than before.
+      hop: { tracks: [
+        { parts: ['back-legs','body','belly','front-legs','accessory','head','ears','antlers','face','nose','hat'],
+          origin: '180px 322px', timing: '1s cubic-bezier(.3,.7,.3,1)',
+          keyframes: '0%,100%{transform:translateY(0) scaleY(1) rotate(0)}14%{transform:translateY(4px) scaleY(.9)}48%{transform:translateY(-64px) scaleY(1.08) rotate(-6deg)}66%{transform:translateY(-40px) rotate(4deg)}84%{transform:translateY(0) scaleY(.94)}92%{transform:translateY(0) rotate(0)}' },
+        { parts: 'shadow', origin: '180px 330px', timing: '1s ease-in-out',
+          keyframes: '0%,100%{transform:scaleX(1);opacity:1}48%{transform:scaleX(.72);opacity:.5}' }
+      ] },
+      // acrobat: a big forward somersault that leaps up off the page and lands.
+      salto: { tracks: [
+        { parts: ['back-legs','body','belly','front-legs','accessory','head','ears','antlers','face','nose','hat'],
+          origin: '180px 250px', timing: '1.2s cubic-bezier(.35,.1,.3,1)',
+          keyframes: '0%{transform:translateY(0) rotate(0)}12%{transform:translateY(8px)}55%{transform:translateY(-70px) rotate(-220deg)}100%{transform:translateY(0) rotate(-360deg)}' },
+        { parts: 'shadow', origin: '180px 330px', timing: '1.2s ease-in-out',
+          keyframes: '0%,100%{transform:scaleX(1);opacity:1}55%{transform:scaleX(.7);opacity:.45}' }
+      ] },
+      // sweet: a shy head-tilt with a big heart-beat nose pulse and a bashful
+      // little sway of the body.
+      sweet: { tracks: [
+        { parts: HEAD, origin: '180px 210px', timing: '1.3s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg)}55%{transform:rotate(-9deg)}80%{transform:rotate(-13deg)}' },
+        { parts: 'nose', origin: '180px 206px', timing: '1.3s ease-in-out',
+          keyframes: '0%,100%{transform:scale(1)}35%{transform:scale(1.28)}50%{transform:scale(1.08)}65%{transform:scale(1.22)}80%{transform:scale(1.05)}' },
+        { parts: BODY, origin: '180px 322px', timing: '1.3s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0)}40%{transform:rotate(4deg)}70%{transform:rotate(-3deg)}' }
+      ] },
+      // Rudolph: the red nose blazes bright and radiant while he lifts his head
+      // proudly — a big glowing beacon beat.
+      glow: { tracks: [
+        { parts: 'nose', origin: '180px 206px', timing: '1.4s ease-in-out',
+          keyframes: '0%,100%{transform:scale(1);filter:none}30%{transform:scale(1.7);filter:drop-shadow(0 0 20px rgba(226,59,46,1))}55%{transform:scale(1.3);filter:drop-shadow(0 0 10px rgba(226,59,46,.8))}80%{transform:scale(1.55);filter:drop-shadow(0 0 16px rgba(226,59,46,.95))}' },
+        { parts: ['head','face','ears','antlers'], origin: '180px 200px', timing: '1.4s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0) translateY(0)}35%{transform:rotate(8deg) translateY(-6px)}70%{transform:rotate(5deg) translateY(-3px)}' }
+      ] }
+    };
+    return buildAnim(uid, SPECS[key] || SPECS.nod);
+  }
+
+  // Effect elements the click animation SPAWNS — not part of the resting
+  // picture. Each is its own `data-part="fx-…"` group, drawn hidden
+  // (opacity 0) and only revealed by the keyframes while `is-playing`. Only the
+  // FX for the current anim key are emitted. See the matching tracks in
+  // animStyle (e.g. `quake` reveals the ground crack on each stomp).
+  function animFX() {
+    const key = cfg.anim || 'nod';
+    if (key === 'comet') {
+      // a four-point star glint that pops near the nose as he lands
+      return `<g data-part="fx-spark" opacity="0">
+        <path d="M180 188 L184 204 L200 208 L184 212 L180 228 L176 212 L160 208 L176 204 Z"
+              fill="#FFF6CE"/>
+        <circle cx="180" cy="208" r="4" fill="#ffffff"/>
+      </g>`;
+    }
+    if (key === 'quake') {
+      // a jagged crack splitting the page under the hooves
+      return `<g data-part="fx-crack" opacity="0">
+        <path d="M120 326 L150 320 L162 330 L182 322 L206 331 L236 324 L250 330"
+              fill="none" stroke="#2A1A10" stroke-width="3.2" stroke-linecap="round"
+              stroke-linejoin="round" opacity="0.85"/>
+        <path d="M150 320 L146 334 M182 322 L186 336 M206 331 L202 342"
+              fill="none" stroke="#2A1A10" stroke-width="2.4" stroke-linecap="round"/>
+      </g>`;
+    }
+    return '';
+  }
+
   return `<svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- body volume: highlight top-left, darker lower-right rim -->
@@ -190,7 +347,9 @@ function buildReindeer(cfg) {
         <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
       </radialGradient>
     </defs>
+    ${animStyle()}
     <g data-part="shadow"><ellipse cx="180" cy="330" rx="86" ry="14" fill="rgba(0,0,0,0.12)"/></g>
+    ${animFX()}
 
     <g data-part="back-legs">
       <rect x="150" y="268" width="18" height="54" rx="9" fill="${furDark}"/>

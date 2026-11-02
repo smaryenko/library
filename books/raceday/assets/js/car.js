@@ -15,6 +15,9 @@
 //   numberColor: number ink hex                (default '#1d2330')
 //   spoiler    : 'none' | 'low' | 'tall' | 'wing'
 //   stripe     : 'none' | 'center' | 'flames'
+//   anim       : the click animation this car performs, shipped INSIDE the SVG
+//                (see animStyle below). One of 'rev' (default) | 'wheelie' |
+//                'vroom' | 'shake'. Every picture gets one.
 // Facing: 3/4 from the front-left, screen-facing, like the reindeer.
 
 const CAR_PARTS = ['shadow', 'undercarriage', 'wheel-back', 'car-body',
@@ -105,6 +108,116 @@ function buildCar(cfg) {
     </g>`;
   }
 
+  // --- click animation (ships INSIDE this car's SVG) ------------------------
+  // Every car carries its OWN one-shot animation via cfg.anim. On tap the
+  // engine adds `is-playing` to each layer's <svg>; these keyframes run once
+  // then clear on animationend. Built with the shared buildAnim helper, keyed
+  // to this car's uid so several cars on one spread never collide.
+  const CAR_ALL = ['shadow','undercarriage','wheel-back','car-body',
+    'side-stripe','cabin','window','headlight','number','wheel-front','spoiler'];
+  // the car WITHOUT its shadow — for the drive-off-the-page move so the shadow
+  // can stay grounded (own track) instead of streaking across with the body.
+  const CAR_NS = ['undercarriage','wheel-back','car-body','side-stripe',
+    'cabin','window','headlight','number','wheel-front','spoiler'];
+  function animStyle() {
+    const key = cfg.anim || 'rev';
+    // body cluster (everything that rides on the chassis) and the two wheels.
+    const BODY = ['car-body','side-stripe','cabin','window','headlight','number','spoiler','undercarriage'];
+    const WHEELS = ['wheel-front','wheel-back'];
+    // reusable exhaust-cloud tracks: three staggered puffs drifting back + up
+    // as they fade (see animFX for the spawned fx-smoke* elements). `dur` is
+    // the animation duration string so it matches the owning move.
+    const SMOKE = dur => ([
+      { parts: 'fx-smoke1', box: 'fill-box', origin: '50% 50%', timing: `${dur} ease-out`,
+        keyframes: '0%{opacity:0;transform:translate(0,0) scale(.4)}20%{opacity:.8}100%{opacity:0;transform:translate(26px,-18px) scale(1.6)}' },
+      { parts: 'fx-smoke2', box: 'fill-box', origin: '50% 50%', timing: `${dur} ease-out`,
+        keyframes: '0%,18%{opacity:0;transform:translate(0,0) scale(.4)}34%{opacity:.75}100%{opacity:0;transform:translate(34px,-26px) scale(1.7)}' },
+      { parts: 'fx-smoke3', box: 'fill-box', origin: '50% 50%', timing: `${dur} ease-out`,
+        keyframes: '0%,32%{opacity:0;transform:translate(0,0) scale(.4)}48%{opacity:.7}100%{opacity:0;transform:translate(42px,-34px) scale(1.8)}' }
+    ]);
+    const SPECS = {
+      // rev: squats hard on its back wheels — front end rears UP and bounces —
+      // while the wheels spin and the shadow stretches. A big engine-revving
+      // beat, not a tiny shudder.
+      rev: { tracks: [
+        { parts: BODY, origin: '226px 214px', timing: '1.1s cubic-bezier(.3,.8,.3,1)',
+          keyframes: '0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-16deg) translateY(-10px)}45%{transform:rotate(-6deg) translateY(-2px)}65%{transform:rotate(-13deg) translateY(-7px)}85%{transform:rotate(-3deg)}' },
+        { parts: WHEELS, box: 'fill-box', origin: '50% 50%', timing: '1.1s ease-in-out',
+          keyframes: '0%{transform:rotate(0)}100%{transform:rotate(300deg)}' },
+        { parts: 'shadow', origin: '180px 236px', timing: '1.1s ease-in-out',
+          keyframes: '0%,100%{transform:scaleX(1)}30%{transform:scaleX(1.14)}' },
+        // SPAWNED EFFECT: exhaust clouds billow from the tailpipe (see SMOKE).
+        ...SMOKE('1.1s')
+      ] },
+      // wheelie: the FRONT of the car rears UP while the REAR wheel stays
+      // planted on the ground. Pivot at the rear-wheel ground contact
+      // (~226,244) and rotate CLOCKWISE (positive) so the nose (left side)
+      // lifts and the back stays down — a proper wheelie, not a rear-lift.
+      wheelie: { tracks: [
+        { parts: CAR_ALL, origin: '226px 244px', timing: '1.3s cubic-bezier(.3,.7,.3,1)',
+          keyframes: '0%{transform:rotate(0)}40%{transform:rotate(26deg)}62%{transform:rotate(32deg)}80%{transform:rotate(29deg)}100%{transform:rotate(0)}' },
+        { parts: WHEELS, box: 'fill-box', origin: '50% 50%', timing: '1.3s linear',
+          keyframes: '0%{transform:rotate(0)}100%{transform:rotate(-520deg)}' },
+        // smoke belches as the nose lifts
+        ...SMOKE('1.3s')
+      ] },
+      // vroom: BLASTS off the page to the left, then rockets back in from the
+      // right and settles — a full drive-through, wheels spinning fast. It
+      // FADES OUT while fully off-screen so the left→right teleport is never
+      // seen (no blink), and the shadow stays grounded on its own track.
+      vroom: { tracks: [
+        { parts: CAR_NS, origin: '180px 220px', timing: '1.2s cubic-bezier(.5,0,.3,1)',
+          keyframes: '0%{opacity:1;transform:translateX(0) rotate(0)}28%{opacity:1}34%{opacity:0;transform:translateX(-460px) rotate(-6deg)}38%{opacity:0;transform:translateX(460px) rotate(-6deg)}44%{opacity:1;transform:translateX(320px) rotate(-4deg)}72%{opacity:1;transform:translateX(26px) rotate(3deg)}100%{opacity:1;transform:translateX(0) rotate(0)}' },
+        { parts: WHEELS, box: 'fill-box', origin: '50% 50%', timing: '1.2s linear',
+          keyframes: '0%{transform:rotate(0)}100%{transform:rotate(-900deg)}' },
+        { parts: 'shadow', origin: '180px 236px', timing: '1.2s ease-in-out',
+          keyframes: '0%,28%{opacity:1;transform:scaleX(1)}35%,43%{opacity:0}72%{opacity:1;transform:scaleX(1.08)}100%{opacity:1;transform:scaleX(1)}' },
+        // a cloud left behind as it blasts off the line
+        ...SMOKE('1.2s')
+      ] },
+      // shake: Rusty rattles himself to bits — the whole car judders hard and
+      // the wheels wobble, with a little hop as a bolt almost shakes loose.
+      shake: { tracks: [
+        { parts: BODY, origin: '180px 220px', timing: '.9s ease-in-out',
+          keyframes: '0%,100%{transform:translate(0,0) rotate(0)}10%{transform:translate(-6px,-2px) rotate(-3deg)}22%{transform:translate(6px,1px) rotate(3deg)}34%{transform:translate(-5px,-6px) rotate(-2deg)}46%{transform:translate(5px,0) rotate(2deg)}60%{transform:translate(-4px,-2px) rotate(-2deg)}74%{transform:translate(4px,1px) rotate(1.5deg)}88%{transform:translate(-2px,0) rotate(-1deg)}' },
+        { parts: WHEELS, box: 'fill-box', origin: '50% 50%', timing: '.9s ease-in-out',
+          keyframes: '0%,100%{transform:rotate(0)}25%{transform:rotate(-16deg)}50%{transform:rotate(14deg)}75%{transform:rotate(-10deg)}' },
+        { parts: 'shadow', origin: '180px 236px', timing: '.9s ease-in-out',
+          keyframes: '0%,100%{transform:translateX(0) scaleX(1)}30%{transform:translateX(4px) scaleX(.96)}60%{transform:translateX(-3px) scaleX(1.03)}' },
+        // SPAWNED EFFECT: a single sickly cough of smoke from the bad engine
+        { parts: 'fx-smoke1', box: 'fill-box', origin: '50% 50%', timing: '.9s ease-out',
+          keyframes: '0%,15%{opacity:0;transform:translate(0,0) scale(.5)}40%{opacity:.7;transform:translate(10px,-10px) scale(1.1)}100%{opacity:0;transform:translate(22px,-20px) scale(1.5)}' }
+      ] }
+    };
+    return buildAnim(uid, SPECS[key] || SPECS.rev);
+  }
+
+  // Effect elements the click animation SPAWNS (not part of the resting car).
+  // Exhaust/gas clouds that puff from the tailpipe when the engine works hard.
+  // Each puff is its own `data-part="fx-…"` group, hidden at rest and revealed
+  // by the keyframes while `is-playing`. rev / wheelie / vroom all blow smoke;
+  // shake (Rusty) coughs out a single sputtering cloud. Drawn behind the car.
+  function animFX() {
+    const key = cfg.anim || 'rev';
+    const puff = (cx, cy, r) =>
+      `<g>
+         <circle cx="${cx}" cy="${cy}" r="${r}" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="${cx - r * 0.5}" cy="${cy + r * 0.2}" r="${r * 0.7}" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="${cx + r * 0.4}" cy="${cy - r * 0.3}" r="${r * 0.6}" fill="#e7eaee" opacity="0.4"/>
+       </g>`;
+    if (key === 'rev' || key === 'wheelie' || key === 'vroom') {
+      // three staggered clouds billowing back from the tailpipe (rear-right)
+      return `<g data-part="fx-smoke1" opacity="0">${puff(272, 212, 13)}</g>
+              <g data-part="fx-smoke2" opacity="0">${puff(292, 206, 16)}</g>
+              <g data-part="fx-smoke3" opacity="0">${puff(312, 212, 19)}</g>`;
+    }
+    if (key === 'shake') {
+      // one sickly cough of smoke
+      return `<g data-part="fx-smoke1" opacity="0">${puff(278, 210, 15)}</g>`;
+    }
+    return '';
+  }
+
   return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- body volume: light top-left to dark lower-right -->
@@ -132,10 +245,12 @@ function buildCar(cfg) {
         <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
       </radialGradient>
     </defs>
+    ${animStyle()}
 
     <g data-part="shadow">
       <ellipse cx="180" cy="236" rx="130" ry="20" fill="rgba(0,0,0,0.14)"/>
     </g>
+    ${animFX()}
 
     <g data-part="undercarriage">
       <rect x="60" y="196" width="196" height="26" rx="12" fill="${bodyDark}"/>

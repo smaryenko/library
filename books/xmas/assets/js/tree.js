@@ -82,6 +82,26 @@ function buildTree(cfg) {
     <path d="M148 150 Q206 166 170 188 Q134 212 200 230 Q146 254 190 276 Q142 298 212 316"
           fill="none" stroke="rgba(255,248,210,0.7)" stroke-width="1.8" stroke-linecap="round"/>`;
 
+  // Click animation (ships inside the SVG): the star twinkles with a bright
+  // pulse, the lights flash, and the baubles give a little jiggle — a happy
+  // "the tree lights up" moment. Built via the shared buildAnim helper.
+  const animStyle = buildAnim(uid, { tracks: [
+    // the whole tree gives a happy shimmy from its base
+    { parts: ['tree','tree-back'], origin: '180px 330px', timing: '1.3s ease-in-out',
+      keyframes: '0%,100%{transform:rotate(0)}20%{transform:rotate(2.4deg)}50%{transform:rotate(-2deg)}75%{transform:rotate(1.2deg)}' },
+    // the star bursts bright and spins
+    { parts: 'star', origin: '180px 105px', timing: '1.3s ease-in-out',
+      keyframes: '0%,100%{transform:scale(1) rotate(0);filter:none}35%{transform:scale(1.4) rotate(26deg);filter:drop-shadow(0 0 18px rgba(255,236,150,1))}65%{transform:scale(1.14) rotate(10deg);filter:drop-shadow(0 0 8px rgba(255,236,150,.7))}' },
+    // lights twinkle in a lively rhythm
+    { parts: 'lights', origin: '180px 230px', timing: '1.3s ease-in-out',
+      keyframes: '0%,100%{opacity:1}15%{opacity:.3}30%{opacity:1}45%{opacity:.4}60%{opacity:1}80%{opacity:.5}' },
+    // baubles swing on the shimmy; the garland shifts with them
+    { parts: 'baubles', origin: '180px 230px', timing: '1.3s ease-in-out',
+      keyframes: '0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(6deg) translateY(1px)}60%{transform:rotate(-5deg) translateY(-1px)}' },
+    { parts: 'garland', origin: '180px 230px', timing: '1.3s ease-in-out',
+      keyframes: '0%,100%{transform:translateX(0)}30%{transform:translateX(3px)}65%{transform:translateX(-2px)}' }
+  ] });
+
   return `<svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="trunkGrad-${uid}" x1="0" y1="0" x2="1" y2="0">
@@ -112,6 +132,7 @@ function buildTree(cfg) {
       </linearGradient>
       ${bblGrads}
     </defs>
+    ${animStyle}
 
     <g data-part="shadow"><ellipse cx="180" cy="328" rx="92" ry="15" fill="rgba(0,0,0,0.16)"/></g>
 

@@ -150,6 +150,16 @@
       carAway(carD,  0.26, '#e0b24a', '#b98a2c') +   // Rusty
       carAway(carD,  0.78, '#5aa469', '#3f7d4e');    // Jade
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // all four cars rev hard and strain forward on the line — bouncing on
+        // their suspension and lunging up the track, then snapping back as if
+        // held at the start, over and over.
+        { parts: 'car', box: 'fill-box', origin: '50% 100%', timing: '1.1s ease-in-out',
+          keyframes: '0%,100%{transform:translateY(0) scaleY(1)}20%{transform:translateY(-10px) scaleY(1.02)}38%{transform:translateY(-2px) scaleY(.99)}58%{transform:translateY(-12px) scaleY(1.03)}78%{transform:translateY(-3px)}' },
+        // the pennant bunting swings and ripples overhead
+        { parts: 'bunting', origin: '180px 56px', timing: '1.1s ease-in-out',
+          keyframes: '0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(4px) rotate(-1.2deg)}65%{transform:translateY(-2px) rotate(1deg)}' }
+      ])}
       <g data-part="prop-base">
         ${floorBase('#efe7d8', '#e7d3b1', '#d3b98d')}
       </g>
@@ -180,6 +190,13 @@
                      fill="#c9b79a" opacity="0.7"/>`;
     })();
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // the car weaves down the hall then ZOOMS away up the straight —
+        // shrinking into the distance and off the far end of the page — then
+        // comes roaring back to the viewer. Travels the whole hallway.
+        { parts: 'car', box: 'fill-box', origin: '50% 60%', timing: '1.6s cubic-bezier(.5,0,.4,1)',
+          keyframes: '0%{transform:translate(0,0) rotate(0) scale(1)}18%{transform:translate(-30px,0) rotate(-9deg) scale(.96)}34%{transform:translate(30px,0) rotate(9deg) scale(.9)}60%{transform:translate(0,-150px) rotate(0) scale(.28)}72%{transform:translate(0,-150px) rotate(0) scale(.28)}100%{transform:translate(0,0) rotate(0) scale(1)}' }
+      ])}
       <g data-part="prop-base">
         ${floorBase('#efe7d8', '#e7d3b1', '#d3b98d')}
         ${runner}
@@ -224,6 +241,13 @@
   // a stack of books, the car cresting it. Not a floor-recession scene.
   function buildRamp() {
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // the car (facing down-ramp) noses over the crest and rolls down to
+        // the floor, hangs a beat at the bottom, then climbs back up to the
+        // top. A big trip across the whole ramp, not a short slide.
+        { parts: 'car', box: 'fill-box', origin: '50% 50%', timing: '1.5s cubic-bezier(.45,0,.4,1)',
+          keyframes: '0%{transform:translate(0,0) rotate(0)}12%{transform:translate(2px,-6px) rotate(4deg)}55%{transform:translate(132px,108px) rotate(4deg)}70%{transform:translate(132px,108px) rotate(4deg)}100%{transform:translate(0,0) rotate(0)}' }
+      ])}
       <g data-part="prop-base">
         <ellipse cx="180" cy="262" rx="150" ry="20" fill="rgba(0,0,0,0.10)"/>
         <!-- stacked books forming the ramp support -->
@@ -250,7 +274,11 @@
         <path d="M96 150 q40 6 70 34 q30 28 108 84 l-4 -5 q-80 -55 -106 -81
                  q-26 -24 -60 -34 z" fill="${TRACK_LT}" opacity="0.7"/>
       </g>
-      ${carLayer('<g transform="rotate(32 150 150)">' +
+      ${carLayer(
+        // Mirror the car HORIZONTALLY about its own centre (x=150) so it faces
+        // the opposite direction, then the ramp rotation tips that nose down
+        // the slope — the car points down-ramp (facing down), not upside-down.
+        '<g transform="rotate(32 150 150) translate(300 0) scale(-1 1)">' +
         miniCarSide(150, 150, 0.6, '#e23b2e', '#b2271c') + '</g>')}
     </svg>`;
   }
@@ -292,6 +320,13 @@
       }
     }
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // the car SLIPS wildly on the slick tiles: skates right across the
+        // whole floor while spinning a full 360, slides back, and fishtails to
+        // a stop. A big, funny loss of grip across the page.
+        { parts: 'car', box: 'fill-box', origin: '50% 55%', timing: '1.7s cubic-bezier(.3,.5,.3,1)',
+          keyframes: '0%{transform:translate(0,0) rotate(0)}30%{transform:translate(120px,-10px) rotate(220deg)}50%{transform:translate(90px,6px) rotate(360deg)}70%{transform:translate(-40px,-4px) rotate(300deg)}85%{transform:translate(10px,2px) rotate(372deg)}100%{transform:translate(0,0) rotate(360deg)}' }
+      ])}
       <g data-part="prop-base">
         ${floorBase('#efe7d8', '#e7d3b1', '#d3b98d')}
       </g>
@@ -404,6 +439,17 @@
           <stop offset="100%" stop-color="#cfc4b0"/>
         </radialGradient>
       </defs>
+      ${sceneAnim([
+        // the car bogs into the shaggy pile and HEAVES across it — big lurches,
+        // the nose pitching up and down as it fights for grip, hauling itself
+        // from one side of the rug to the other and back.
+        { parts: 'car', box: 'fill-box', origin: '50% 100%', timing: '1.8s ease-in-out',
+          keyframes: '0%{transform:translate(0,0) rotate(0)}15%{transform:translate(-18px,-14px) rotate(-9deg)}30%{transform:translate(-30px,6px) rotate(4deg)}50%{transform:translate(-8px,-12px) rotate(-7deg)}68%{transform:translate(24px,6px) rotate(6deg)}84%{transform:translate(10px,-8px) rotate(-3deg)}100%{transform:translate(0,0) rotate(0)}' },
+        // the whole shaggy rug ripples and springs under the car's weight (the
+        // road layer holds the rug body + all the pile strands + fringe).
+        { parts: 'road', origin: '180px 276px', timing: '1.8s ease-in-out',
+          keyframes: '0%,100%{transform:scaleY(1) translateX(0)}20%{transform:scaleY(.97) translateX(-3px)}45%{transform:scaleY(1.03) translateX(3px)}70%{transform:scaleY(.98) translateX(-2px)}' }
+      ])}
       <g data-part="prop-base">
         ${floorBase('#efe7d8', '#d9bd92', '#c7a677')}
         <!-- soft contact shadow so the rug sits on the floor -->
@@ -484,6 +530,14 @@
   // rings) rising off a grey launcher base, with a car near the top of the ring.
   function buildLoop() {
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // the car charges in, then races TWO full laps around the loop —
+        // accelerating up and over — before settling. It orbits the loop
+        // centre (186,128) in the SVG's own coordinate space, so use the
+        // view-box transform-box with that point as the origin.
+        { parts: 'car', box: 'view-box', origin: '186px 128px', timing: '1.8s cubic-bezier(.4,0,.5,1)',
+          keyframes: '0%{transform:rotate(0)}12%{transform:rotate(0)}100%{transform:rotate(720deg)}' }
+      ])}
       <g data-part="prop-base">
         <ellipse cx="180" cy="276" rx="140" ry="16" fill="rgba(0,0,0,0.10)"/>
         <!-- grey launcher base -->
@@ -516,6 +570,18 @@
     // the finish line lies ACROSS the track at depth d=0.5
     const fin = perspChecker(0.44, 0.56, 0.5, 0.42, 12);
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // both cars surge up the track and BURST across the finish line
+        // together, dipping as they cross — then roll back to the start. A
+        // proper dash to the line, not a tiny hop.
+        { parts: 'car', box: 'fill-box', origin: '50% 50%', timing: '1.4s cubic-bezier(.4,0,.3,1)',
+          keyframes: '0%{transform:translate(0,0) scale(1)}45%{transform:translate(0,-96px) scale(.6)}58%{transform:translate(0,-96px) scale(.6)}100%{transform:translate(0,0) scale(1)}' },
+        // the checkered finish line flashes as they cross
+        { parts: 'finish-line', origin: '180px 150px', timing: '1.4s ease-in-out',
+          keyframes: '0%,38%,100%{transform:scale(1);filter:none}48%{transform:scale(1.06);filter:brightness(1.6)}60%{transform:scale(1)}' },
+        { parts: 'bunting', origin: '180px 56px', timing: '1.4s ease-in-out',
+          keyframes: '0%,100%{transform:translateY(0) rotate(0)}40%{transform:translateY(4px) rotate(-1.2deg)}70%{transform:translateY(-2px) rotate(1deg)}' }
+      ])}
       <g data-part="road">
         ${floorBase('#efe7d8', '#e7d3b1', '#d3b98d')}
         <!-- dark asphalt track running away -->
@@ -545,6 +611,18 @@
   // trophy, and the bunting overhead.
   function buildPodium() {
     return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+      ${sceneAnim([
+        // the two winners hop and cheer on the shared podium step — big happy
+        // bounces with a little wiggle.
+        { parts: 'car', box: 'fill-box', origin: '50% 100%', timing: '1.3s cubic-bezier(.3,.7,.3,1)',
+          keyframes: '0%,100%{transform:translateY(0) rotate(0)}20%{transform:translateY(-26px) rotate(-3deg)}40%{transform:translateY(0) rotate(0)}60%{transform:translateY(-20px) rotate(3deg)}80%{transform:translateY(0)}' },
+        // the trophy is hoisted up high and sparkles with pride.
+        { parts: 'trophy', box: 'fill-box', origin: '50% 100%', timing: '1.3s ease-in-out',
+          keyframes: '0%,100%{transform:translateY(0) scale(1) rotate(0);filter:none}35%{transform:translateY(-16px) scale(1.3) rotate(-8deg);filter:drop-shadow(0 0 12px rgba(243,198,75,.95))}60%{transform:translateY(-8px) scale(1.12) rotate(6deg)}' },
+        // bunting streams and ripples across the top in celebration.
+        { parts: 'bunting', origin: '180px 56px', timing: '1.3s ease-in-out',
+          keyframes: '0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(5px) rotate(-1.6deg)}65%{transform:translateY(-3px) rotate(1.4deg)}' }
+      ])}
       <g data-part="road">
         <rect x="40" y="206" width="280" height="64" rx="6" fill="#3b4049"/>
         ${checkerBand(60, 206, 240, 18, 10)}
@@ -631,6 +709,17 @@
   // wrap inline car markup as the `car` depth layer
   function carLayer(inner) {
     return `<g data-part="car">${inner}</g>`;
+  }
+
+  // Each track scene ships its OWN one-shot click animation inside its SVG
+  // (like the cars/reindeer do). This thin wrapper hands buildAnim a fresh uid
+  // so two scenes never share keyframe names, and no-ops gracefully if the
+  // shared helper isn't present. Scenes call sceneAnim([...tracks]) and drop
+  // the result right after their opening <svg ...> tag.
+  function sceneAnim(tracks) {
+    if (typeof buildAnim !== 'function') return '';
+    const uid = 'p' + Math.random().toString(36).slice(2, 8);
+    return buildAnim(uid, { tracks });
   }
 
   window.buildStartGrid = buildStartGrid;

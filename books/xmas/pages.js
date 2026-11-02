@@ -41,58 +41,68 @@
       right: { bodyHtml: '<span class="hl">Santa</span> needs his <span class="hl">nine reindeer</span>.' }
     },
     {
+      // Dasher — super speedy: a quick forward lunge off the line.
       title: 'Dasher', body: 'is super speedy!',
       build: deer({ fur: '#A9743B', furDark: '#8A5A28', belly: '#E9CBA0',
         antlerStyle: 'wide', antlerColor: '#7a4a2b',
-        nose: 'brown', accessory: 'scarf-ice' })
+        nose: 'brown', accessory: 'scarf-ice', anim: 'dash' })
     },
     {
+      // Dancer — sways side to side, head bobbing.
       title: 'Dancer', body: 'loves to dance.',
       build: deer({ fur: '#C08A4E', furDark: '#9C6C34', belly: '#F0D6AE',
         antlerStyle: 'tall', antlerColor: '#8a5a33',
-        nose: 'brown', accessory: 'scarf-plum' })
+        nose: 'brown', accessory: 'scarf-plum', anim: 'dance' })
     },
     {
+      // Prancer — a proud, airy front-hoof prance (pawing the air).
       title: 'Prancer', body: 'prances about.',
       build: deer({ fur: '#8C6239', furDark: '#6E4A26', belly: '#E4C49A',
         antlerStyle: 'bushy', antlerColor: '#5f3c22',
-        nose: 'brown', accessory: 'scarf-pine' })
+        nose: 'brown', accessory: 'scarf-pine', anim: 'prance' })
     },
     {
+      // Vixen — playful: a bouncy little hop + wiggle.
       title: 'Vixen', body: 'is playful.',
       build: deer({ fur: '#CDA06A', furDark: '#A67C45', belly: '#F3DEBD',
         antlerStyle: 'bushy', antlerColor: '#8a5a33',
-        nose: 'brown', accessory: 'collar' })
+        nose: 'brown', accessory: 'collar', anim: 'hop' })
     },
     {
+      // Comet — zooms by like a star: streaks up-and-away and swoops back.
       title: 'Comet', body: 'zooms by like a star.',
       build: deer({ fur: '#9A9FA8', furDark: '#767C86', belly: '#E6E9EF',
         antlerStyle: 'tall', antlerColor: '#6b7079',
-        nose: 'brown', accessory: 'scarf-gold' })
+        nose: 'brown', accessory: 'scarf-gold', anim: 'comet' })
     },
     {
+      // Cupid — the sweetest: shy head-tilt with a heart-beat nose pulse.
       title: 'Cupid', body: 'is the sweetest.',
       build: deer({ fur: '#B06A52', furDark: '#8C4F3C', belly: '#F2D2C0',
         antlerStyle: 'wide', antlerColor: '#7a4030',
-        nose: 'brown', accessory: 'scarf-red' })
+        nose: 'brown', accessory: 'scarf-red', anim: 'sweet' })
     },
     {
+      // Donner — the loudest stomp: a heavy double hoof-stomp that shakes the
+      // ground (distinct from Prancer's airy prance).
       title: 'Donner', body: 'has the loudest stomp.',
       build: deer({ fur: '#6E4A2E', furDark: '#543825', belly: '#D8BB92',
         antlerStyle: 'bushy', antlerColor: '#4a301e',
-        nose: 'brown', accessory: 'santa-hat' })
+        nose: 'brown', accessory: 'santa-hat', anim: 'quake' })
     },
     {
+      // Blitzen — quick as light: an acrobatic forward salto.
       title: 'Blitzen', body: 'is quick as light.',
       build: deer({ fur: '#7C8796', furDark: '#5C6676', belly: '#DCE2EA',
         antlerStyle: 'tall', antlerColor: '#565f6b',
-        nose: 'brown', accessory: 'collar' })
+        nose: 'brown', accessory: 'collar', anim: 'salto' })
     },
     {
+      // Rudolph — his shiny red nose pulses bright.
       title: 'Rudolph', body: 'has a shiny red nose.',
       build: deer({ fur: '#A9743B', furDark: '#8A5A28', belly: '#E9CBA0',
         antlerStyle: 'wide', antlerColor: '#7a4a2b',
-        nose: 'red', accessory: 'scarf-red' })
+        nose: 'red', accessory: 'scarf-red', anim: 'glow' })
     },
     {
       title: 'Merry Christmas!', body: '',

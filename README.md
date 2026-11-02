@@ -3,21 +3,30 @@
 A small, dependency-free web toy: a **shelf of storybooks**. The landing page
 shows a grid of cards, one per book; open a book and it becomes an open
 storybook lying flat in perspective. You page through it, and on each spread a
-flat-cartoon character is drawn entirely in SVG and pops off the page with a
-layered parallax "pseudo-3D" tilt. No WebGL, no build step, no libraries.
+detailed, kid-friendly character is drawn entirely in SVG and pops off the page
+with a layered parallax "pseudo-3D" tilt. **Tap a character and it plays its own
+little animation.** No WebGL, no build step, no libraries.
 
-The first book is **xmas** (Christmas): a Christmas tree, Santa in his sleigh,
-an elf, the nine reindeer, and a cozy fireplace.
+> **Art direction:** pictures are **detailed & believable but kid-friendly** —
+> warm and a touch stylised, yet richly drawn with real volume, materials, and
+> faces that have real structure. Not stark photorealism, and never flat,
+> under-detailed placeholder art (no one-rectangle rug, no two-dot face). See
+> [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
 
-> **Status: restructuring.** The project is moving from a single Christmas toy
-> to a multi-book `stories` shelf. The engine, controls, and generic music
-> player are shared; each book owns its folder (page roster, backdrop, character
-> art, favicon, og image, cover, audio). The shelf landing page and the
-> `books/xmas/` scaffold exist; the content migration is tracked in
-> `.kiro/TODO.md` ("Restructure to stories"). Until it lands, the live site
-> still runs from the original flat layout described under "How it works".
+Two books ship today:
 
-## Project layout (target)
+- **xmas** (Christmas): a Christmas tree, Santa in his sleigh, an elf, the nine
+  reindeer, and a cozy fireplace.
+- **raceday**: four toy cars (Turbo, Bolt, Rusty, Jade) racing one lap around a
+  living room — a start grid, the hallway, a book-stack ramp, the kitchen
+  tiles, a shaggy rug, a loop-the-loop, and a friendly tie finish.
+
+The multi-book `stories` shelf is in place: the engine, controls, and generic
+music player are shared, and each book owns its folder (page roster, backdrop,
+character art, favicon, og image, cover, audio). Adding another book needs no
+engine changes.
+
+## Project layout
 
 ```
 stories/
@@ -26,11 +35,14 @@ stories/
     favicon.svg, og.svg       shelf icon (a bookshelf) + shelf social image
     css/  shelf.css, book.css
     js/   stories.js (manifest), shelf.js, storybook.js,
-          pseudo3d-object.js, boot.js, music.js
+          pseudo3d-object.js, anim.js, boot.js, music.js
   books/
     xmas/
-      index.html, pages.js, backdrop.js, favicon.svg, og.svg, cover.svg
-      assets/ js/{reindeer,tree,santa,elf,fireplace}.js  audio/*.mp3
+      index.html, pages.js, favicon.svg, og.svg, cover.svg
+      assets/ js/{backdrop,reindeer,tree,santa,elf,fireplace}.js  audio/*.mp3
+    raceday/
+      index.html, pages.js, favicon.svg, og.svg, cover.svg
+      assets/ js/{backdrop,car,props}.js  audio/*.mp3
   skills/                      committed authoring guides (NOT gitignored)
 ```
 
@@ -64,26 +76,34 @@ python3 -m http.server 8777
 - **Tilt:** hover the pointer over a character — each part (antlers, nose,
   face, body, shadow, …) floats at a different depth, so it reads as a shallow
   3D object. With no pointer it keeps a gentle idle sway.
-- **Music:** the button in the bottom-right toggles a looping "Carol of the
-  Bells". It's off by default and starts on your click.
+- **Tap to animate:** click/tap the pop-up character and it plays its own
+  one-shot animation (the dancer dances, a car pops a wheelie, the loop car
+  laps the loop, Rudolph's nose glows). Tapping anywhere else turns the page.
+- **Music:** the top-right button toggles the book's looping track (xmas plays
+  "Carol of the Bells"; raceday has its own). It's off by default and starts on
+  your click; a book with no track shows no button.
 
-## The story (14 pages)
+## The stories
 
-Christmas tree → Santa → Elf → a short text-only interlude → the nine reindeer
-(Dasher … Rudolph) → a "Merry Christmas!" fireplace finale. Each spread shows
-one character on one page and its line of text on the other; the image/text
-side alternates as you turn.
+- **xmas (14 pages):** Christmas tree → Santa → Elf → a text-only interlude →
+  the nine reindeer (Dasher … Rudolph) → a "Merry Christmas!" fireplace finale.
+- **raceday (14 pages):** the starting grid → the four racers (Turbo, Bolt,
+  Rusty, Jade) → a "GO!" interlude → the hallway, ramp, kitchen, shaggy carpet,
+  and loop → a neck-and-neck interlude → a photo-finish tie where everybody wins.
+
+Each spread shows one object on one page and its line of text on the other; the
+image/text side alternates as you turn.
 
 ## How it works
 
 The shared engine is content-agnostic; each book supplies its own content.
 
-- **Shelf (the library)** — `index.html` is a warm wooden bookcase: each book
-  stands on a shelf plank as a "book" card (cover art + a kid-friendly title and
-  blurb). `assets/js/stories.js` is the manifest (one entry per book: title,
+- **Shelf (the library)** — `index.html` is a responsive grid of story cards
+  (cover art + a kid-friendly title and blurb) over a soft dark mesh-gradient
+  background. `assets/js/stories.js` is the manifest (one entry per book: title,
   cover, favicon, og, theme, backdrop fn, track); `assets/js/shelf.js` renders
-  the books into the bookcase; `assets/css/shelf.css` styles the wood, planks,
-  and books. Each book links to `books/<id>/`.
+  the cards; `assets/css/shelf.css` styles the grid and background. Each card
+  links to `books/<id>/`.
 - **Book page** — `books/<id>/index.html` loads the shared engine plus that
   book's content and boots via `assets/js/boot.js`. A top-left "Library" button
   (styled by `book.css`) returns to the shelf. Boot resolves the book from the
@@ -92,7 +112,16 @@ The shared engine is content-agnostic; each book supplies its own content.
 - **Pseudo-3D** — `assets/js/pseudo3d-object.js` `mountObject(host, svg)` splits
   any `data-part` SVG into one DOM layer per part, assigns each a Z depth
   (`OBJ_DEPTH`), and on tilt rotates the stack while shifting each layer by its
-  depth (parallax).
+  depth (parallax). It also exposes `play()`, which the engine calls on an image
+  tap to run that object's embedded one-shot animation.
+- **Click animation** — every object ships its OWN short animation inside its
+  SVG (no central/global keyframes). Builders author it with the shared
+  `assets/js/anim.js` helper (`buildAnim(uid, { tracks })`), which returns a
+  scoped `<style>` block; the engine toggles an `is-playing` class per layer on
+  tap and clears it when the motion ends. Animations can also **spawn
+  effect-only elements** (`data-part="fx-…"`, hidden at rest) — a ground crack
+  under a stomp, exhaust clouds from a revving car, a sparkle burst. See
+  [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
 - **Engine + flow** — `assets/js/storybook.js` builds the open-book stage, the
   page-turn flip, all the navigation inputs, the content swap, the idle motion,
   the page nav bar, and the music button. It renders `window.BOOK_PAGES` — the
@@ -137,15 +166,23 @@ The shared engine is content-agnostic; each book supplies its own content.
 - [x] Multi-book shelf: card grid landing page driven by a manifest
 - [x] Shared, content-agnostic engine (stage, flip, nav, tilt, idle sway, music)
 - [x] Per-book folders: roster, backdrop, character art, favicon, cover, track
-- [x] xmas book: tree, Santa, elf, fireplace + the nine distinct reindeer
-- [x] Winter backdrop with Christmas lights and animated snow
-- [x] Generic looping-music player (off by default), per-book track
-- [x] Shelf + per-book favicons (bookshelf shelf icon), reduced-motion support
-- [x] OG/social images for the shelf and the xmas book (SVG)
+- [x] **Two books live:** xmas (tree, Santa, elf, fireplace + the nine distinct
+      reindeer) and raceday (four toy cars + the track scenes around one lap)
+- [x] Tap-to-animate: every picture plays its own one-shot click animation,
+      authored via the shared `anim.js` / `buildAnim` helper — distinct per
+      character, rich and full-page (objects can drive/leap off the page and
+      back)
+- [x] Animations can **spawn effect-only elements** (`fx-*`: a ground crack
+      under a stomp, exhaust clouds from a revving car, a sparkle) — hidden at
+      rest, shown only while playing
+- [x] Art direction: detailed & believable, kid-friendly (never flat/minimal);
+      documented in `skills/`
+- [x] Winter backdrop with Christmas lights and animated snow (xmas); per-book
+      backdrops + looping music track (off by default)
+- [x] Shelf + per-book favicons, OG/social images (SVG), reduced-motion support
 - [ ] Raster `og.png` exports (broadest social-scraper support)
-- [ ] A second book (to exercise the shelf with more than one entry)
+- [ ] More books (the shelf is built for many; two exist today)
 - [ ] Custom festive font (currently the system stack)
-- [ ] Optional character pose variation
 
 ## License / assets
 

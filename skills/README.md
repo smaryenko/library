@@ -17,10 +17,25 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `book-authoring.md` — how to add a new book to the shelf: folder layout,
   manifest entry, per-book assets (favicon, og image, cover), and page roster.
 - `svg-character-authoring.md` — conventions for drawing original vector
-  characters (flat-cartoon style, `data-part` grouping, gradients, no traced
-  stock art).
+  characters (**detailed & believable, kid-friendly — never flat/minimal**,
+  `data-part` grouping, layered gradients/shading, the required per-object click
+  animation, no traced stock art).
 - `asset-licensing.md` — reference-vs-shipped rules; keeping stock art out of
   the repo and redrawing everything as original vector.
+
+## Project-wide preferences (apply to all visual work)
+
+- **Detailed & believable, kid-friendly — never flat or under-detailed.** Art
+  may stay warm and a little stylised for children, but it must have the detail
+  and shading of a real illustration: believable form, materials, lighting, and
+  faces with real structure. The thing to avoid is placeholder-flat art (a
+  one-rectangle rug, a two-dot face) — push toward realistic detail.
+- **Every picture ships its own one-shot click animation**, embedded in the
+  object's SVG via the shared `buildAnim` helper (`assets/js/anim.js`). Tapping
+  a pop-up image plays it; no shared or global animations. Make it rich and
+  full-page, and feel free to **spawn effect-only elements** for the beat (a
+  ground crack, exhaust clouds, a sparkle) — drawn as `fx-*` parts hidden at
+  rest and revealed only while playing.
 
 ## How to use a skill
 

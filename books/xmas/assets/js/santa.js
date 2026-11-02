@@ -76,6 +76,22 @@ function buildSanta() {
         <stop offset="100%" stop-color="${REDD}"/>
       </radialGradient>
     </defs>
+    ${buildAnim(uid, { tracks: [
+      // a big jolly wave: the arm (mitten) swings way up and back
+      { parts: 'santa-arm', origin: '206px 198px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}22%{transform:rotate(-46deg)}45%{transform:rotate(-30deg)}68%{transform:rotate(-44deg)}85%{transform:rotate(-20deg)}' },
+      // head + hat give a hearty "ho ho ho" belly-laugh bob
+      { parts: ['santa-head','santa-face','santa-hat'], origin: '182px 150px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-7px) rotate(-6deg)}50%{transform:translateY(-1px) rotate(4deg)}75%{transform:translateY(-5px) rotate(-3deg)}' },
+      // the body shakes with laughter
+      { parts: 'santa-body', origin: '182px 240px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0) translateY(0)}25%{transform:rotate(-2deg) translateY(-2px)}50%{transform:rotate(1.5deg)}75%{transform:rotate(-1deg)}' },
+      // the whole sleigh rocks gently on its runners, gifts jostling
+      { parts: ['sleigh','sleigh-back','runners'], origin: '180px 322px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}30%{transform:rotate(-2.4deg)}65%{transform:rotate(1.8deg)}' },
+      { parts: 'gifts', origin: '268px 190px', timing: '1.3s ease-in-out',
+        keyframes: '0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-3px) rotate(-3deg)}60%{transform:translateY(0) rotate(2deg)}' }
+    ] })}
 
     <g data-part="shadow"><ellipse cx="180" cy="326" rx="128" ry="16" fill="rgba(0,0,0,0.16)"/></g>
 
