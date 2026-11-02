@@ -13,78 +13,231 @@ html, body {
 }
 
 body {
-  background: linear-gradient(180deg, #0a1b3a 0%, #122a52 50%, #1c3a66 100%);
-  color: #eaf2ff;
-  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  padding: clamp(24px, 5vw, 64px);
+  /* Modern, understated base: a near-dark indigo wash. The colour and life
+     come from soft blurred gradient orbs layered on top (.shelf-glow), not
+     from literal illustration. Theme-neutral, calm, contemporary. */
+  background: #0e1222;
+  color: #eef1f8;
+  font: 16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  /* Fit the whole shelf (header + grid) within one viewport so a full 4x2 set
+     of books is visible without scrolling. The page is a vertical flex column:
+     header takes its natural height, the grid takes the rest. */
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: clamp(18px, 3.5vh, 44px) clamp(20px, 5vw, 64px);
 }
 
+/* ---- Page background: a soft mesh-gradient (a few large, heavily-blurred
+   colour orbs) over the dark base, plus a fine noise grain so the gradients
+   don't band. Clean and modern — no illustrated scene. --------------------- */
+.shelf-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+/* the colour: three big blurred orbs that bleed together like a mesh gradient.
+   Muted, modern palette (violet / teal / rose). Drifts very slowly. */
+.shelf-glow {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(38vw 38vw at 18% 20%, rgba(124, 92, 255, 0.55) 0%, rgba(124,92,255,0) 60%),
+    radial-gradient(42vw 42vw at 82% 28%, rgba(42, 196, 210, 0.42) 0%, rgba(42,196,210,0) 62%),
+    radial-gradient(46vw 46vw at 62% 95%, rgba(255, 94, 140, 0.40) 0%, rgba(255,94,140,0) 60%),
+    radial-gradient(40vw 40vw at 8% 92%, rgba(60, 120, 255, 0.35) 0%, rgba(60,120,255,0) 62%);
+  filter: blur(40px);
+  animation: mesh-drift 24s ease-in-out infinite alternate;
+}
+/* a vignette to darken the edges so content in the centre reads cleanly */
+.shelf-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(120% 90% at 50% 40%, rgba(14,18,34,0) 40%, rgba(14,18,34,0.7) 100%);
+}
+/* fine film grain: a tiny repeating SVG noise tile at low opacity. Breaks up
+   gradient banding and gives the surface a modern, textured finish. */
+.shelf-stars {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+@keyframes mesh-drift {
+  from { transform: translate3d(-2%, -1%, 0) scale(1.02); }
+  to   { transform: translate3d(2%, 2%, 0) scale(1.08); }
+}
+
+/* content sits above the decorative background */
+.shelf-header,
+#shelf { position: relative; z-index: 1; }
+
+/* header: natural height, won't shrink; the grid below gets the rest */
 .shelf-header {
+  flex: 0 0 auto;
   max-width: 1100px;
-  margin: 0 auto clamp(24px, 4vw, 48px);
+  margin: 0 auto clamp(16px, 3vh, 36px);
   text-align: center;
 }
+/* #shelf takes the remaining viewport height. The grid is anchored to the TOP
+   (not vertically centred) so the first card sits at the top-left corner and a
+   partially-filled grid fills from the top down, not from the middle out. */
+#shelf {
+  flex: 1 1 auto;
+  min-height: 0;        /* allow the grid to shrink inside the flex column */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+/* Pill badge: a quiet glass chip — thin border, faint translucent fill. */
+.shelf-badge {
+  display: inline-block;
+  margin-bottom: 18px;
+  padding: 7px 16px;
+  font-size: clamp(11px, 1.5vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c7cded;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+/* Title: clean, bright, tight — a crisp near-white with heavy weight and a
+   negative tracking that reads modern. High contrast on the dark background. */
 .shelf-header h1 {
-  margin: 0 0 8px;
-  font-size: clamp(28px, 5vw, 48px);
-  letter-spacing: 0.01em;
+  margin: 0 0 10px;
+  /* cap against viewport HEIGHT too, so the title can't dominate a short,
+     wide screen and crowd the 4x2 grid out of view. */
+  font-size: clamp(30px, min(6vw, 8vh), 64px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+  color: #f6f8ff;
 }
 .shelf-header p {
-  margin: 0;
-  opacity: 0.8;
+  margin: 0 auto;
+  max-width: 48ch;
+  font-size: clamp(14px, min(2vw, 2.4vh), 18px);
+  font-weight: 400;
+  color: #aeb6d6;
+}
+.shelf-badge { margin-bottom: clamp(10px, 2vh, 18px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .shelf-glow { animation: none; }
 }
 
-/* responsive card grid */
+/* Card grid — sized to fit a full 4 x 2 set of books within the viewport, no
+   scrolling. Four equal columns, two equal rows that share whatever height
+   #shelf leaves below the header. Cards stretch to fill their cell, so 8 books
+   always fit on one screen. (With fewer than 8 books the rows/columns simply
+   hold fewer cards; the last row collapses to the content it has.) */
 .shelf-grid {
-  max-width: 1100px;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: clamp(16px, 3vw, 28px);
+  grid-template-columns: repeat(4, 1fr);
+  /* Rows share the available height equally (so a full 4x2 fits), but a row is
+     capped so one or two cards don't balloon to fill the whole viewport — they
+     keep a normal card height and sit at the top-left. */
+  grid-auto-rows: minmax(0, clamp(220px, 40vh, 340px));
+  gap: clamp(14px, 2vw, 24px);
+  /* never taller than the space #shelf gives us */
+  max-height: 100%;
 }
 
 .story-card {
   display: flex;
   flex-direction: column;
   text-decoration: none;
-  color: inherit;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
+  color: #eef1f8;
+  min-height: 0;                    /* allow the card to shrink to its cell */
+  /* dark glass card: a faint translucent fill over the mesh background with a
+     hairline border, so the grid reads as modern frosted panels, not opaque
+     white boxes. */
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 16px;
   overflow: hidden;
-  transition: transform 160ms ease, box-shadow 160ms ease,
-    border-color 160ms ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  transition: transform 200ms ease, box-shadow 200ms ease,
+    border-color 200ms ease, background 200ms ease;
 }
 .story-card:hover,
 .story-card:focus-visible {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.5);
   outline: none;
 }
 
-/* the rectangular preview */
+/* the preview fills the card above the meta strip, flexing with the row height
+   instead of forcing a fixed aspect ratio (which would overflow a short row). */
 .story-card .cover {
-  aspect-ratio: 4 / 3;
+  flex: 1 1 auto;
   width: 100%;
+  min-height: 0;
   object-fit: cover;
-  background: #0d2148;
+  background: #1a2140;
   display: block;
 }
 
 .story-card .meta {
-  padding: 14px 16px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex: 0 0 auto;
+  padding: 12px 16px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 .story-card .meta .name {
-  margin: 0 0 4px;
-  font-size: 1.15rem;
+  margin: 0 0 5px;
+  font-size: 1.12rem;
   font-weight: 650;
+  letter-spacing: -0.01em;
+  color: #f4f6ff;
 }
 .story-card .meta .blurb {
   margin: 0;
-  font-size: 0.9rem;
-  opacity: 0.75;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: #a7aed0;
+}
+
+/* ---- Responsive columns --------------------------------------------------
+   The 4x2 one-screen layout is for comfortable desktop/tablet widths. On
+   smaller screens, drop columns and let the shelf scroll normally so cards
+   never get too cramped to read or tap. */
+@media (max-width: 1024px) {
+  .shelf-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 760px) {
+  /* release the one-screen height lock — allow normal vertical scrolling */
+  html, body { height: auto; }
+  body { min-height: 100vh; display: block; }
+  #shelf { display: block; }
+  .shelf-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: auto;
+    max-height: none;
+  }
+  .story-card .cover { aspect-ratio: 4 / 3; flex: 0 0 auto; }
+}
+@media (max-width: 460px) {
+  .shelf-grid { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

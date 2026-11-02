@@ -37,6 +37,16 @@ const OBJ_DEPTH = {
   glow: 6, mantel: 20, stockings: 34,
   // fireplace reuses shared keys: shadow -60, garland 24, gifts 10
 
+  // raceday — toy car parts: shadow back (reuses shared `shadow`), wheels and
+  // undercarriage low, body mid, cabin/windows/number forward, spoiler highest.
+  undercarriage: -20, 'wheel-back': -12, 'car-body': 0, 'side-stripe': 8,
+  cabin: 16, window: 20, headlight: 24, number: 26, spoiler: 40,
+
+  // raceday — track props: base/ground back, road mid, kerbs + car forward,
+  // signage/finish banner highest.
+  'prop-base': -40, road: -10, ramp: 0, loop: 0, tiles: -6,
+  kerb: 14, 'finish-line': 16, car: 24, bunting: 46, podium: 6, trophy: 30,
+
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

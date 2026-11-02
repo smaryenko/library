@@ -28,6 +28,19 @@ window.STORIES = [
     theme: '#0a1b3a',
     backdrop: 'mountWinter', // name of the backdrop fn (books/xmas/assets/js/backdrop.js)
     track: 'books/xmas/assets/audio/carol_of_the_bells.mp3'
+  },
+  {
+    id: 'raceday',
+    title: 'Race Day',
+    blurb: 'Four toy cars zoom and chase around the living room!',
+    cover: 'books/raceday/cover.svg',
+    favicon: 'books/raceday/favicon.svg',
+    og: 'books/raceday/og.svg',
+    url: 'books/raceday/',
+    theme: '#f2f0ea',
+    backdrop: 'mountLivingRoom', // books/raceday/assets/js/backdrop.js
+    // No cleared music track yet — leave `track` off so the player stays idle
+    // for this book until a public-domain / original loop is supplied.
+    track: ''
   }
-  // Add more books here as they are authored. Keep xmas first for now.
 ];

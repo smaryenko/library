@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Race Day favicon: original vector. Warm disc with an orange loop and a
+       little red toy car. Matches the book's palette. -->
+  <defs>
+    <radialGradient id="rfBg" cx="50%" cy="38%" r="70%">
+      <stop offset="0%"  stop-color="#f6efe0"/>
+      <stop offset="100%" stop-color="#e3d8c3"/>
+    </radialGradient>
+    <linearGradient id="rfCar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#ff7b6b"/>
+      <stop offset="55%" stop-color="#e23b2e"/>
+      <stop offset="100%" stop-color="#b2271c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- disc -->
+  <circle cx="32" cy="32" r="31" fill="url(#rfBg)"/>
+
+  <!-- orange loop behind the car -->
+  <circle cx="34" cy="26" r="17" fill="none" stroke="#f4621f" stroke-width="5"/>
+  <circle cx="34" cy="26" r="17" fill="none" stroke="#ff8a4a" stroke-width="1.6" opacity="0.7"/>
+
+  <!-- little red car -->
+  <g transform="translate(22 40)">
+    <ellipse cx="10" cy="9" rx="18" ry="2.6" fill="rgba(0,0,0,0.16)"/>
+    <path d="M-7 4 q1 -7 10 -8 l7 -1 q5 -6 11 -5 q9 1 11 7 q6 1 6 7 q0 2 -3 3
+             l-49 0 q-3 -1 -2 -3 z" fill="url(#rfCar)"/>
+    <path d="M4 -4 q4 -5 11 -3 q4 1 6 5 q-11 -3 -17 -2 z" fill="#b2271c"/>
+    <circle cx="0" cy="7" r="5" fill="#23242a"/><circle cx="0" cy="7" r="2.2" fill="#e9edf2"/>
+    <circle cx="20" cy="7" r="5" fill="#23242a"/><circle cx="20" cy="7" r="2.2" fill="#e9edf2"/>
+  </g>
+</svg>

@@ -267,67 +267,83 @@
     return index > 0;
   }
 
-  function go(dir) {
-    if (busy) return;                 // input lock during a flip
-    if (!canGo(dir)) { nudgeEnd(dir); return; }
+  // Pending timers for the in-flight flip, so a new input can cut it short and
+  // start the next flip immediately (no waiting for the animation to finish).
+  let flipTimers = [];
+  function clearFlipTimers() {
+    flipTimers.forEach(clearTimeout);
+    flipTimers = [];
+  }
+
+  // Commit to a target page with the dissolve -> flip -> pop sequence. Factored
+  // out so go() and goTo() share one path. Does NOT gate on `busy`: callers
+  // decide whether to interrupt a running flip.
+  function runFlipTo(target, dir) {
+    clearFlipTimers();
     busy = true;
 
-    const next = index + dir;         // plain step (clamped above)
+    // Commit the logical page IMMEDIATELY. The visible content swap is still
+    // deferred to the flip mid-point for the animation, but `index` must
+    // advance now so a rapid follow-up click computes its target from the
+    // already-advanced page (current + N clicks), not from a stale index.
+    index = target;
 
-    // 1) old content dissolves fast as the leaf lifts.
+    // old content dissolves fast as the leaf lifts
     dissolveOut();
 
-    // 2) flip the leaf over the spine (direction-aware).
+    // flip the leaf over the centre fold (direction-aware). Restart cleanly so
+    // a mid-flip interruption doesn't leave the leaf frozen half-turned.
+    leafEl.className = 'leaf';
+    void leafEl.offsetWidth;
     leafEl.className = 'leaf flipping ' + (dir > 0 ? 'forward' : 'backward');
+    updateStatus();
 
-    // Swap the content at the flip mid-point AND immediately start its pop, so
-    // the new deer is already appearing while the leaf finishes laying down
-    // over that side. This is a SINGLE continuous appearance:
-    //  - revealing here and popping AGAIN at the end made the deer flash on,
-    //    then snap back to the pop's first frame (the "blink");
-    //  - popping only at the END (after the leaf lifted) left the pages empty
-    //    for the whole second half of the flip.
-    // Doing both once, mid-flip, fixes both: no blink, no empty gap.
-    setTimeout(() => {
-      index = next;
+    // Swap the displayed content at the flip mid-point AND immediately start
+    // its pop, so the new content appears while the leaf lays down. One
+    // continuous appearance — no blink, no empty gap.
+    flipTimers.push(setTimeout(() => {
       renderSpread(index, { animate: false });
       popIn();
-      updateStatus();
-    }, DISSOLVE_MS + FLIP_MS * 0.5);
+    }, DISSOLVE_MS + FLIP_MS * 0.5));
 
-    setTimeout(() => {
+    flipTimers.push(setTimeout(() => {
       leafEl.className = 'leaf';
       busy = false;
-    }, DISSOLVE_MS + FLIP_MS);
+    }, DISSOLVE_MS + FLIP_MS));
+  }
+
+  function go(dir) {
+    // Don't wait for the animation: if a flip is in progress, cut it short and
+    // start the next step from the (already-advanced) current index. Clicks
+    // never get dropped, and `index` already reflects earlier clicks, so N
+    // rapid clicks advance N pages (current + N), not just one.
+    if (busy) finishFlipNow();
+    if (!canGo(dir)) { nudgeEnd(dir); return; }
+    runFlipTo(index + dir, dir);
   }
 
   const next = () => go(+1);
   const prev = () => go(-1);
 
-  // Jump straight to a target page (used by the first/last buttons). Runs the
-  // same dissolve -> flip -> pop sequence as a single step, with the flip
-  // direction matching the travel direction.
+  // Jump straight to a target page (used by the first/last buttons).
   function goTo(target) {
-    if (busy) return;
+    if (busy) finishFlipNow();
     target = Math.max(0, Math.min(PAGES.length - 1, target));
     if (target === index) { nudgeEnd(target > index ? 1 : -1); return; }
-    busy = true;
-    const dir = target > index ? 1 : -1;
+    runFlipTo(target, target > index ? 1 : -1);
+  }
 
-    dissolveOut();
-    leafEl.className = 'leaf flipping ' + (dir > 0 ? 'forward' : 'backward');
-
-    setTimeout(() => {
-      index = target;
-      renderSpread(index, { animate: false });
-      popIn();
-      updateStatus();
-    }, DISSOLVE_MS + FLIP_MS * 0.5);
-
-    setTimeout(() => {
-      leafEl.className = 'leaf';
-      busy = false;
-    }, DISSOLVE_MS + FLIP_MS);
+  // Snap the in-flight flip to its finished state right now, so a fresh input
+  // can start a new flip immediately instead of being ignored. Lands the
+  // current content, clears the leaf, and drops the input lock.
+  function finishFlipNow() {
+    clearFlipTimers();
+    renderSpread(index, { animate: false });
+    spreadEl.classList.remove('dissolve', 'pop', 'pop-run');
+    overlayEl.classList.remove('dissolve', 'pop', 'pop-run');
+    leafEl.className = 'leaf';
+    updateStatus();
+    busy = false;
   }
 
   function nudgeEnd(dir) {

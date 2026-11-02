@@ -143,7 +143,6 @@ The shared engine is content-agnostic; each book supplies its own content.
 - [x] Shelf + per-book favicons (bookshelf shelf icon), reduced-motion support
 - [x] OG/social images for the shelf and the xmas book (SVG)
 - [ ] Raster `og.png` exports (broadest social-scraper support)
-- [ ] Rename the repo folder `xmas/` → `stories/`
 - [ ] A second book (to exercise the shelf with more than one entry)
 - [ ] Custom festive font (currently the system stack)
 - [ ] Optional character pose variation
