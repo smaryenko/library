@@ -69,6 +69,7 @@
     setTrack,
     toggle() { playing ? stop() : start(); return playing; },
     isPlaying() { return playing; },
+    hasTrack() { return !!src; },   // true once a (non-empty) track is configured
     onChange(fn) { if (typeof fn === 'function') listeners.push(fn); }
   };
 

@@ -116,30 +116,34 @@
     navNextBtn.addEventListener('click', () => next());
     navLastBtn.addEventListener('click', () => goTo(PAGES.length - 1));
 
-    // Music toggle: plays a synthesized "Carol of the Bells" loop. Disabled by
-    // default (nothing plays until clicked — also satisfies browser autoplay
-    // policies, which require a user gesture to start audio).
-    const musicBtn = document.createElement('button');
-    musicBtn.className = 'music-btn';
-    musicBtn.type = 'button';
-    musicBtn.setAttribute('aria-label', 'Play music');
-    musicBtn.setAttribute('aria-pressed', 'false');
-    const ICON_OFF =
-      '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-      '<path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/>' +
-      '<path d="M17 9 L22 14 M22 9 L17 14" fill="none" stroke="currentColor" ' +
-      'stroke-width="2" stroke-linecap="round"/></svg>';
-    const ICON_ON =
-      '<svg viewBox="0 0 24 24" aria-hidden="true">' +
-      '<path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/>' +
-      '<path d="M16 8 Q19 12 16 16 M18.5 6 Q23 12 18.5 18" fill="none" ' +
-      'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-    musicBtn.innerHTML = ICON_OFF;
-    document.body.appendChild(musicBtn);
-    musicBtn.addEventListener('click', () => {
-      if (window.CarolPlayer) window.CarolPlayer.toggle();
-    });
-    if (window.CarolPlayer) {
+    // Music toggle: loops this book's track. Only shown when the book actually
+    // HAS a track (manifest `track` set, applied by boot.js before init runs) —
+    // a book with no audio shows no music button at all. Disabled by default
+    // (nothing plays until clicked — also satisfies browser autoplay policies).
+    const hasMusic = window.MusicPlayer &&
+      typeof window.MusicPlayer.hasTrack === 'function' &&
+      window.MusicPlayer.hasTrack();
+    if (hasMusic) {
+      const musicBtn = document.createElement('button');
+      musicBtn.className = 'music-btn';
+      musicBtn.type = 'button';
+      musicBtn.setAttribute('aria-label', 'Play music');
+      musicBtn.setAttribute('aria-pressed', 'false');
+      const ICON_OFF =
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/>' +
+        '<path d="M17 9 L22 14 M22 9 L17 14" fill="none" stroke="currentColor" ' +
+        'stroke-width="2" stroke-linecap="round"/></svg>';
+      const ICON_ON =
+        '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor"/>' +
+        '<path d="M16 8 Q19 12 16 16 M18.5 6 Q23 12 18.5 18" fill="none" ' +
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+      musicBtn.innerHTML = ICON_OFF;
+      document.body.appendChild(musicBtn);
+      musicBtn.addEventListener('click', () => {
+        if (window.CarolPlayer) window.CarolPlayer.toggle();
+      });
       window.CarolPlayer.onChange(on => {
         musicBtn.classList.toggle('is-on', on);
         musicBtn.innerHTML = on ? ICON_ON : ICON_OFF;

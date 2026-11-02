@@ -39,8 +39,6 @@ window.STORIES = [
     url: 'books/raceday/',
     theme: '#f2f0ea',
     backdrop: 'mountLivingRoom', // books/raceday/assets/js/backdrop.js
-    // No cleared music track yet — leave `track` off so the player stays idle
-    // for this book until a public-domain / original loop is supplied.
-    track: ''
+    track: 'books/raceday/assets/audio/racing.mp3'
   }
 ];
