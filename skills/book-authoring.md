@@ -68,7 +68,8 @@ window.STORIES = [
     favicon: 'books/xmas/favicon.svg',
     og: 'books/xmas/og.svg',
     url: 'books/xmas/',                 // short link (folder's index.html)
-    theme: '#0a1b3a',                   // theme-color / card accent
+    accent: '#ffd36e',                  // shelf-card title colour (light, readable on dark)
+    theme: '#0a1b3a',                   // theme-color
     backdrop: 'mountWinter',            // name of the backdrop fn (optional)
     track: 'books/xmas/assets/audio/carol_of_the_bells.mp3'  // looping music
   }
@@ -143,6 +144,14 @@ The pattern that works, and why:
   wrapper that has NO `data-part`.** `carAway()` does exactly this. A no-data-part
   wrapper is never removed by the splitter, so the placement survives on every
   layer.
+
+**Fit the half page.** The image slot is a square ~58% of the spread wide,
+lifted above centre — wider than one page. Art drawn edge-to-edge in
+`0 0 360 300` spills off the page and over its top. Keep the characters'
+natural margins (as xmas/race do) or pad the viewBox, e.g. the reef book's
+`viewBox="-25 -78 452 377"`: same design coordinates, rendered ~80% and
+nudged down. Padding is safe for animations (view-box pivots are measured
+from user-space 0,0).
 
 Two CSS gotchas that bit the reef book (worth stating so nobody re-discovers
 them the hard way):

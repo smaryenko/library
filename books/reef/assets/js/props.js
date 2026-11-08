@@ -1,7 +1,8 @@
 // "A Day on the Reef" — the page scenes.
 //
 // Built the RACE-BOOK way (see books/race/assets/js/props.js): every spread is
-// ONE flat scene SVG (viewBox 0 0 360 300). Characters are emitted into it by
+// ONE flat scene SVG (designed in 0 0 360 300; rendered through a padded
+// viewBox so it fits the half page — see VIEWBOX below). Characters are emitted into it by
 // the draw*() helpers in reeflife.js, each layer inside its own flat,
 // role-named `<g data-part="...">` (never nested), with placement on a plain
 // no-data-part <g> inside. All gradients/clip-paths go in the root <defs> so
@@ -23,8 +24,17 @@
   const FISH = ['fish-back', 'fish', 'fish-front'];
 
   // ---- scene plumbing ------------------------------------------------------
+  // FIT TO THE HALF PAGE. The engine's image slot is a square 58% of the
+  // spread wide and lifted above centre, so a scene drawn edge-to-edge in
+  // 0 0 360 300 spills past the page edge and above the top (unlike the xmas /
+  // race art, which carries its own margins). Instead of re-authoring every
+  // scene, the viewBox is padded: all art and animation coordinates stay in
+  // the 360x300 design space, which now renders ~80% size, nudged down and
+  // centred on the page half. (transform-box:view-box origins are measured
+  // from user-space 0,0, so padding the viewBox doesn't move any pivot.)
+  const VIEWBOX = '-25 -78 452 377';
   function svg(defs, style, body) {
-    return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+    return `<svg viewBox="${VIEWBOX}" xmlns="http://www.w3.org/2000/svg">
       <defs>${defs.join('')}</defs>
       ${style}
       ${body}

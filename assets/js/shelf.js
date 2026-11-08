@@ -12,6 +12,7 @@
     a.className = 'story-card';
     a.href = story.url;
     a.setAttribute('aria-label', story.title);
+    if (story.accent) a.style.setProperty('--accent', story.accent);
 
     const cover = document.createElement('img');
     cover.className = 'cover';

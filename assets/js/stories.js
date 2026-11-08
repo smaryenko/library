@@ -25,6 +25,7 @@ window.STORIES = [
     favicon: 'books/xmas/favicon.svg',
     og: 'books/xmas/og.svg',
     url: 'books/xmas/',   // short link: the folder's index.html serves the book
+    accent: '#ffd36e',   // shelf-card title colour
     theme: '#0a1b3a',
     backdrop: 'mountWinter', // name of the backdrop fn (books/xmas/assets/js/backdrop.js)
     track: 'books/xmas/assets/audio/carol_of_the_bells.mp3'
@@ -37,6 +38,7 @@ window.STORIES = [
     favicon: 'books/race/favicon.svg',
     og: 'books/race/og.svg',
     url: 'books/race/',
+    accent: '#ff9a6a',   // shelf-card title colour
     theme: '#f2f0ea',
     backdrop: 'mountLivingRoom', // books/race/assets/js/backdrop.js
     track: 'books/race/assets/audio/racing.mp3'
@@ -49,6 +51,7 @@ window.STORIES = [
     favicon: 'books/reef/favicon.svg',
     og: 'books/reef/og.svg',
     url: 'books/reef/',
+    accent: '#7fe3dc',   // shelf-card title colour
     theme: '#06384f',
     backdrop: 'mountReef', // books/reef/assets/js/backdrop.js
     track: 'books/reef/assets/audio/seaside.mp3'
