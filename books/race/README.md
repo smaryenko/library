@@ -1,4 +1,4 @@
-# Book: raceday — Race Day
+# Book: race — Race Day
 
 The second book on the shelf. A toy-car race told as one lap around a cozy
 living room. It owns everything specific to this story; the page-turn engine,
@@ -8,8 +8,8 @@ tilt rig, and music player are shared (top-level `assets/`). See
 ## Contents
 
 ```
-books/raceday/
-  index.html                entry page (so books/raceday/ is a short link)
+books/race/
+  index.html                entry page (so books/race/ is a short link)
   pages.js                  the 14-page roster (cars → race sections → friendly tie)
   cover.svg                 shelf-card preview art (orange loop + two cars)
   favicon.svg               red-car-in-a-loop icon
@@ -47,7 +47,7 @@ podium).
   repurposed, so the xmas book is unaffected).
 - **Music:** no cleared track yet. The manifest `track` is empty, so the music
   button stays idle for this book until a public-domain / original loop is
-  supplied under `books/raceday/assets/audio/`.
+  supplied under `books/race/assets/audio/`.
 - **Licensing:** all art is original vector authored here. The Hot Wheels brand,
   logo, and specific castings are deliberately NOT used — the cars are generic
   chunky toy racers. Reference images live only in gitignored `.kiro/reference/`.

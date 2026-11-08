@@ -1,83 +1,524 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
-  <!-- Shelf-card cover for the xmas book. Original vector, 4:3 to match the
-       card aspect. Winter-night scene with a decorated tree + a reindeer head,
-       echoing the book's palette. Not traced from any reference. -->
+  <!-- Preview art for the Christmas Storybook — generated from the book's own
+       builders (tree.js, reindeer.js, santa.js): the decorated tree, Rudolph and
+       Santa's sleigh on a snowy night. Original vector; nothing traced. -->
   <defs>
-    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#0a1b3a"/>
-      <stop offset="55%" stop-color="#122a52"/>
-      <stop offset="100%" stop-color="#1c3a66"/>
+    <linearGradient id="pxSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a1b3a"/><stop offset="60%" stop-color="#1c3768"/>
+      <stop offset="100%" stop-color="#34508a"/>
     </linearGradient>
-    <radialGradient id="moon" cx="50%" cy="50%" r="50%">
-      <stop offset="0%"  stop-color="#eef5ff"/>
-      <stop offset="70%" stop-color="#d7e6ff"/>
-      <stop offset="100%" stop-color="rgba(215,230,255,0)"/>
+    <radialGradient id="pxMoon" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8d6"/><stop offset="70%" stop-color="#f3e6a8"/>
+      <stop offset="100%" stop-color="rgba(243,230,168,0)"/>
     </radialGradient>
-    <linearGradient id="snow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%"  stop-color="#dfecff"/>
-      <stop offset="100%" stop-color="#b9cdeb"/>
+    <linearGradient id="pxSnow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f4f8ff"/><stop offset="100%" stop-color="#cfdcf0"/>
     </linearGradient>
-    <radialGradient id="rnose" cx="40%" cy="35%" r="70%">
-      <stop offset="0%"  stop-color="#ff7b6b"/>
-      <stop offset="55%" stop-color="#e23b2e"/>
-      <stop offset="100%" stop-color="#b2271c"/>
-    </radialGradient>
   </defs>
+  <rect width="400" height="300" fill="url(#pxSky)"/>
+  <circle cx="328" cy="81" r="0.8" fill="#fff8d0" opacity="0.71"/><circle cx="51" cy="86" r="0.8" fill="#fff8d0" opacity="0.72"/><circle cx="38" cy="41" r="0.8" fill="#fff8d0" opacity="0.41"/><circle cx="68" cy="48" r="0.8" fill="#fff8d0" opacity="0.58"/><circle cx="212" cy="148" r="0.8" fill="#fff8d0" opacity="0.72"/><circle cx="232" cy="136" r="0.8" fill="#fff8d0" opacity="0.96"/><circle cx="373" cy="84" r="0.8" fill="#fff8d0" opacity="0.85"/><circle cx="35" cy="23" r="0.8" fill="#fff8d0" opacity="0.68"/><circle cx="373" cy="98" r="0.8" fill="#fff8d0" opacity="0.41"/><circle cx="77" cy="113" r="0.8" fill="#fff8d0" opacity="0.87"/><circle cx="290" cy="119" r="0.8" fill="#fff8d0" opacity="0.65"/><circle cx="16" cy="33" r="0.8" fill="#fff8d0" opacity="0.80"/><circle cx="276" cy="67" r="0.8" fill="#fff8d0" opacity="0.77"/><circle cx="93" cy="44" r="0.8" fill="#fff8d0" opacity="0.41"/><circle cx="351" cy="141" r="0.8" fill="#fff8d0" opacity="0.46"/><circle cx="157" cy="50" r="0.8" fill="#fff8d0" opacity="0.86"/><circle cx="353" cy="17" r="0.8" fill="#fff8d0" opacity="0.52"/><circle cx="44" cy="102" r="0.8" fill="#fff8d0" opacity="0.59"/><circle cx="204" cy="147" r="0.8" fill="#fff8d0" opacity="0.55"/><circle cx="273" cy="148" r="0.8" fill="#fff8d0" opacity="0.98"/><circle cx="259" cy="103" r="0.8" fill="#fff8d0" opacity="0.75"/><circle cx="334" cy="96" r="0.8" fill="#fff8d0" opacity="0.73"/><circle cx="317" cy="77" r="0.8" fill="#fff8d0" opacity="0.46"/><circle cx="112" cy="149" r="0.8" fill="#fff8d0" opacity="0.92"/><circle cx="399" cy="99" r="0.8" fill="#fff8d0" opacity="0.49"/><circle cx="265" cy="41" r="0.8" fill="#fff8d0" opacity="1.00"/>
+  <circle cx="330" cy="60" r="46" fill="url(#pxMoon)"/>
+  <circle cx="330" cy="60" r="26" fill="#fff6d0"/>
+  <g><svg x="150" y="10" width="120" height="120.0" viewBox="0 0 360 360" overflow="visible">
+    <defs>
+      <linearGradient id="sleighGrad-se12t2w" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E0574E"/><stop offset="55%" stop-color="#C9332B"/>
+        <stop offset="100%" stop-color="#9A231C"/>
+      </linearGradient>
+      <linearGradient id="goldGrad-se12t2w" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FBE59C"/><stop offset="50%" stop-color="#E3B543"/>
+        <stop offset="100%" stop-color="#B2851F"/>
+      </linearGradient>
+      <radialGradient id="suitGrad-se12t2w" cx="40%" cy="30%" r="78%">
+        <stop offset="0%" stop-color="#E0574E"/><stop offset="60%" stop-color="#C9332B"/>
+        <stop offset="100%" stop-color="#9A231C"/>
+      </radialGradient>
+      <radialGradient id="faceGrad-se12t2w" cx="42%" cy="34%" r="76%">
+        <stop offset="0%" stop-color="#FCDFC8"/><stop offset="65%" stop-color="#F3C6A4"/>
+        <stop offset="100%" stop-color="#D9A784"/>
+      </radialGradient>
+      <radialGradient id="hatGrad-se12t2w" cx="40%" cy="30%" r="80%">
+        <stop offset="0%" stop-color="#E0574E"/><stop offset="60%" stop-color="#C9332B"/>
+        <stop offset="100%" stop-color="#9A231C"/>
+      </radialGradient>
+    </defs>
+    
 
-  <!-- sky -->
-  <rect width="400" height="300" fill="url(#sky)"/>
+    <g><ellipse cx="180" cy="326" rx="128" ry="16" fill="rgba(0,0,0,0.16)"/></g>
 
-  <!-- moon + glow -->
-  <circle cx="320" cy="70" r="60" fill="url(#moon)"/>
-  <circle cx="320" cy="70" r="26" fill="#f2f7ff"/>
-
-  <!-- faint stars -->
-  <g fill="#dce9ff">
-    <circle cx="60" cy="40" r="1.6"/><circle cx="110" cy="70" r="1.1"/>
-    <circle cx="250" cy="36" r="1.3"/><circle cx="180" cy="54" r="1"/>
-    <circle cx="350" cy="140" r="1.2"/>
-  </g>
-
-  <!-- snow field -->
-  <path d="M0 230 Q 120 205 220 228 T 400 222 L400 300 L0 300 Z" fill="url(#snow)"/>
-
-  <!-- a decorated pine on the left -->
-  <g transform="translate(96 232)">
-    <rect x="-9" y="-6" width="18" height="24" rx="3" fill="#4a3520"/>
-    <path d="M0 -118 L34 -66 L-34 -66 Z" fill="#2b6a4a"/>
-    <path d="M0 -92 L44 -30 L-44 -30 Z" fill="#2b6a4a"/>
-    <path d="M0 -62 L54 0 L-54 0 Z" fill="#327a55"/>
-    <!-- baubles -->
-    <circle cx="-14" cy="-40" r="4.5" fill="#e2574e"/>
-    <circle cx="16" cy="-22" r="4.5" fill="#f2c94c"/>
-    <circle cx="-4" cy="-10" r="4.5" fill="#6fb7d6"/>
-    <circle cx="24" cy="-52" r="4.5" fill="#d98cc4"/>
-    <!-- gold star topper -->
-    <path d="M0 -130 l5 11 12 1 -9 8 3 12 -11 -7 -11 7 3 -12 -9 -8 12 -1 z"
-          fill="#f3c64b"/>
-  </g>
-
-  <!-- a friendly reindeer head on the right foreground -->
-  <g transform="translate(248 196)">
-    <!-- antlers -->
-    <g fill="none" stroke="#8a5a33" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M-26 -34 C-34 -54 -40 -62 -52 -66 M-34 -46 C-46 -46 -54 -42 -62 -46 M-34 -46 C-30 -58 -26 -66 -30 -78"/>
-      <path d="M26 -34 C34 -54 40 -62 52 -66 M34 -46 C46 -46 54 -42 62 -46 M34 -46 C30 -58 26 -66 30 -78"/>
+    <!-- ornate gold curled runners -->
+    <g>
+      <path d="M64 304 Q54 322 82 322 L286 322 Q318 322 304 294"
+            fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M64 304 q-20 2 -16 -18 q2 -14 18 -9" fill="none"
+            stroke="url(#goldGrad-se12t2w)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M304 294 q18 4 10 24" fill="none"
+            stroke="url(#goldGrad-se12t2w)" stroke-width="8" stroke-linecap="round"/>
+      <!-- support posts with little scroll feet -->
+      <rect x="120" y="298" width="7" height="24" rx="3" fill="#B2851F"/>
+      <rect x="236" y="298" width="7" height="24" rx="3" fill="#B2851F"/>
+      <path transform="translate(112 300) scale(0.8 0.8)"
+      d="M0 0 q-14 0 -14 12 q0 10 10 10 q7 0 7 -6 q0 -4 -4 -4 q-3 0 -3 2"
+      fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="3.2" stroke-linecap="round"/><path transform="translate(250 300) scale(-0.8 0.8)"
+      d="M0 0 q-14 0 -14 12 q0 10 10 10 q7 0 7 -6 q0 -4 -4 -4 q-3 0 -3 2"
+      fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="3.2" stroke-linecap="round"/>
     </g>
-    <!-- ears -->
-    <ellipse cx="-34" cy="-6" rx="12" ry="17" fill="#8a5a28" transform="rotate(-24 -34 -6)"/>
-    <ellipse cx="34" cy="-6" rx="12" ry="17" fill="#8a5a28" transform="rotate(24 34 -6)"/>
-    <!-- head -->
-    <ellipse cx="0" cy="8" rx="34" ry="37" fill="#a9743b"/>
-    <!-- muzzle -->
-    <ellipse cx="0" cy="30" rx="22" ry="19" fill="#e9cba0"/>
-    <!-- eyes -->
-    <circle cx="-13" cy="2" r="5" fill="#2b1d0e"/>
-    <circle cx="13" cy="2" r="5" fill="#2b1d0e"/>
-    <circle cx="-11" cy="0" r="1.6" fill="#fff"/>
-    <circle cx="15" cy="0" r="1.6" fill="#fff"/>
-    <!-- shiny red nose -->
-    <circle cx="0" cy="33" r="11" fill="url(#rnose)"/>
-    <circle cx="-3.5" cy="29.5" r="3" fill="#fff" opacity="0.8"/>
-  </g>
+
+    <g>
+      <path d="M92 300 Q80 212 150 204 L150 300 Z" fill="#9A231C"/>
+    </g>
+
+    <!-- main sleigh body: swooping red hull, gold rails + scrollwork -->
+    <g>
+      <path d="M90 300 Q78 210 150 204 L288 204 Q316 204 302 250 L294 300 Z"
+            fill="url(#sleighGrad-se12t2w)"/>
+      <!-- side shading -->
+      <path d="M90 300 Q78 210 150 204 L150 300 Z" fill="rgba(0,0,0,0.12)"/>
+      <!-- scrolled front lip -->
+      <path d="M288 204 Q326 196 314 234 Q302 220 288 226 Z" fill="url(#goldGrad-se12t2w)"/>
+      <!-- gold top rail -->
+      <path d="M94 212 Q150 196 290 204" fill="none" stroke="url(#goldGrad-se12t2w)"
+            stroke-width="7" stroke-linecap="round"/>
+      <!-- lower gold trim band -->
+      <path d="M100 286 Q190 300 292 286" fill="none" stroke="url(#goldGrad-se12t2w)"
+            stroke-width="5" stroke-linecap="round"/>
+      <!-- decorative scroll flourishes on the hull -->
+      <path transform="translate(126 244) scale(1.1 1.1)"
+      d="M0 0 q-14 0 -14 12 q0 10 10 10 q7 0 7 -6 q0 -4 -4 -4 q-3 0 -3 2"
+      fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="3.2" stroke-linecap="round"/><path transform="translate(168 250) scale(1.1 1.1)"
+      d="M0 0 q-14 0 -14 12 q0 10 10 10 q7 0 7 -6 q0 -4 -4 -4 q-3 0 -3 2"
+      fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="3.2" stroke-linecap="round"/><path transform="translate(214 250) scale(-1.1 1.1)"
+      d="M0 0 q-14 0 -14 12 q0 10 10 10 q7 0 7 -6 q0 -4 -4 -4 q-3 0 -3 2"
+      fill="none" stroke="url(#goldGrad-se12t2w)" stroke-width="3.2" stroke-linecap="round"/>
+      <!-- seat cushion with a tufted button -->
+      <ellipse cx="176" cy="208" rx="50" ry="13" fill="#ECE1C8"/>
+      <ellipse cx="176" cy="206" rx="46" ry="9" fill="#F6EFDC"/>
+      <circle cx="176" cy="206" r="2.4" fill="#C9B78E"/>
+    </g>
+
+    <!-- gifts riding at the front, poking above the lip -->
+    <g>
+      
+      <rect x="248" y="181" width="44" height="37" rx="2" fill="#3FA35B"/>
+      <rect x="246" y="176" width="48" height="9" rx="2" fill="#2E7C45"/>
+      <rect x="267" y="181" width="6" height="37" fill="#E3B543"/>
+      <rect x="246" y="178" width="48" height="5" fill="#E3B543"/>
+      <path d="M270 178 q-13 -11 -20 -3 q-2 6 5 6 q9 1 15 -3 z" fill="#E3B543"/>
+      <path d="M270 178 q13 -11 20 -3 q2 6 -5 6 q-9 1 -15 -3 z" fill="#E3B543"/>
+      <circle cx="270" cy="178" r="3" fill="#E3B543"/>
+      
+      <rect x="256" y="151" width="30" height="25" rx="2" fill="#2E78C7"/>
+      <rect x="254" y="146" width="34" height="9" rx="2" fill="#215C99"/>
+      <rect x="268" y="151" width="6" height="25" fill="#F2C94C"/>
+      <rect x="254" y="148" width="34" height="5" fill="#F2C94C"/>
+      <path d="M271 148 q-13 -11 -20 -3 q-2 6 5 6 q9 1 15 -3 z" fill="#F2C94C"/>
+      <path d="M271 148 q13 -11 20 -3 q2 6 -5 6 q-9 1 -15 -3 z" fill="#F2C94C"/>
+      <circle cx="271" cy="148" r="3" fill="#F2C94C"/>
+      
+      <rect x="238" y="205" width="26" height="17" rx="2" fill="#C9332B"/>
+      <rect x="236" y="200" width="30" height="9" rx="2" fill="#9A231C"/>
+      <rect x="248" y="205" width="6" height="17" fill="#E3B543"/>
+      <rect x="236" y="202" width="30" height="5" fill="#E3B543"/>
+      <path d="M251 202 q-13 -11 -20 -3 q-2 6 5 6 q9 1 15 -3 z" fill="#E3B543"/>
+      <path d="M251 202 q13 -11 20 -3 q2 6 -5 6 q-9 1 -15 -3 z" fill="#E3B543"/>
+      <circle cx="251" cy="202" r="3" fill="#E3B543"/>
+    </g>
+
+    <!-- Santa -->
+    <g>
+      <!-- lap / legs -->
+      <path d="M148 232 q42 -14 84 -2 l-4 40 q-40 12 -80 0 z" fill="url(#suitGrad-se12t2w)"/>
+      <path d="M148 232 q42 -14 84 -2 l-2 12 q-40 -10 -80 0 z" fill="rgba(255,255,255,0.08)"/>
+      <!-- boots -->
+      <path d="M214 266 q24 2 30 20 q-18 10 -34 3 q-4 -12 4 -23 z" fill="#2E2016"/>
+      <path d="M214 286 q14 6 30 0 l0 5 q-16 6 -30 0 z" fill="#1C130C"/>
+      <!-- torso -->
+      <path d="M148 166 q32 -24 66 -2 q12 36 3 76 q-36 14 -74 0 q-9 -40 5 -74 z"
+            fill="url(#suitGrad-se12t2w)"/>
+      <!-- coat opening + fur placket down the front -->
+      <path d="M176 152 q9 44 2 90 l12 0 q7 -46 -1 -90 z" fill="#F6F3EC"/>
+      
+      <path d="M178 160 L180 176 L181 194 L181 212 L180 230" fill="none" stroke="#F6F3EC" stroke-width="10"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="179.0" cy="169.5" r="3.6" fill="#F6F3EC"/><circle cx="180.5" cy="186.5" r="3.6" fill="#F6F3EC"/><circle cx="181.0" cy="204.5" r="3.6" fill="#F6F3EC"/><circle cx="180.5" cy="222.5" r="3.6" fill="#F6F3EC"/>
+      <path d="M178 160 L180 176 L181 194 L181 212 L180 230" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1.5"
+            stroke-linecap="round" transform="translate(0 2.5)"/>
+      <!-- hem fur -->
+      
+      <path d="M150 236 L164 242 L180 244 L196 242 L212 236" fill="none" stroke="#F6F3EC" stroke-width="12"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="157.0" cy="240.8" r="4.3" fill="#F6F3EC"/><circle cx="172.0" cy="244.8" r="4.3" fill="#F6F3EC"/><circle cx="188.0" cy="244.8" r="4.3" fill="#F6F3EC"/><circle cx="204.0" cy="240.8" r="4.3" fill="#F6F3EC"/>
+      <path d="M150 236 L164 242 L180 244 L196 242 L212 236" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1.5"
+            stroke-linecap="round" transform="translate(0 3)"/>
+      <!-- wrist-to-wrist belt -->
+      <rect x="148" y="214" width="68" height="14" rx="3" fill="#241B13"/>
+      <rect x="148" y="214" width="68" height="4" rx="2" fill="rgba(255,255,255,0.08)"/>
+      <rect x="174" y="211" width="18" height="20" rx="3" fill="url(#goldGrad-se12t2w)"/>
+      <rect x="179" y="217" width="8" height="8" rx="1.5" fill="#9A7418"/>
+    </g>
+
+    <g>
+      <path d="M196 192 q32 6 44 32 q-8 14 -24 11 q-20 -20 -34 -30 z"
+            fill="url(#suitGrad-se12t2w)"/>
+      <!-- fur cuff + mitten -->
+      
+      <path d="M198 220 L208 228 L220 234" fill="none" stroke="#F6F3EC" stroke-width="12"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="203.0" cy="225.8" r="4.3" fill="#F6F3EC"/><circle cx="214.0" cy="232.8" r="4.3" fill="#F6F3EC"/>
+      <path d="M198 220 L208 228 L220 234" fill="none" stroke="rgba(0,0,0,0.06)" stroke-width="1.5"
+            stroke-linecap="round" transform="translate(0 3)"/>
+      <ellipse cx="232" cy="236" rx="13" ry="11" fill="#2E2016"/>
+      <ellipse cx="229" cy="232" rx="5" ry="4" fill="#443225"/>
+    </g>
+
+    <g>
+      <circle cx="182" cy="146" r="31" fill="url(#faceGrad-se12t2w)"/>
+      <!-- ears -->
+      <circle cx="152" cy="150" r="7" fill="url(#faceGrad-se12t2w)"/>
+      <circle cx="212" cy="150" r="7" fill="url(#faceGrad-se12t2w)"/>
+      <!-- soft shadow the hat brim casts on the upper forehead -->
+      <path d="M153 136 q29 12 58 0 q-4 7 -29 7 q-25 0 -29 -7 z" fill="rgba(0,0,0,0.06)"/>
+      <!-- full beard framing the lower face (starts below the cheeks) -->
+      <path d="M156 150 q-8 30 10 48 q16 16 34 2 q10 -8 14 -26 q4 -16 0 -24
+               q-6 12 -16 8 q-6 10 -18 10 q-12 0 -18 -10 q-8 4 -6 8 z" fill="#F1EDE4"/>
+      <path d="M160 158 q0 26 22 40 q-24 -8 -28 -34 z" fill="rgba(0,0,0,0.05)"/>
+      <!-- sideburns connecting beard to the hat area -->
+      <path d="M154 140 q-4 18 6 30 q-10 -4 -10 -18 q0 -8 4 -12 z" fill="#F1EDE4"/>
+      <path d="M210 140 q4 18 -6 30 q10 -4 10 -18 q0 -8 -4 -12 z" fill="#F1EDE4"/>
+      <!-- moustache (two soft lobes) -->
+      <path d="M182 166 q-6 10 -18 9 q-8 -1 -8 -8 q10 4 18 -3 q4 -3 8 2 z" fill="#FBFAF6"/>
+      <path d="M182 166 q6 10 18 9 q8 -1 8 -8 q-10 4 -18 -3 q-4 -3 -8 2 z" fill="#FBFAF6"/>
+    </g>
+
+    <g>
+      <!-- brows: short, a touch lowered, natural -->
+      <path d="M166 138 q6 -3 12 -0.5" stroke="#E2DDD2" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <path d="M186 137.5 q6 -2.5 12 0.5" stroke="#E2DDD2" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <!-- eyes (open, clearly below the brim) with a soft upper lid line -->
+      <ellipse cx="172" cy="145" rx="3.4" ry="3.8" fill="#3A2A1E"/>
+      <ellipse cx="192" cy="145" rx="3.4" ry="3.8" fill="#3A2A1E"/>
+      <circle cx="173.3" cy="143.6" r="1.2" fill="#fff"/>
+      <circle cx="193.3" cy="143.6" r="1.2" fill="#fff"/>
+      <path d="M167 141 q5 -2 10 0" stroke="rgba(0,0,0,0.15)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <path d="M187 141 q5 -2 10 0" stroke="rgba(0,0,0,0.15)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      <!-- realistic nose: longer, soft, with a subtle shadow + highlight (no
+           flat round button, no big pink cheek circles) -->
+      <path d="M180 148 q-5 8 -4 13 q1 5 6 5 q5 0 6 -5 q1 -5 -4 -13 q-2 -3 -4 0 z"
+            fill="#E7A98A"/>
+      <path d="M176 161 q6 4 12 0 q-3 4 -6 4 q-3 0 -6 -4 z" fill="#D9936F"/>
+      <ellipse cx="179" cy="153" rx="1.8" ry="2.6" fill="rgba(255,255,255,0.45)"/>
+      <!-- faint natural cheek warmth (soft blush, not hard circles) -->
+      <ellipse cx="163" cy="156" rx="7" ry="5" fill="rgba(222,120,96,0.18)"/>
+      <ellipse cx="201" cy="156" rx="7" ry="5" fill="rgba(222,120,96,0.18)"/>
+    </g>
+
+    <g>
+      <!-- Classic Santa hat (per reference): ONE solid red cone leaning right.
+           FLAT base at the brim line (y122) from left temple (x150) to right
+           (x236), so the cone sits ON the fur brim with NO gap. Left side rises
+           to a rounded apex; right side sweeps up then the tip droops over to
+           the pompom. A single convex closed outline => fills solid. -->
+      <path fill="url(#hatGrad-se12t2w)"
+            d="M150 122
+               L236 122
+               Q260 120 258 140
+               Q256 156 244 162
+               Q250 146 240 134
+               Q236 128 232 126
+               Q248 100 214 86
+               Q184 74 164 90
+               Q150 102 150 122 Z"/>
+      <!-- shading on the right flank + highlight sheen on the left -->
+      <path fill="#9A231C" opacity="0.3"
+            d="M214 86 Q248 100 232 126 Q236 110 212 94 Q210 88 214 86 z"/>
+      <path fill="#E0574E" opacity="0.5"
+            d="M164 90 Q150 102 150 122 Q158 100 180 92 Q172 88 164 90 z"/>
+      <!-- thick soft white FUR BRIM; bottom edge ~y128, clearly above the
+           eyes (y145). Its top overlaps the cone base so there is no gap. -->
+      <path fill="#F6F3EC"
+            d="M144 116
+               Q150 106 164 108 Q182 112 200 109 Q224 106 234 112
+               Q244 118 238 129 Q231 138 214 136 Q182 142 156 135
+               Q141 130 144 116 Z"/>
+      <path fill="rgba(0,0,0,0.05)"
+            d="M150 128 Q182 138 236 124 Q229 135 214 136 Q182 142 156 135 Q152 133 150 128 z"/>
+      <!-- big white pompom at the drooping tip -->
+      <circle cx="248" cy="166" r="13" fill="#F6F3EC"/>
+      <circle cx="244" cy="161" r="4.5" fill="#fff"/>
+    </g>
+  </svg></g>
+  <path d="M0 240 q100 -22 200 -4 t200 -6 L400 300 L0 300 Z" fill="url(#pxSnow)"/>
+  <g><svg x="-10" y="70" width="230" height="230.0" viewBox="0 0 360 360" overflow="visible">
+    <defs>
+      <linearGradient id="trunkGrad-tgip0c4" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#8A5E34"/><stop offset="45%" stop-color="#6E4826"/>
+        <stop offset="100%" stop-color="#4E3118"/>
+      </linearGradient>
+      <radialGradient id="starGrad-tgip0c4" cx="38%" cy="32%" r="72%">
+        <stop offset="0%" stop-color="#FFF2B8"/><stop offset="50%" stop-color="#F3C64B"/>
+        <stop offset="100%" stop-color="#C98F20"/>
+      </radialGradient>
+      <radialGradient id="starGlow-tgip0c4" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,238,170,0.85)"/>
+        <stop offset="100%" stop-color="rgba(255,238,170,0)"/>
+      </radialGradient>
+      <radialGradient id="lglow-tgip0c4" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="rgba(255,236,150,0.9)"/>
+        <stop offset="100%" stop-color="rgba(255,236,150,0)"/>
+      </radialGradient>
+      <linearGradient id="ribbon-tgip0c4" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FFE79B"/><stop offset="50%" stop-color="#E3B543"/>
+        <stop offset="100%" stop-color="#C08E24"/>
+      </linearGradient>
+      <!-- cone body volume: lit upper-left, deeper lower-right -->
+      <linearGradient id="foliage-tgip0c4" x1="0.2" y1="0" x2="0.8" y2="1">
+        <stop offset="0%" stop-color="#76a983"/>
+        <stop offset="45%" stop-color="#2F7D43"/>
+        <stop offset="100%" stop-color="#1f532c"/>
+      </linearGradient>
+      <radialGradient id="bbl-tgip0c4-CE3129" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#e48e89"/><stop offset="55%" stop-color="#CE3129"/>
+        <stop offset="100%" stop-color="#7c1d19"/>
+      </radialGradient><radialGradient id="bbl-tgip0c4-E3A92F" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#f0d08d"/><stop offset="55%" stop-color="#E3A92F"/>
+        <stop offset="100%" stop-color="#88651c"/>
+      </radialGradient>
+    </defs>
+    
+
+    <g><ellipse cx="180" cy="328" rx="92" ry="15" fill="rgba(0,0,0,0.16)"/></g>
+
+    <g>
+      <rect x="169" y="300" width="22" height="36" rx="4" fill="url(#trunkGrad-tgip0c4)"/>
+      <ellipse cx="180" cy="336" rx="18" ry="5" fill="#3E2713"/>
+    </g>
+
+    <!-- dark silhouette pass behind: a hair wider, deepest green, so the main
+         tiers sit on a continuous dark body (no gaps showing the page) -->
+    <g>
+      <path d="M180 193.0 L80.0 308.0 Q94.3 319.0 108.6 308.0 Q122.9 319.0 137.1 308.0 Q151.4 319.0 165.7 308.0 Q180.0 319.0 194.3 308.0 Q208.6 319.0 222.9 308.0 Q237.1 319.0 251.4 308.0 Q265.7 319.0 280.0 308.0 Z" fill="#173c20"/>
+      <path d="M180 161.7 L98.0 256.0 Q109.7 267.0 121.4 256.0 Q133.1 267.0 144.9 256.0 Q156.6 267.0 168.3 256.0 Q180.0 267.0 191.7 256.0 Q203.4 267.0 215.1 256.0 Q226.9 267.0 238.6 256.0 Q250.3 267.0 262.0 256.0 Z" fill="#173c20"/>
+      <path d="M180 130.4 L116.0 204.0 Q125.1 215.0 134.3 204.0 Q143.4 215.0 152.6 204.0 Q161.7 215.0 170.9 204.0 Q180.0 215.0 189.1 204.0 Q198.3 215.0 207.4 204.0 Q216.6 215.0 225.7 204.0 Q234.9 215.0 244.0 204.0 Z" fill="#173c20"/>
+      <path d="M180 103.4 L136.0 154.0 Q142.3 165.0 148.6 154.0 Q154.9 165.0 161.1 154.0 Q167.4 165.0 173.7 154.0 Q180.0 165.0 186.3 154.0 Q192.6 165.0 198.9 154.0 Q205.1 165.0 211.4 154.0 Q217.7 165.0 224.0 154.0 Z" fill="#173c20"/>
+    </g>
+
+    <!-- main foliage: SOLID gradient-shaded tiers (the real tree body). Clean
+         flat fill, no stroke texture. -->
+    <g>
+      <path d="M180 197.9 L86.0 306.0 Q99.4 317.0 112.9 306.0 Q126.3 317.0 139.7 306.0 Q153.1 317.0 166.6 306.0 Q180.0 317.0 193.4 306.0 Q206.9 317.0 220.3 306.0 Q233.7 317.0 247.1 306.0 Q260.6 317.0 274.0 306.0 Z" fill="url(#foliage-tgip0c4)"/>
+      <path d="M180 165.4 L103.0 254.0 Q114.0 265.0 125.0 254.0 Q136.0 265.0 147.0 254.0 Q158.0 265.0 169.0 254.0 Q180.0 265.0 191.0 254.0 Q202.0 265.0 213.0 254.0 Q224.0 265.0 235.0 254.0 Q246.0 265.0 257.0 254.0 Z" fill="url(#foliage-tgip0c4)"/>
+      <path d="M180 133.0 L120.0 202.0 Q128.6 213.0 137.1 202.0 Q145.7 213.0 154.3 202.0 Q162.9 213.0 171.4 202.0 Q180.0 213.0 188.6 202.0 Q197.1 213.0 205.7 202.0 Q214.3 213.0 222.9 202.0 Q231.4 213.0 240.0 202.0 Z" fill="url(#foliage-tgip0c4)"/>
+      <path d="M180 104.8 L139.0 152.0 Q144.9 163.0 150.7 152.0 Q156.6 163.0 162.4 152.0 Q168.3 163.0 174.1 152.0 Q180.0 163.0 185.9 152.0 Q191.7 163.0 197.6 152.0 Q203.4 163.0 209.3 152.0 Q215.1 163.0 221.0 152.0 Z" fill="url(#foliage-tgip0c4)"/>
+    </g>
+
+    <g>
+    <path d="M148 150 Q206 166 170 188 Q134 212 200 230 Q146 254 190 276 Q142 298 212 316"
+          fill="none" stroke="#B8891F" stroke-width="9" stroke-linecap="round"/>
+    <path d="M148 150 Q206 166 170 188 Q134 212 200 230 Q146 254 190 276 Q142 298 212 316"
+          fill="none" stroke="url(#ribbon-tgip0c4)" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M148 150 Q206 166 170 188 Q134 212 200 230 Q146 254 190 276 Q142 298 212 316"
+          fill="none" stroke="rgba(255,248,210,0.7)" stroke-width="1.8" stroke-linecap="round"/></g>
+
+    <g>
+      
+      <ellipse cx="166" cy="182.4" rx="8.8" ry="4" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="166" cy="180" r="8" fill="url(#bbl-tgip0c4-CE3129)"/>
+      <path d="M160.4 180 a5.6 5.6 0 0 1 8.8 -4"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.44"/>
+      <ellipse cx="163.44" cy="176.96" rx="2.08" ry="1.44" fill="rgba(255,255,255,0.85)"/>
+      <rect x="163.5" y="167" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="164.5" y="164" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="204" cy="204.7" rx="9.9" ry="4.5" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="204" cy="202" r="9" fill="url(#bbl-tgip0c4-E3A92F)"/>
+      <path d="M197.7 202 a6.3 6.3 0 0 1 9.9 -4.5"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.6199999999999999"/>
+      <ellipse cx="201.12" cy="198.58" rx="2.34" ry="1.6199999999999999" fill="rgba(255,255,255,0.85)"/>
+      <rect x="201.5" y="188" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="202.5" y="185" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="150" cy="236.7" rx="9.9" ry="4.5" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="150" cy="234" r="9" fill="url(#bbl-tgip0c4-CE3129)"/>
+      <path d="M143.7 234 a6.3 6.3 0 0 1 9.9 -4.5"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.6199999999999999"/>
+      <ellipse cx="147.12" cy="230.58" rx="2.34" ry="1.6199999999999999" fill="rgba(255,255,255,0.85)"/>
+      <rect x="147.5" y="220" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="148.5" y="217" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="210" cy="254.55" rx="9.350000000000001" ry="4.25" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="210" cy="252" r="8.5" fill="url(#bbl-tgip0c4-E3A92F)"/>
+      <path d="M204.05 252 a5.949999999999999 5.949999999999999 0 0 1 9.350000000000001 -4.25"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.53"/>
+      <ellipse cx="207.28" cy="248.77" rx="2.21" ry="1.53" fill="rgba(255,255,255,0.85)"/>
+      <rect x="207.5" y="238.5" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="208.5" y="235.5" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="178" cy="289" rx="11" ry="5" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="178" cy="286" r="10" fill="url(#bbl-tgip0c4-CE3129)"/>
+      <path d="M171 286 a7 7 0 0 1 11 -5"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.7999999999999998"/>
+      <ellipse cx="174.8" cy="282.2" rx="2.6" ry="1.7999999999999998" fill="rgba(255,255,255,0.85)"/>
+      <rect x="175.5" y="271" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="176.5" y="268" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="144" cy="298.4" rx="8.8" ry="4" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="144" cy="296" r="8" fill="url(#bbl-tgip0c4-E3A92F)"/>
+      <path d="M138.4 296 a5.6 5.6 0 0 1 8.8 -4"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.44"/>
+      <ellipse cx="141.44" cy="292.96" rx="2.08" ry="1.44" fill="rgba(255,255,255,0.85)"/>
+      <rect x="141.5" y="283" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="142.5" y="280" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="220" cy="302.7" rx="9.9" ry="4.5" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="220" cy="300" r="9" fill="url(#bbl-tgip0c4-CE3129)"/>
+      <path d="M213.7 300 a6.3 6.3 0 0 1 9.9 -4.5"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.6199999999999999"/>
+      <ellipse cx="217.12" cy="296.58" rx="2.34" ry="1.6199999999999999" fill="rgba(255,255,255,0.85)"/>
+      <rect x="217.5" y="286" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="218.5" y="283" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+      
+      <ellipse cx="192" cy="162.1" rx="7.700000000000001" ry="3.5" fill="rgba(0,0,0,0.18)"/>
+      <circle cx="192" cy="160" r="7" fill="url(#bbl-tgip0c4-E3A92F)"/>
+      <path d="M187.1 160 a4.8999999999999995 4.8999999999999995 0 0 1 7.700000000000001 -3.5"
+            fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.26"/>
+      <ellipse cx="189.76" cy="157.34" rx="1.82" ry="1.26" fill="rgba(255,255,255,0.85)"/>
+      <rect x="189.5" y="148" width="5" height="6" rx="1.5" fill="#C9962B"/>
+      <rect x="190.5" y="145" width="3" height="4" rx="1.5" fill="#E7C25A"/>
+    </g>
+
+    <g>
+      <circle cx="188" cy="166" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="188" cy="166" r="3" fill="#FFF6CE"/>
+            <circle cx="187.2" cy="165.2" r="1.1" fill="#fff"/><circle cx="158" cy="208" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="158" cy="208" r="3" fill="#FFF6CE"/>
+            <circle cx="157.2" cy="207.2" r="1.1" fill="#fff"/><circle cx="208" cy="230" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="208" cy="230" r="3" fill="#FFF6CE"/>
+            <circle cx="207.2" cy="229.2" r="1.1" fill="#fff"/>
+      <circle cx="166" cy="264" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="166" cy="264" r="3" fill="#FFF6CE"/>
+            <circle cx="165.2" cy="263.2" r="1.1" fill="#fff"/><circle cx="200" cy="282" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="200" cy="282" r="3" fill="#FFF6CE"/>
+            <circle cx="199.2" cy="281.2" r="1.1" fill="#fff"/><circle cx="158" cy="306" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="158" cy="306" r="3" fill="#FFF6CE"/>
+            <circle cx="157.2" cy="305.2" r="1.1" fill="#fff"/>
+      <circle cx="216" cy="276" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="216" cy="276" r="3" fill="#FFF6CE"/>
+            <circle cx="215.2" cy="275.2" r="1.1" fill="#fff"/><circle cx="176" cy="196" r="9" fill="url(#lglow-tgip0c4)"/>
+            <circle cx="176" cy="196" r="3" fill="#FFF6CE"/>
+            <circle cx="175.2" cy="195.2" r="1.1" fill="#fff"/>
+    </g>
+
+    <!-- star: centred on the tree TIP (~y105) so it crowns the top -->
+    <g>
+      <circle cx="180" cy="105" r="40" fill="url(#starGlow-tgip0c4)"/>
+      <!-- 5-point star, back layer slightly rotated for a double-glint look -->
+      <path fill="#C98F20" transform="rotate(10 180 105)"
+            d="M180 79 l8 18 20 2 -15 14 5 20 -18 -11 -18 11 5 -20 -15 -14 20 -2 z"/>
+      <path fill="url(#starGrad-tgip0c4)"
+            d="M180 77 l8.5 19 21 2.2 -15.5 14.5 5 21 -19 -11.5 -19 11.5 5 -21 -15.5 -14.5 21 -2.2 z"/>
+      <path d="M180 77 l8.5 19 -8.5 3 z" fill="rgba(255,250,220,0.65)"/>
+    </g>
+  </svg></g>
+  <g><svg x="190" y="90" width="210" height="210.0" viewBox="0 0 360 360" overflow="visible">
+    <defs>
+      <!-- body volume: highlight top-left, darker lower-right rim -->
+      <radialGradient id="bodyGrad-rvnoqr0" cx="40%" cy="32%" r="75%">
+        <stop offset="0%"  stop-color="#bc9366"/>
+        <stop offset="55%" stop-color="#A9743B"/>
+        <stop offset="100%" stop-color="#7a542a"/>
+      </radialGradient>
+      <radialGradient id="headGrad-rvnoqr0" cx="42%" cy="34%" r="78%">
+        <stop offset="0%"  stop-color="#bc9366"/>
+        <stop offset="60%" stop-color="#A9743B"/>
+        <stop offset="100%" stop-color="#7a542a"/>
+      </radialGradient>
+      <radialGradient id="bellyGrad-rvnoqr0" cx="50%" cy="30%" r="80%">
+        <stop offset="0%"  stop-color="#edd3af"/>
+        <stop offset="70%" stop-color="#E9CBA0"/>
+        <stop offset="100%" stop-color="#bfa683"/>
+      </radialGradient>
+      <!-- soft contact shadow under the head / behind the belly -->
+      <radialGradient id="softShadow-rvnoqr0" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="rgba(0,0,0,0.22)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+    </defs>
+    
+    <g><ellipse cx="180" cy="330" rx="86" ry="14" fill="rgba(0,0,0,0.12)"/></g>
+    
+
+    <g>
+      <rect x="150" y="268" width="18" height="54" rx="9" fill="#8A5A28"/>
+      <rect x="206" y="268" width="18" height="54" rx="9" fill="#8A5A28"/>
+      <ellipse cx="159" cy="322" rx="12" ry="8" fill="#3A2616"/>
+      <ellipse cx="215" cy="322" rx="12" ry="8" fill="#3A2616"/>
+    </g>
+
+    <g>
+      <ellipse cx="180" cy="236" rx="66" ry="60" fill="url(#bodyGrad-rvnoqr0)"/>
+      <!-- lower-right rim shade for extra roundness -->
+      <ellipse cx="180" cy="236" rx="66" ry="60" fill="url(#softShadow-rvnoqr0)"
+               transform="translate(22 20) scale(0.62)" opacity="0.5"/>
+      <!-- contact shadow cast by the head onto the top of the body -->
+      <ellipse cx="180" cy="196" rx="50" ry="18" fill="url(#softShadow-rvnoqr0)" opacity="0.5"/>
+    </g>
+    <g>
+      <ellipse cx="180" cy="256" rx="40" ry="38" fill="url(#bellyGrad-rvnoqr0)"/>
+      <!-- shadow where the belly meets the body at the top -->
+      <ellipse cx="180" cy="224" rx="40" ry="16" fill="url(#softShadow-rvnoqr0)" opacity="0.6"/>
+    </g>
+
+    <g>
+      <rect x="138" y="270" width="18" height="52" rx="9" fill="#A9743B"/>
+      <rect x="204" y="270" width="18" height="52" rx="9" fill="#A9743B"/>
+      <ellipse cx="147" cy="322" rx="12" ry="8" fill="#3A2616"/>
+      <ellipse cx="213" cy="322" rx="12" ry="8" fill="#3A2616"/>
+    </g>
+
+    <g>
+          <path fill="#E23B2E" d="M138 212 q42 22 86 0 l0 18 q-43 20 -86 0 z"/>
+          <path fill="#B82A20" d="M150 228 l-10 42 l20 0 l6 -40 z"/>
+          <path fill="#E23B2E" d="M150 228 l-14 40 l18 4 l8 -42 z"/>
+        </g>
+
+    <g>
+      <g transform="translate(55.80,-2.72) scale(0.46)">
+        <g fill="#7a4a2b" transform="translate(540,0) scale(-1,1) translate(200,0)">
+          <path d="M166.1 322.9C168.7 315.6 151.5 305.9 149.1 297.1C146.8 288.3 147.2 278.2 152.1 270.2C156.9 262.1 169.2 258.3 178.5 248.9C187.8 239.5 199.7 226.6 207.7 213.7C215.7 200.8 222.4 187.1 226.4 171.5C230.4 155.8 232.1 136.4 231.8 120.0C231.4 103.6 226.6 88.0 224.6 72.8C222.5 57.7 223.5 36.1 219.5 29.1C215.5 22.1 203.2 23.2 200.5 30.9C197.9 38.5 202.2 60.3 203.4 75.2C204.7 90.0 208.6 105.1 208.3 120.0C207.9 134.9 205.6 151.5 201.6 164.5C197.6 177.6 191.7 187.9 184.3 198.3C176.9 208.7 167.6 217.9 157.5 227.1C147.4 236.4 131.1 241.2 123.9 253.8C116.8 266.5 113.2 288.4 114.9 302.9C116.5 317.5 125.3 337.7 133.9 341.1C142.4 344.4 163.6 330.3 166.1 322.9Z"/><path d="M144.3 314.1C146.0 318.8 159.2 322.4 165.6 326.1C172.0 329.8 179.0 335.9 182.9 336.2C186.8 336.5 190.5 331.5 189.1 327.8C187.7 324.1 180.0 318.9 174.4 313.9C168.8 308.9 160.7 297.9 155.7 297.9C150.7 297.9 142.7 309.4 144.3 314.1Z"/><path d="M154.4 242.5C151.0 237.4 133.7 235.9 124.8 230.8C115.9 225.6 107.6 217.7 101.1 211.4C94.7 205.1 90.1 195.1 86.2 193.1C82.3 191.0 77.0 194.3 77.8 198.9C78.6 203.5 84.7 212.9 90.9 220.6C97.1 228.3 106.1 238.4 115.2 245.2C124.3 252.1 139.0 262.0 145.6 261.5C152.1 261.1 157.9 247.6 154.4 242.5Z"/><path d="M193.1 206.1C190.1 200.8 173.5 197.2 165.2 190.3C156.9 183.4 148.8 173.6 143.3 165.0C137.8 156.3 135.4 142.4 132.2 138.5C128.9 134.6 123.7 136.1 123.8 141.5C123.9 146.9 127.6 161.0 132.7 171.0C137.9 181.1 146.4 193.2 154.8 201.7C163.1 210.2 176.5 221.2 182.9 221.9C189.3 222.6 196.0 211.4 193.1 206.1Z"/><path d="M221.5 145.5C220.9 139.2 207.6 126.8 202.6 117.0C197.7 107.2 194.4 96.7 191.6 86.7C188.9 76.8 188.5 62.1 186.2 57.4C183.9 52.7 178.8 53.3 177.8 58.6C176.8 63.9 178.4 78.5 180.4 89.3C182.3 100.0 185.0 112.1 189.4 123.0C193.7 133.9 201.1 150.8 206.5 154.5C211.8 158.3 222.2 151.7 221.5 145.5Z"/>
+        </g>
+        <g fill="#7a4a2b" transform="translate(200,0)">
+          <path d="M166.1 322.9C168.7 315.6 151.5 305.9 149.1 297.1C146.8 288.3 147.2 278.2 152.1 270.2C156.9 262.1 169.2 258.3 178.5 248.9C187.8 239.5 199.7 226.6 207.7 213.7C215.7 200.8 222.4 187.1 226.4 171.5C230.4 155.8 232.1 136.4 231.8 120.0C231.4 103.6 226.6 88.0 224.6 72.8C222.5 57.7 223.5 36.1 219.5 29.1C215.5 22.1 203.2 23.2 200.5 30.9C197.9 38.5 202.2 60.3 203.4 75.2C204.7 90.0 208.6 105.1 208.3 120.0C207.9 134.9 205.6 151.5 201.6 164.5C197.6 177.6 191.7 187.9 184.3 198.3C176.9 208.7 167.6 217.9 157.5 227.1C147.4 236.4 131.1 241.2 123.9 253.8C116.8 266.5 113.2 288.4 114.9 302.9C116.5 317.5 125.3 337.7 133.9 341.1C142.4 344.4 163.6 330.3 166.1 322.9Z"/><path d="M144.3 314.1C146.0 318.8 159.2 322.4 165.6 326.1C172.0 329.8 179.0 335.9 182.9 336.2C186.8 336.5 190.5 331.5 189.1 327.8C187.7 324.1 180.0 318.9 174.4 313.9C168.8 308.9 160.7 297.9 155.7 297.9C150.7 297.9 142.7 309.4 144.3 314.1Z"/><path d="M154.4 242.5C151.0 237.4 133.7 235.9 124.8 230.8C115.9 225.6 107.6 217.7 101.1 211.4C94.7 205.1 90.1 195.1 86.2 193.1C82.3 191.0 77.0 194.3 77.8 198.9C78.6 203.5 84.7 212.9 90.9 220.6C97.1 228.3 106.1 238.4 115.2 245.2C124.3 252.1 139.0 262.0 145.6 261.5C152.1 261.1 157.9 247.6 154.4 242.5Z"/><path d="M193.1 206.1C190.1 200.8 173.5 197.2 165.2 190.3C156.9 183.4 148.8 173.6 143.3 165.0C137.8 156.3 135.4 142.4 132.2 138.5C128.9 134.6 123.7 136.1 123.8 141.5C123.9 146.9 127.6 161.0 132.7 171.0C137.9 181.1 146.4 193.2 154.8 201.7C163.1 210.2 176.5 221.2 182.9 221.9C189.3 222.6 196.0 211.4 193.1 206.1Z"/><path d="M221.5 145.5C220.9 139.2 207.6 126.8 202.6 117.0C197.7 107.2 194.4 96.7 191.6 86.7C188.9 76.8 188.5 62.1 186.2 57.4C183.9 52.7 178.8 53.3 177.8 58.6C176.8 63.9 178.4 78.5 180.4 89.3C182.3 100.0 185.0 112.1 189.4 123.0C193.7 133.9 201.1 150.8 206.5 154.5C211.8 158.3 222.2 151.7 221.5 145.5Z"/>
+        </g>
+      </g>
+    </g>
+
+    <g>
+      <ellipse cx="132" cy="168" rx="20" ry="13" fill="#8A5A28" transform="rotate(-24 132 168)"/>
+      <ellipse cx="228" cy="168" rx="20" ry="13" fill="#8A5A28" transform="rotate(24 228 168)"/>
+    </g>
+
+    <g>
+      <ellipse cx="180" cy="186" rx="52" ry="48" fill="url(#headGrad-rvnoqr0)"/>
+      <!-- lower rim shade on the head -->
+      <ellipse cx="184" cy="196" rx="44" ry="40" fill="url(#softShadow-rvnoqr0)" opacity="0.4"/>
+    </g>
+
+    <g>
+      <ellipse cx="180" cy="210" rx="30" ry="26" fill="#E9CBA0"/>
+      <circle cx="166" cy="180" r="6.5" fill="#2A1A10"/>
+      <circle cx="194" cy="180" r="6.5" fill="#2A1A10"/>
+      <circle cx="168" cy="178" r="2" fill="#fff"/>
+      <circle cx="196" cy="178" r="2" fill="#fff"/>
+      <path d="M170 214 q10 10 20 0" fill="none" stroke="#5A3A22" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <g>
+      <ellipse cx="180" cy="206" rx="13" ry="11" fill="#E23B2E"/>
+      <ellipse cx="176" cy="202" rx="4" ry="3" fill="rgba(255,255,255,0.55)"/>
+    </g>
+
+    
+  </svg></g>
+  <circle cx="239" cy="76" r="2.3" fill="#fff" opacity="0.99"/><circle cx="269" cy="135" r="3.1" fill="#fff" opacity="0.96"/><circle cx="30" cy="254" r="1.5" fill="#fff" opacity="0.60"/><circle cx="397" cy="15" r="1.9" fill="#fff" opacity="0.52"/><circle cx="29" cy="172" r="3.2" fill="#fff" opacity="0.90"/><circle cx="296" cy="16" r="2.5" fill="#fff" opacity="0.75"/><circle cx="82" cy="228" r="1.2" fill="#fff" opacity="0.90"/><circle cx="59" cy="7" r="2.7" fill="#fff" opacity="0.87"/><circle cx="345" cy="208" r="3.0" fill="#fff" opacity="0.87"/><circle cx="14" cy="86" r="1.4" fill="#fff" opacity="0.83"/><circle cx="153" cy="76" r="2.9" fill="#fff" opacity="0.66"/><circle cx="350" cy="142" r="1.5" fill="#fff" opacity="0.73"/><circle cx="230" cy="106" r="1.7" fill="#fff" opacity="0.92"/><circle cx="240" cy="90" r="2.7" fill="#fff" opacity="0.79"/><circle cx="160" cy="146" r="1.6" fill="#fff" opacity="0.54"/><circle cx="237" cy="134" r="2.1" fill="#fff" opacity="0.65"/><circle cx="181" cy="20" r="2.9" fill="#fff" opacity="0.60"/><circle cx="48" cy="217" r="2.4" fill="#fff" opacity="0.81"/><circle cx="373" cy="63" r="2.2" fill="#fff" opacity="0.70"/><circle cx="253" cy="173" r="1.6" fill="#fff" opacity="0.60"/><circle cx="247" cy="0" r="1.7" fill="#fff" opacity="0.89"/><circle cx="307" cy="110" r="1.9" fill="#fff" opacity="0.75"/><circle cx="102" cy="75" r="3.0" fill="#fff" opacity="0.64"/><circle cx="238" cy="15" r="3.1" fill="#fff" opacity="0.84"/><circle cx="179" cy="44" r="3.0" fill="#fff" opacity="0.64"/><circle cx="89" cy="116" r="2.9" fill="#fff" opacity="0.68"/><circle cx="0" cy="107" r="1.3" fill="#fff" opacity="1.00"/><circle cx="111" cy="147" r="2.4" fill="#fff" opacity="0.95"/><circle cx="288" cy="248" r="1.6" fill="#fff" opacity="0.61"/><circle cx="198" cy="101" r="2.9" fill="#fff" opacity="0.75"/><circle cx="378" cy="199" r="2.2" fill="#fff" opacity="0.96"/><circle cx="156" cy="149" r="3.1" fill="#fff" opacity="0.73"/><circle cx="135" cy="190" r="3.2" fill="#fff" opacity="0.94"/><circle cx="72" cy="63" r="1.8" fill="#fff" opacity="0.52"/><circle cx="54" cy="169" r="3.0" fill="#fff" opacity="0.62"/><circle cx="221" cy="73" r="1.4" fill="#fff" opacity="0.80"/><circle cx="257" cy="234" r="3.2" fill="#fff" opacity="0.62"/><circle cx="272" cy="30" r="3.0" fill="#fff" opacity="0.67"/><circle cx="125" cy="177" r="1.3" fill="#fff" opacity="0.92"/><circle cx="142" cy="70" r="2.5" fill="#fff" opacity="0.74"/><circle cx="222" cy="238" r="2.1" fill="#fff" opacity="0.99"/><circle cx="30" cy="149" r="2.6" fill="#fff" opacity="0.58"/><circle cx="243" cy="196" r="2.4" fill="#fff" opacity="0.53"/><circle cx="358" cy="121" r="2.0" fill="#fff" opacity="0.91"/><circle cx="302" cy="40" r="3.2" fill="#fff" opacity="0.66"/><circle cx="39" cy="56" r="1.2" fill="#fff" opacity="0.88"/><circle cx="306" cy="147" r="1.0" fill="#fff" opacity="0.70"/><circle cx="326" cy="113" r="1.4" fill="#fff" opacity="0.61"/><circle cx="64" cy="153" r="2.4" fill="#fff" opacity="0.66"/><circle cx="263" cy="31" r="3.1" fill="#fff" opacity="0.55"/><circle cx="396" cy="36" r="1.6" fill="#fff" opacity="0.54"/><circle cx="276" cy="112" r="2.6" fill="#fff" opacity="0.52"/><circle cx="24" cy="0" r="1.3" fill="#fff" opacity="0.75"/><circle cx="25" cy="252" r="1.8" fill="#fff" opacity="0.58"/><circle cx="85" cy="82" r="2.1" fill="#fff" opacity="0.76"/><circle cx="392" cy="181" r="2.4" fill="#fff" opacity="0.58"/><circle cx="113" cy="202" r="2.8" fill="#fff" opacity="0.75"/><circle cx="35" cy="185" r="2.8" fill="#fff" opacity="0.53"/><circle cx="45" cy="81" r="1.5" fill="#fff" opacity="0.63"/><circle cx="255" cy="142" r="3.1" fill="#fff" opacity="0.77"/><circle cx="344" cy="129" r="1.3" fill="#fff" opacity="0.82"/><circle cx="205" cy="135" r="2.9" fill="#fff" opacity="0.99"/><circle cx="248" cy="176" r="3.1" fill="#fff" opacity="0.66"/><circle cx="367" cy="127" r="3.1" fill="#fff" opacity="0.98"/><circle cx="374" cy="221" r="2.3" fill="#fff" opacity="0.52"/><circle cx="282" cy="21" r="2.5" fill="#fff" opacity="0.52"/><circle cx="382" cy="3" r="3.0" fill="#fff" opacity="0.92"/><circle cx="18" cy="112" r="1.3" fill="#fff" opacity="0.76"/><circle cx="20" cy="87" r="1.5" fill="#fff" opacity="0.71"/><circle cx="313" cy="199" r="3.2" fill="#fff" opacity="0.68"/>
+  
 </svg>

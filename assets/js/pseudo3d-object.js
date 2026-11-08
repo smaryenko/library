@@ -37,15 +37,30 @@ const OBJ_DEPTH = {
   glow: 6, mantel: 20, stockings: 34,
   // fireplace reuses shared keys: shadow -60, garland 24, gifts 10
 
-  // raceday — toy car parts: shadow back (reuses shared `shadow`), wheels and
+  // race — toy car parts: shadow back (reuses shared `shadow`), wheels and
   // undercarriage low, body mid, cabin/windows/number forward, spoiler highest.
   undercarriage: -20, 'wheel-back': -12, 'car-body': 0, 'side-stripe': 8,
   cabin: 16, window: 20, headlight: 24, number: 26, spoiler: 40,
 
-  // raceday — track props: base/ground back, road mid, kerbs + car forward,
+  // race — track props: base/ground back, road mid, kerbs + car forward,
   // signage/finish banner highest.
   'prop-base': -40, road: -10, ramp: 0, loop: 0, tiles: -6,
   kerb: 14, 'finish-line': 16, car: 24, bunting: 46, podium: 6, trophy: 30,
+
+  // reef — "A Day on the Reef". Every spread is one flat scene SVG; each
+  // movable layer is a flat, role-named group (books/reef/assets/js/props.js).
+  // Back → front. These keys are reef-only (no xmas/race part uses them).
+  sand: -46, 'shell-shadow': -44, 'crab-shadow': -44, 'turtle-shadow': -44,
+  swirl: -40, 'coral-back': -34, 'kelp-back': -34, rock: -28,
+  anemone: -12, 'coral-mid': -8, 'turtle-far': -6, 'anemone-tips': -4,
+  'seahorse-fin': 2, 'crab-shell': 2, shell: 4, 'octo-arms': 6, turtle: 6,
+  'fish-back': 8, eel: 8, 'eel-eye': 9, seahorse: 10, puffer: 12, octo: 12,
+  'puffer-ball': 14, crab: 14, fish: 16, school: 18, 'coral-front': 20,
+  'turtle-flipper': 20, 'kelp-left': 22, 'kelp-right': 22, 'crab-claw': 22,
+  'fish-front': 24, 'rock-front': 26,
+  'jelly-a': -10, 'jelly-b': 6, 'jelly-c': 18,
+  // reef effect layers (hidden at rest, like every fx-*)
+  'fx-sand': -20, 'fx-ripple': 10, 'fx-trail': 28, 'fx-bubbles': 30,
 
   // click-animation EFFECT parts (hidden at rest, revealed only while playing).
   // Any `data-part` whose name starts with `fx-` is an effect spawned by the

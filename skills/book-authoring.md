@@ -92,6 +92,74 @@ Text format per page is two lines: a big **title** word/name and a smaller
 **body** line that does NOT repeat the title. Image/text sides alternate each
 turn — the engine handles that; you only supply content.
 
+### The story is free — there is no required shape
+
+The two books that ship (xmas, race) happen to parade a big cast one
+character per spread, but **that is not a template to copy.** A book can be any
+story you like:
+
+- **Any number of characters.** One or two protagonists carried through the
+  whole book is perfectly good — you do NOT need a large cast introduced one by
+  one. Tell a real little story with the character(s) you have.
+- **Use real names.** A clownfish is a clownfish, a fox is a fox. Don't invent
+  cutesy nicknames (no "Pearl the clownfish", "Bolt the car") unless the user
+  asks for named characters. Plain species/role names read best.
+- **No bounds on length, cast size, plot, or animations.** Page count, how many
+  characters appear, what happens, and what each picture's click animation does
+  are all open. Fit them to the story, not to a formula.
+- **Text-only pages are optional.** They're one tool for an interlude, not a
+  requirement; a book of all object pages is fine, and so is using the single
+  caption line on each spread to carry the whole narrative.
+
+Pick the page count and structure that serve the story. Don't pad to match the
+other books' 14 pages, and don't add characters just to have more cards.
+
+### Multiple characters on one page — COPY the race book, don't reinvent it
+
+> Hard-won lesson (the reef book). Putting two+ characters on one spread and
+> animating them is **already solved** by the `race` book. Read
+> `books/race/assets/js/props.js` and mirror it. A clever-looking alternative
+> (wrapping each creature's whole SVG, stripping its parts, nesting groups) is
+> how the reef book got slow and buggy. Don't.
+
+The pattern that works, and why:
+
+- **Author the whole spread as ONE flat scene SVG.** One `viewBox="0 0 360 300"`,
+  all characters and scenery drawn directly into it in the SAME coordinate
+  space. The four cars on the start grid are just four `carAway(...)` calls
+  emitted into one SVG — not four embedded sub-SVGs.
+- **Tag each movable thing as a top-level `data-part` group named by ROLE**
+  (`car`, `bunting`, `fire`, `star`). The rig splits each `data-part` onto its
+  own Z layer. **Keep `data-part` groups FLAT — never nest one inside another.**
+  The splitter removes every other `data-part` node, so a nested child gets
+  deleted with its parent and the layer comes out empty. (This was the reef
+  "character vanished, only the shadow shows" bug.)
+- **One shared animation per scene via a tiny `sceneAnim([...tracks])` helper**
+  (see the bottom of `race/props.js`): it just hands `buildAnim` a fresh uid and
+  returns the `<style>`. Drop it right after the opening `<svg>` tag. Each track
+  targets a role name (`parts:'car'`) and moves ALL layers with that name
+  together. Several cars can share `data-part="car"` and animate as one.
+- **Place/scale a character with a plain `<g transform="translate() scale()">`
+  wrapper that has NO `data-part`.** `carAway()` does exactly this. A no-data-part
+  wrapper is never removed by the splitter, so the placement survives on every
+  layer.
+
+Two CSS gotchas that bit the reef book (worth stating so nobody re-discovers
+them the hard way):
+
+- **A CSS `animation` that sets `transform` REPLACES the element's static
+  `transform` attribute while playing.** So never put the placement transform
+  and an animated transform on the SAME element — the element will jump to the
+  origin and (if the keyframe scales) just balloon in place. Keep placement on
+  an outer no-data-part `<g>` and animate the inner group, OR bake the travel
+  into the keyframes from a known home position (as race does: the `car` sits at
+  its drawn spot and the keyframes translate from there).
+- **Scale once.** If a draw helper already applies `scale(s)`, don't wrap it in
+  another `scale(s)` — you get s² and a squashed shape (the reef shell bug).
+
+Follow this and a multi-character page is as easy as the race scenes were:
+emit the shapes into one SVG, name the movers, write a few keyframe tracks.
+
 ## 4. Per-book assets
 
 - **cover** — the shelf card preview. A single flat SVG scene is ideal (crisp,
@@ -101,6 +169,11 @@ turn — the engine handles that; you only supply content.
   is committable now; a raster `og.png` is the most broadly-supported form for
   social scrapers, so export one when you can render (see the no-checks note).
   Reference it from the book's `<meta property="og:image">` and the manifest.
+- **preview.js** — node-only scene for the cover + og image, built from the
+  book's own builders. `node tools/build-previews.js [id…]` regenerates
+  `cover.svg` / `og.svg` for every book that has one (the generic tool lives in
+  `tools/`; the scene stays with the book). Re-run it whenever character art
+  changes. `og.png` is a separate raster export of `og.svg`.
 - **backdrop.js** — this book's backdrop scene builder (the xmas book's winter
   night + snow). Optional: a book with no backdrop just omits it from the
   manifest. The backdrop is NOT shared — each book brings its own.
@@ -123,9 +196,17 @@ turn — the engine handles that; you only supply content.
 - [ ] **Detailed & believable look** — real form, materials, and faces with
       real structure; kid-friendly but never flat/under-detailed.
 - [ ] **Every picture ships a one-shot click animation** (via `buildAnim`,
-      embedded in its own SVG, fitting the character/caption).
+      embedded in its own SVG, fitting the character/caption). Animations are
+      **not** a fixed catalogue — the existing books' motions (wheelie, stomp,
+      glow…) are examples, not a menu. Invent whatever new one-shot best fits
+      each character; see `svg-character-authoring.md`.
+- [ ] Multi-character pages authored the **race-book way**: one flat scene SVG,
+      flat `data-part` groups named by role, `sceneAnim([...])` — NOT embedded
+      sub-SVGs or nested data-parts (see §3 and `svg-character-authoring.md`).
 - [ ] Depth keys for any NEW parts added to `OBJ_DEPTH` in
       `pseudo3d-object.js` (shared, so additive only — don't break other books).
+- [ ] If a reference image was given, the art actually **matches its distinctive
+      features**, verified by rendering (and by freezing animations mid-play).
 - [ ] Card shows on the shelf and links to the book; favicon + og resolve.
 - [ ] No stock art traced, embedded, or shipped (see `asset-licensing.md`).
 

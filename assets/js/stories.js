@@ -30,15 +30,27 @@ window.STORIES = [
     track: 'books/xmas/assets/audio/carol_of_the_bells.mp3'
   },
   {
-    id: 'raceday',
+    id: 'race',
     title: 'Race Day',
     blurb: 'Four toy cars zoom and chase around the living room!',
-    cover: 'books/raceday/cover.svg',
-    favicon: 'books/raceday/favicon.svg',
-    og: 'books/raceday/og.svg',
-    url: 'books/raceday/',
+    cover: 'books/race/cover.svg',
+    favicon: 'books/race/favicon.svg',
+    og: 'books/race/og.svg',
+    url: 'books/race/',
     theme: '#f2f0ea',
-    backdrop: 'mountLivingRoom', // books/raceday/assets/js/backdrop.js
-    track: 'books/raceday/assets/audio/racing.mp3'
+    backdrop: 'mountLivingRoom', // books/race/assets/js/backdrop.js
+    track: 'books/race/assets/audio/racing.mp3'
+  },
+  {
+    id: 'reef',
+    title: 'A Day on the Reef',
+    blurb: 'A clownfish chases a runaway shell and meets the whole reef!',
+    cover: 'books/reef/cover.svg',
+    favicon: 'books/reef/favicon.svg',
+    og: 'books/reef/og.svg',
+    url: 'books/reef/',
+    theme: '#06384f',
+    backdrop: 'mountReef', // books/reef/assets/js/backdrop.js
+    track: 'books/reef/assets/audio/seaside.mp3'
   }
 ];

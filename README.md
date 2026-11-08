@@ -13,13 +13,17 @@ little animation.** No WebGL, no build step, no libraries.
 > under-detailed placeholder art (no one-rectangle rug, no two-dot face). See
 > [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
 
-Two books ship today:
+Three books ship today:
 
 - **xmas** (Christmas): a Christmas tree, Santa in his sleigh, an elf, the nine
   reindeer, and a cozy fireplace.
-- **raceday**: four toy cars (Turbo, Bolt, Rusty, Jade) racing one lap around a
-  living room — a start grid, the hallway, a book-stack ramp, the kitchen
-  tiles, a shaggy rug, a loop-the-loop, and a friendly tie finish.
+- **race** (Race Day): four toy cars (Turbo, Bolt, Rusty, Jade) racing one lap
+  around a living room — a start grid, the hallway, a book-stack ramp, the
+  kitchen tiles, a shaggy rug, a loop-the-loop, and a friendly tie finish.
+- **reef** (A Day on the Reef): a clownfish chases a runaway spiral shell across
+  a sunlit reef, meeting a pufferfish, an octopus, a sea turtle, a seahorse, a
+  friendly moray eel, and a jellyfish — the shell turns out to be a hermit
+  crab's house, and the reef lights up to welcome a new friend.
 
 The multi-book `stories` shelf is in place: the engine, controls, and generic
 music player are shared, and each book owns its folder (page roster, backdrop,
@@ -35,14 +39,20 @@ stories/
     favicon.svg, og.svg       shelf icon (a bookshelf) + shelf social image
     css/  shelf.css, book.css
     js/   stories.js (manifest), shelf.js, storybook.js,
-          pseudo3d-object.js, anim.js, boot.js, music.js
+          pseudo3d-object.js, anim.js, motion.js, boot.js, music.js
+  tools/
+    build-previews.js   node tools/build-previews.js → regenerates each book's
+                        cover.svg + og.svg from its books/<id>/preview.js
   books/
     xmas/
       index.html, pages.js, favicon.svg, og.svg, cover.svg
       assets/ js/{backdrop,reindeer,tree,santa,elf,fireplace}.js  audio/*.mp3
-    raceday/
+    race/
       index.html, pages.js, favicon.svg, og.svg, cover.svg
       assets/ js/{backdrop,car,props}.js  audio/*.mp3
+    reef/
+      index.html, pages.js, favicon.svg, og.svg, cover.svg
+      assets/ js/{backdrop,reeflife,props}.js
   skills/                      committed authoring guides (NOT gitignored)
 ```
 
@@ -80,16 +90,20 @@ python3 -m http.server 8777
   one-shot animation (the dancer dances, a car pops a wheelie, the loop car
   laps the loop, Rudolph's nose glows). Tapping anywhere else turns the page.
 - **Music:** the top-right button toggles the book's looping track (xmas plays
-  "Carol of the Bells"; raceday has its own). It's off by default and starts on
+  "Carol of the Bells"; race has its own). It's off by default and starts on
   your click; a book with no track shows no button.
 
 ## The stories
 
 - **xmas (14 pages):** Christmas tree → Santa → Elf → a text-only interlude →
   the nine reindeer (Dasher … Rudolph) → a "Merry Christmas!" fireplace finale.
-- **raceday (14 pages):** the starting grid → the four racers (Turbo, Bolt,
+- **race (14 pages):** the starting grid → the four racers (Turbo, Bolt,
   Rusty, Jade) → a "GO!" interlude → the hallway, ramp, kitchen, shaggy carpet,
   and loop → a neck-and-neck interlude → a photo-finish tie where everybody wins.
+- **reef (14 pages, no text-only):** the reef at home → the clownfish → the
+  shell → the current → the pufferfish, octopus, sea turtle, seahorse → coral
+  garden and kelp forest scenes → a friendly moray eel → the hermit-crab reveal
+  → the jellyfish → the whole reef lighting up for a new friend.
 
 Each spread shows one object on one page and its line of text on the other; the
 image/text side alternates as you turn.
@@ -117,8 +131,10 @@ The shared engine is content-agnostic; each book supplies its own content.
 - **Click animation** — every object ships its OWN short animation inside its
   SVG (no central/global keyframes). Builders author it with the shared
   `assets/js/anim.js` helper (`buildAnim(uid, { tracks })`), which returns a
-  scoped `<style>` block; the engine toggles an `is-playing` class per layer on
-  tap and clears it when the motion ends. Animations can also **spawn
+  scoped `<style>` block, or compose moves from the shared Motion library
+  (`assets/js/motion.js`, whose `Motion.rig` lets a limb `follow` its body
+  while doing its own motion). The engine toggles an `is-playing` class per
+  layer on tap and clears it when the motion ends. Animations can also **spawn
   effect-only elements** (`data-part="fx-…"`, hidden at rest) — a ground crack
   under a stomp, exhaust clouds from a revving car, a sparkle burst. See
   [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
@@ -166,8 +182,9 @@ The shared engine is content-agnostic; each book supplies its own content.
 - [x] Multi-book shelf: card grid landing page driven by a manifest
 - [x] Shared, content-agnostic engine (stage, flip, nav, tilt, idle sway, music)
 - [x] Per-book folders: roster, backdrop, character art, favicon, cover, track
-- [x] **Two books live:** xmas (tree, Santa, elf, fireplace + the nine distinct
-      reindeer) and raceday (four toy cars + the track scenes around one lap)
+- [x] **Three books live:** xmas (tree, Santa, elf, fireplace + the nine
+      distinct reindeer), race (four toy cars + the track scenes around one
+      lap), and reef (a clownfish's shell-chase + a reef full of sea creatures)
 - [x] Tap-to-animate: every picture plays its own one-shot click animation,
       authored via the shared `anim.js` / `buildAnim` helper — distinct per
       character, rich and full-page (objects can drive/leap off the page and
@@ -181,7 +198,7 @@ The shared engine is content-agnostic; each book supplies its own content.
       backdrops + looping music track (off by default)
 - [x] Shelf + per-book favicons, OG/social images (SVG), reduced-motion support
 - [ ] Raster `og.png` exports (broadest social-scraper support)
-- [ ] More books (the shelf is built for many; two exist today)
+- [ ] More books (the shelf is built for many; three exist today)
 - [ ] Custom festive font (currently the system stack)
 
 ## License / assets

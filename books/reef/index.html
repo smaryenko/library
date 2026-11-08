@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>A Day on the Reef</title>
+  <!-- per-book favicon + social preview -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#06384f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="A Day on the Reef">
+  <meta property="og:description" content="A clownfish chases a runaway shell and meets the whole reef!">
+  <meta property="og:url" content="https://smaryenko.github.io/library/books/reef/">
+  <meta property="og:image" content="https://smaryenko.github.io/library/books/reef/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://smaryenko.github.io/library/books/reef/og.png">
+  <!-- shared engine styles (two levels up) -->
+  <link rel="stylesheet" href="../../assets/css/book.css">
+</head>
+<body>
+  <a class="library-btn" href="../../index.html" aria-label="Back to the library">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor"
+        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="label">Library</span>
+  </a>
+
+  <div class="book-stage" id="stage" tabindex="0"></div>
+
+  <div class="hint">
+    Tap/click the right half → next · left half → back · swipe right-to-left = next, left-to-right = back · arrows/Space/PageUp·Down · hover to tilt
+  </div>
+
+  <!-- SHARED: manifest + engine + controls (top-level assets/) -->
+  <script src="../../assets/js/stories.js"></script>
+  <script src="../../assets/js/pseudo3d-object.js"></script>
+  <script src="../../assets/js/anim.js"></script>
+  <script src="../../assets/js/motion.js"></script>
+  <script src="../../assets/js/music.js"></script>
+  <script src="../../assets/js/storybook.js"></script>
+
+  <!-- THIS book's content: backdrop, builders, page roster -->
+  <script src="assets/js/backdrop.js"></script>
+  <script src="assets/js/reeflife.js"></script>
+  <script src="assets/js/props.js"></script>
+  <script src="pages.js"></script>
+
+  <!-- shared boot: mounts backdrop + roster, wires the music track -->
+  <script src="../../assets/js/boot.js"></script>
+</body>
+</html>

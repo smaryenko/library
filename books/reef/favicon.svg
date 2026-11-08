@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Reef favicon: original vector. Teal water disc with a little clownfish.
+       Matches the book's palette. Not traced from any reference. -->
+  <defs>
+    <radialGradient id="rfBg" cx="50%" cy="36%" r="72%">
+      <stop offset="0%"  stop-color="#49c6da"/>
+      <stop offset="100%" stop-color="#0c6f98"/>
+    </radialGradient>
+    <radialGradient id="rfFish" cx="40%" cy="34%" r="74%">
+      <stop offset="0%"  stop-color="#ffa35a"/>
+      <stop offset="60%" stop-color="#f4701e"/>
+      <stop offset="100%" stop-color="#c85514"/>
+    </radialGradient>
+  </defs>
+
+  <!-- water disc -->
+  <circle cx="32" cy="32" r="31" fill="url(#rfBg)"/>
+
+  <!-- little clownfish -->
+  <g transform="translate(32 34)">
+    <!-- tail -->
+    <path d="M16 0 q10 -8 16 -7 q-2 7 0 14 q-6 1 -16 -7 z" fill="#f4701e"/>
+    <path d="M16 0 q10 -8 16 -7 q-2 7 0 14 q-6 1 -16 -7 z" fill="none" stroke="#20242b" stroke-width="2.4" stroke-linejoin="round"/>
+    <!-- body -->
+    <path d="M-20 0 q0 -14 18 -15 q16 -1 24 8 q4 4 2 8 q-6 9 -26 8 q-18 -1 -18 -9 z" fill="url(#rfFish)"/>
+    <!-- white bands with black edge -->
+    <path d="M-6 -11 q4 12 0 23 q-5 -1 -7 -3 q3 -9 1 -18 q3 -1 6 -2 z" fill="#fdfbf4"/>
+    <path d="M-6 -11 q4 12 0 23" fill="none" stroke="#20242b" stroke-width="1.4"/>
+    <path d="M10 -11 q4 12 0 24 q5 -1 8 -4 q3 -9 0 -18 q-4 -2 -8 -2 z" fill="#fdfbf4"/>
+    <path d="M10 -11 q4 12 0 24" fill="none" stroke="#20242b" stroke-width="1.4"/>
+    <!-- eye -->
+    <circle cx="-13" cy="-2" r="3.6" fill="#fff"/>
+    <circle cx="-14" cy="-2" r="2" fill="#20242b"/>
+    <circle cx="-14.6" cy="-2.8" r="0.7" fill="#fff"/>
+  </g>
+</svg>

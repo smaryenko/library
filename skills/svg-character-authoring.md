@@ -106,10 +106,25 @@ of turning the page — the storybook engine routes image taps to the object's
   (shadow squash/stretch, trailing parts, a glint) and **spawned effect
   elements** (crack, smoke, sparkles — see below) so it reads as alive, not a
   tiny shudder.
-- **No shared/duplicated animations and no central keyframe registry.** Because
-  each one is unique to its object, it ships with that object — not in a global
-  CSS file. If two pages happen to want the same feel, each still authors its
-  own (keyed to its own `uid`).
+- **Shared building blocks, per-picture animations.** The *finished* animation
+  still ships inside each object's own SVG (no global CSS, no keyframe
+  registry), and no two characters do the same thing. But the *moves* it is
+  composed from may come from the shared **Motion library**
+  (`assets/js/motion.js`): parametric primitives distilled from the shipped
+  books (`dash`, `hop`, `salto`, `osc`, `pulse`, `glowPulse`, `orbit`) plus newer
+  ones (`approach`, `tumble`, `roll`, `jet`, `spiralRise`, `scuttle`, `recoil`,
+  `duck`, `blink`, and fx `puff` / `spark` / `rise` / `show`), with combinators
+  `within` (time window), `mix` (layer moves), `mirror`, `pick`, `amp`.
+  Compose them with your own parameters and windows; add a new primitive to the
+  library when a character needs a motion nobody has yet.
+- **Limbs that travel AND move: use `Motion.rig` + `follow`.** Since one element
+  can only run one track, a flipper can't be in both a "swim off the page"
+  track and a "stroke" track. `Motion.rig({ dur, parts: { … } })` solves it:
+  a member with `follow: 'turtle'` gets the parent's move composed with its own
+  (each about its own pivot, written as one explicit transform), and every
+  track in the rig is sampled on one shared time grid, so the limb stays
+  attached. A member with `parts: []` is a virtual parent; `parts: [...]`
+  drives several layers with one track. See `books/reef/assets/js/props.js`.
 - **The animation may SPAWN new elements — it's not limited to the existing
   parts.** Add effect-only bits that appear just for the animation: a crack
   splitting the page under a stomp, exhaust/gas clouds puffing from a revving
@@ -147,6 +162,52 @@ of turning the page — the storybook engine routes image taps to the object's
 A single-page prop/scene (tree, fireplace, a track section) counts as a picture
 too — animate its most alive element (the star twinkles, the fire flickers, the
 scene's car does the thing the caption says).
+
+### Animation gotchas (these cost a whole session on the reef book)
+
+- **One element = one track.** A CSS `animation` shorthand is NOT additive: a
+  second `animation` rule on the same element REPLACES the first. So a part
+  cannot be in both a "whole-body move" track and its own "fin flutter" track —
+  the flutter wins and the part stops travelling with the body (the reef
+  clownfish's tail detaching). Put each part in exactly one track; if you want a
+  limb to flutter *and* travel, bake both into that limb's single track, or move
+  the whole character as one group and skip the per-limb flutter.
+- **Animated transform REPLACES a static `transform` attribute.** If a group has
+  `transform="translate() scale()"` for placement AND an animation whose
+  keyframes set `transform`, the placement is discarded while playing — the
+  thing jumps to the origin and (if the keyframe scales) just enlarges in place.
+  Fix: placement on an outer **no-`data-part`** `<g>`, animate the inner group;
+  or author the character at its home position and let keyframes translate from
+  there (how the car scenes do it).
+- **`transform-box`:** `view-box` (default) measures `transform-origin` in the
+  SVG's viewBox coords — good for rotating several parts about one shared pivot.
+  `fill-box` measures it against the element's own bbox (origin `50% 50%`) —
+  good for a part spinning/scaling about ITSELF (a wheel, a puff). Picking the
+  wrong one is why a "spin" rotates about the page corner instead of the hub.
+- **Verify animation by freezing mid-playback, not just the rest frame.** A
+  resting screenshot looks fine while the motion is broken. Render, call the
+  object's `play()`, pause the running animations at ~40–60% (set
+  `getAnimations()` currentTime), and screenshot THAT. The reef "everything just
+  enlarges" bug was only visible mid-animation.
+
+## Match the reference, then check against it
+
+When the user supplies a reference image, the target is to **look like that
+reference**, not a generic cute version of the animal. Open the reference
+(convert webp/avif via `sips -s format png`), note its distinguishing features
+(seahorse: head-right, long down-snout, crown spikes, spiny back ridge, bony
+ring segments, forward tail coil), and reproduce those specific features. Then
+render your result next to the mental checklist of those features and fix what's
+missing. "Reads as roughly a seahorse" is not the bar when a reference exists.
+
+## When something is hard, look at the shipped books FIRST
+
+Before inventing machinery (a new composer, a new animation scheme, a new layer
+model), read how `books/race/` and `books/xmas/` already do the same thing. The
+reef book got hard and buggy precisely because it reinvented multi-character
+composition instead of copying the race book's one-flat-SVG + `data-part` role
++ `sceneAnim` pattern. The engine rewards flat, role-named `data-part` groups in
+a single scene SVG; it punishes nesting and per-character sub-SVGs.
 
 ## Licensing
 

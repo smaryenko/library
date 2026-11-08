@@ -31,7 +31,8 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
   faces with real structure. The thing to avoid is placeholder-flat art (a
   one-rectangle rug, a two-dot face) — push toward realistic detail.
 - **Every picture ships its own one-shot click animation**, embedded in the
-  object's SVG via the shared `buildAnim` helper (`assets/js/anim.js`). Tapping
+  object's SVG via the shared `buildAnim` helper (`assets/js/anim.js`), usually
+  composed from the shared Motion library primitives (`assets/js/motion.js`). Tapping
   a pop-up image plays it; no shared or global animations. Make it rich and
   full-page, and feel free to **spawn effect-only elements** for the beat (a
   ground crack, exhaust clouds, a sparkle) — drawn as `fx-*` parts hidden at

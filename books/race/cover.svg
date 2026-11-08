@@ -1,0 +1,268 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="400" height="300">
+  <!-- Preview art for Race Day — generated from the book's own car builder
+       (car.js): Turbo and Bolt neck and neck on the living-room floor, with the
+       orange loop, the checkered finish and pennant bunting. Original vector. -->
+  <defs>
+    <linearGradient id="pxWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6ecd8"/><stop offset="100%" stop-color="#e8d6b6"/>
+    </linearGradient>
+    <linearGradient id="pxFloor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d9b47e"/><stop offset="100%" stop-color="#c49a62"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="150" fill="url(#pxWall)"/>
+  <rect y="140" width="400" height="10" fill="#fffaf0"/>
+  <rect y="150" width="400" height="150" fill="url(#pxFloor)"/>
+  <line x1="0" y1="159.8" x2="400" y2="159.8" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/><line x1="0" y1="176.0" x2="400" y2="176.0" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/><line x1="0" y1="195.8" x2="400" y2="195.8" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/><line x1="0" y1="218.5" x2="400" y2="218.5" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/><line x1="0" y1="243.7" x2="400" y2="243.7" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/><line x1="0" y1="270.9" x2="400" y2="270.9" stroke="#b8925e" stroke-width="1.5" opacity="0.5"/>
+  <circle cx="300" cy="120" r="74" fill="none" stroke="#f4621f" stroke-width="18"/>
+  <circle cx="300" cy="120" r="74" fill="none" stroke="#ff8a4a" stroke-width="6" opacity="0.7"/>
+  <circle cx="300" cy="120" r="61" fill="none" stroke="#c84a12" stroke-width="3"/>
+  <path d="M0 36 Q200 88 400 36" fill="none" stroke="#9aa0a8" stroke-width="2"/>
+  <path d="M24.3 42.7 L42.3 42.7 L33.3 59.7 Z" fill="#e23b2e"/><path d="M57.7 49.0 L75.7 49.0 L66.7 66.0 Z" fill="#ffffff"/><path d="M91.0 54.4 L109.0 54.4 L100.0 71.4 Z" fill="#e23b2e"/><path d="M124.3 58.5 L142.3 58.5 L133.3 75.5 Z" fill="#ffffff"/><path d="M157.7 61.1 L175.7 61.1 L166.7 78.1 Z" fill="#e23b2e"/><path d="M191.0 62.0 L209.0 62.0 L200.0 79.0 Z" fill="#ffffff"/><path d="M224.3 61.1 L242.3 61.1 L233.3 78.1 Z" fill="#e23b2e"/><path d="M257.7 58.5 L275.7 58.5 L266.7 75.5 Z" fill="#ffffff"/><path d="M291.0 54.4 L309.0 54.4 L300.0 71.4 Z" fill="#e23b2e"/><path d="M324.3 49.0 L342.3 49.0 L333.3 66.0 Z" fill="#ffffff"/><path d="M357.7 42.7 L375.7 42.7 L366.7 59.7 Z" fill="#e23b2e"/>
+  <rect y="258" width="400" height="28" fill="#1b1e24"/>
+  <rect x="0.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="14.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="28.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="42.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="56.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="70.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="84.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="98.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="112.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="126.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="140.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="154.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="168.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="182.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="196.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="210.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="224.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="238.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="252.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="266.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="280.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="294.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="308.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="322.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="336.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="350.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="364.0" y="258.0" width="14.0" height="14.0" fill="#fff"/><rect x="378.0" y="272.0" width="14.0" height="14.0" fill="#fff"/><rect x="392.0" y="258.0" width="14.0" height="14.0" fill="#fff"/>
+  <g><svg x="150" y="90" width="250" height="208.3" viewBox="0 0 360 300" overflow="visible">
+    <defs>
+      <!-- body volume: light top-left to dark lower-right -->
+      <linearGradient id="carBody-cdzp2s6" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#659fe8"/>
+        <stop offset="48%" stop-color="#2F7DE0"/>
+        <stop offset="100%" stop-color="#21589d"/>
+      </linearGradient>
+      <linearGradient id="carCabin-cdzp2s6" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#4f7fbc"/>
+        <stop offset="100%" stop-color="#1b4a85"/>
+      </linearGradient>
+      <linearGradient id="carGlass-cdzp2s6" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"  stop-color="#ffffff"/>
+        <stop offset="40%" stop-color="#bfe3f2"/>
+        <stop offset="100%" stop-color="#8faab6"/>
+      </linearGradient>
+      <radialGradient id="carTyre-cdzp2s6" cx="38%" cy="34%" r="70%">
+        <stop offset="0%"  stop-color="#5a5b5f"/>
+        <stop offset="70%" stop-color="#23242a"/>
+        <stop offset="100%" stop-color="#17171b"/>
+      </radialGradient>
+      <radialGradient id="carSoft-cdzp2s6" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="rgba(0,0,0,0.22)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+    </defs>
+    
+
+    <g>
+      <ellipse cx="180" cy="236" rx="130" ry="20" fill="rgba(0,0,0,0.14)"/>
+    </g>
+    <g opacity="0"><g>
+         <circle cx="272" cy="212" r="13" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="265.5" cy="214.6" r="9.1" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="277.2" cy="208.1" r="7.8" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+              <g opacity="0"><g>
+         <circle cx="292" cy="206" r="16" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="284" cy="209.2" r="11.2" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="298.4" cy="201.2" r="9.6" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+              <g opacity="0"><g>
+         <circle cx="312" cy="212" r="19" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="302.5" cy="215.8" r="13.299999999999999" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="319.6" cy="206.3" r="11.4" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+
+    <g>
+      <rect x="60" y="196" width="196" height="26" rx="12" fill="#21589d"/>
+    </g>
+
+    <!-- back wheel sits behind the body; front wheel in front (own layer) -->
+    <g>
+      <circle cx="226" cy="214" r="30" fill="url(#carTyre-cdzp2s6)"/>
+      <circle cx="226" cy="214" r="14" fill="#e9edf2"/>
+      <circle cx="226" cy="214" r="14" fill="none" stroke="#a8abae" stroke-width="2"/>
+    </g>
+
+    <g>
+        <rect x="250" y="150" width="10" height="46" rx="3" fill="#21589d"/>
+        <rect x="236" y="138" width="54" height="14" rx="6" fill="#2F7DE0"/>
+        <rect x="236" y="138" width="54" height="5" rx="2.5" fill="#659fe8"/>
+      </g>
+
+    <g>
+      <!-- lower hull -->
+      <path d="M56 200
+               q4 -34 44 -40
+               l44 -6
+               q22 -30 60 -30
+               q46 0 66 36
+               l22 6
+               q24 6 24 34
+               q0 10 -12 12
+               l-236 0
+               q-14 -2 -12 -14 z"
+            fill="url(#carBody-cdzp2s6)"/>
+      <!-- top highlight sweep -->
+      <path d="M72 168 q60 -40 150 -26 q24 4 36 20 q-120 -18 -186 18 z"
+            fill="#659fe8" opacity="0.55"/>
+      <!-- lower-right rim shade for roundness -->
+      <path d="M60 206 l236 0 q-120 14 -236 0 z" fill="url(#carSoft-cdzp2s6)" opacity="0.6"/>
+    </g>
+
+    <g>
+      <path d="M64 190 l188 -2 l0 12 l-188 4 z" fill="#82b1ec"/>
+      <path d="M64 196 l188 -2 l0 4 l-188 3 z" fill="#296ec5" opacity="0.6"/>
+    </g>
+
+    <g>
+      <!-- rounded cabin / roof -->
+      <path d="M126 150 q18 -34 56 -34 q40 0 56 32 l-6 10 q-54 -22 -100 0 z"
+            fill="url(#carCabin-cdzp2s6)"/>
+    </g>
+
+    <g>
+      <path d="M136 150 q16 -24 46 -24 q32 0 46 22 q-46 -16 -92 2 z"
+            fill="url(#carGlass-cdzp2s6)"/>
+      <path d="M142 146 q14 -16 36 -16 l-26 18 z" fill="#ffffff" opacity="0.5"/>
+    </g>
+
+    <g>
+      <ellipse cx="66" cy="178" rx="9" ry="7" fill="#fff6cf"/>
+      <ellipse cx="66" cy="178" rx="9" ry="7" fill="none" stroke="#21589d" stroke-width="1.5"/>
+    </g>
+
+    <g>
+      <circle cx="150" cy="178" r="20" fill="#ffffff" opacity="0.92"/>
+      <text x="150" y="186" text-anchor="middle"
+            font-family="system-ui, Segoe UI, Roboto, sans-serif"
+            font-weight="800" font-size="24" fill="#1d2330">7</text>
+    </g>
+
+    <g>
+      <circle cx="110" cy="216" r="32" fill="url(#carTyre-cdzp2s6)"/>
+      <circle cx="110" cy="216" r="15" fill="#e9edf2"/>
+      <circle cx="110" cy="216" r="15" fill="none" stroke="#a8abae" stroke-width="2"/>
+      <circle cx="110" cy="216" r="4" fill="#a8abae"/>
+    </g>
+  </svg></g>
+  <g><svg x="-20" y="120" width="270" height="225.0" viewBox="0 0 360 300" overflow="visible">
+    <defs>
+      <!-- body volume: light top-left to dark lower-right -->
+      <linearGradient id="carBody-czbh2u3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#ea6e64"/>
+        <stop offset="48%" stop-color="#E23B2E"/>
+        <stop offset="100%" stop-color="#9e2920"/>
+      </linearGradient>
+      <linearGradient id="carCabin-czbh2u3" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#c15249"/>
+        <stop offset="100%" stop-color="#8b1e16"/>
+      </linearGradient>
+      <linearGradient id="carGlass-czbh2u3" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"  stop-color="#ffffff"/>
+        <stop offset="40%" stop-color="#bfe3f2"/>
+        <stop offset="100%" stop-color="#8faab6"/>
+      </linearGradient>
+      <radialGradient id="carTyre-czbh2u3" cx="38%" cy="34%" r="70%">
+        <stop offset="0%"  stop-color="#5a5b5f"/>
+        <stop offset="70%" stop-color="#23242a"/>
+        <stop offset="100%" stop-color="#17171b"/>
+      </radialGradient>
+      <radialGradient id="carSoft-czbh2u3" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="rgba(0,0,0,0.22)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      </radialGradient>
+    </defs>
+    
+
+    <g>
+      <ellipse cx="180" cy="236" rx="130" ry="20" fill="rgba(0,0,0,0.14)"/>
+    </g>
+    <g opacity="0"><g>
+         <circle cx="272" cy="212" r="13" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="265.5" cy="214.6" r="9.1" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="277.2" cy="208.1" r="7.8" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+              <g opacity="0"><g>
+         <circle cx="292" cy="206" r="16" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="284" cy="209.2" r="11.2" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="298.4" cy="201.2" r="9.6" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+              <g opacity="0"><g>
+         <circle cx="312" cy="212" r="19" fill="#cfd4da" opacity="0.5"/>
+         <circle cx="302.5" cy="215.8" r="13.299999999999999" fill="#dfe3e8" opacity="0.45"/>
+         <circle cx="319.6" cy="206.3" r="11.4" fill="#e7eaee" opacity="0.4"/>
+       </g></g>
+
+    <g>
+      <rect x="60" y="196" width="196" height="26" rx="12" fill="#9e2920"/>
+    </g>
+
+    <!-- back wheel sits behind the body; front wheel in front (own layer) -->
+    <g>
+      <circle cx="226" cy="214" r="30" fill="url(#carTyre-czbh2u3)"/>
+      <circle cx="226" cy="214" r="14" fill="#e9edf2"/>
+      <circle cx="226" cy="214" r="14" fill="none" stroke="#a8abae" stroke-width="2"/>
+    </g>
+
+    <g>
+        <rect x="246" y="156" width="9" height="40" rx="3" fill="#9e2920"/>
+        <rect x="280" y="156" width="9" height="40" rx="3" fill="#9e2920"/>
+        <rect x="232" y="146" width="64" height="12" rx="6" fill="#E23B2E"/>
+        <rect x="232" y="146" width="64" height="4" rx="2" fill="#ea6e64"/>
+      </g>
+
+    <g>
+      <!-- lower hull -->
+      <path d="M56 200
+               q4 -34 44 -40
+               l44 -6
+               q22 -30 60 -30
+               q46 0 66 36
+               l22 6
+               q24 6 24 34
+               q0 10 -12 12
+               l-236 0
+               q-14 -2 -12 -14 z"
+            fill="url(#carBody-czbh2u3)"/>
+      <!-- top highlight sweep -->
+      <path d="M72 168 q60 -40 150 -26 q24 4 36 20 q-120 -18 -186 18 z"
+            fill="#ea6e64" opacity="0.55"/>
+      <!-- lower-right rim shade for roundness -->
+      <path d="M60 206 l236 0 q-120 14 -236 0 z" fill="url(#carSoft-czbh2u3)" opacity="0.6"/>
+    </g>
+
+    <g>
+      <path d="M64 190 l188 -2 l0 12 l-188 4 z" fill="#ee8982"/>
+      <path d="M64 196 l188 -2 l0 4 l-188 3 z" fill="#c73428" opacity="0.6"/>
+    </g>
+
+    <g>
+      <!-- rounded cabin / roof -->
+      <path d="M126 150 q18 -34 56 -34 q40 0 56 32 l-6 10 q-54 -22 -100 0 z"
+            fill="url(#carCabin-czbh2u3)"/>
+    </g>
+
+    <g>
+      <path d="M136 150 q16 -24 46 -24 q32 0 46 22 q-46 -16 -92 2 z"
+            fill="url(#carGlass-czbh2u3)"/>
+      <path d="M142 146 q14 -16 36 -16 l-26 18 z" fill="#ffffff" opacity="0.5"/>
+    </g>
+
+    <g>
+      <ellipse cx="66" cy="178" rx="9" ry="7" fill="#fff6cf"/>
+      <ellipse cx="66" cy="178" rx="9" ry="7" fill="none" stroke="#9e2920" stroke-width="1.5"/>
+    </g>
+
+    <g>
+      <circle cx="150" cy="178" r="20" fill="#ffffff" opacity="0.92"/>
+      <text x="150" y="186" text-anchor="middle"
+            font-family="system-ui, Segoe UI, Roboto, sans-serif"
+            font-weight="800" font-size="24" fill="#1d2330">1</text>
+    </g>
+
+    <g>
+      <circle cx="110" cy="216" r="32" fill="url(#carTyre-czbh2u3)"/>
+      <circle cx="110" cy="216" r="15" fill="#e9edf2"/>
+      <circle cx="110" cy="216" r="15" fill="none" stroke="#a8abae" stroke-width="2"/>
+      <circle cx="110" cy="216" r="4" fill="#a8abae"/>
+    </g>
+  </svg></g>
+  
+</svg>
