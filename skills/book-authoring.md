@@ -112,6 +112,13 @@ story you like:
   requirement; a book of all object pages is fine, and so is using the single
   caption line on each spread to carry the whole narrative.
 
+### Not every book has to be pseudo-3D SVG
+
+If the pictures should be *real* objects (planets, globes) showing real
+imagery, follow `real-sphere-books.md` (the `space` book). Same engine and
+roster; the book brings its own canvas renderer and tap-to-zoom, and turns
+the tilt off for itself only.
+
 Pick the page count and structure that serve the story. Don't pad to match the
 other books' 14 pages, and don't add characters just to have more cards.
 
@@ -200,6 +207,8 @@ emit the shapes into one SVG, name the movers, write a few keyframe tracks.
 - [ ] The manifest `blurb` is a short, **kid-friendly** line (what a child
       will see/meet), not a technical description of the tech.
 - [ ] One entry added to `assets/js/stories.js`.
+- [ ] (Real-object books: follow `real-sphere-books.md` instead of the three
+      SVG items below, and credit every texture in the book README.)
 - [ ] Characters authored as layered `data-part` SVG (follow
       `3d-animation-from-reference.md` + `svg-character-authoring.md`).
 - [ ] **Detailed & believable look** — real form, materials, and faces with

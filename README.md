@@ -1,4 +1,4 @@
-# stories — pseudo-3D pop-up storybooks
+# stories — pop-up storybooks
 
 A small, dependency-free web toy: a **shelf of storybooks**. The landing page
 shows a grid of cards, one per book; open a book and it becomes an open
@@ -13,7 +13,7 @@ little animation.** No WebGL, no build step, no libraries.
 > under-detailed placeholder art (no one-rectangle rug, no two-dot face). See
 > [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
 
-Three books ship today:
+Four books ship today:
 
 - **xmas** (Christmas): a Christmas tree, Santa in his sleigh, an elf, the nine
   reindeer, and a cozy fireplace.
@@ -24,6 +24,10 @@ Three books ship today:
   a sunlit reef, meeting a pufferfish, an octopus, a sea turtle, a seahorse, a
   friendly moray eel, and a jellyfish — the shell turns out to be a hermit
   crab's house, and the reef lights up to welcome a new friend.
+- **space** (Our Solar System): the Sun, eight planets, the Moon, Pluto, and
+  both asteroid belts. Unlike the others, these are **real rotating spheres**
+  made from real surface maps, not SVG. Tap a picture and it flies up to fill
+  the screen.
 
 The multi-book `stories` shelf is in place: the engine, controls, and generic
 music player are shared, and each book owns its folder (page roster, backdrop,
@@ -53,6 +57,10 @@ stories/
     reef/
       index.html, pages.js, favicon.svg, og.svg, cover.svg
       assets/ js/{backdrop,reeflife,props}.js
+    space/
+      index.html, pages.js, favicon.svg, og.png, cover.png, preview.py
+      assets/ js/{backdrop,solar,scenes}.js  js/tex/*.js (baked maps)
+              css/planets.css  audio/*.mp3
   skills/                      committed authoring guides (NOT gitignored)
 ```
 
@@ -70,6 +78,8 @@ You should not need to touch the engine. Full steps and the folder contract are
 in [`skills/book-authoring.md`](skills/book-authoring.md); the visual technique
 (turning a reference into a layered pop-up object) is in
 [`skills/3d-animation-from-reference.md`](skills/3d-animation-from-reference.md).
+For real rendered objects instead of SVG art, see
+[`skills/real-sphere-books.md`](skills/real-sphere-books.md).
 
 ## Run
 
@@ -104,6 +114,9 @@ python3 -m http.server 8777
   shell → the current → the pufferfish, octopus, sea turtle, seahorse → coral
   garden and kelp forest scenes → a friendly moray eel → the hermit-crab reveal
   → the jellyfish → the whole reef lighting up for a new friend.
+- **space (14 pages):** the whole system on its orbits → the Sun → Mercury →
+  Venus → Earth with the Moon → the Moon → Mars → the Asteroid Belt → Jupiter
+  → Saturn → Uranus → Neptune → Pluto with Charon → the Kuiper Belt.
 
 Each spread shows one object on one page and its line of text on the other; the
 image/text side alternates as you turn.
@@ -182,7 +195,7 @@ The shared engine is content-agnostic; each book supplies its own content.
 - [x] Multi-book shelf: card grid landing page driven by a manifest
 - [x] Shared, content-agnostic engine (stage, flip, nav, tilt, idle sway, music)
 - [x] Per-book folders: roster, backdrop, character art, favicon, cover, track
-- [x] **Three books live:** xmas (tree, Santa, elf, fireplace + the nine
+- [x] **Four books live** (incl. space: real canvas planets, tap-to-zoom); xmas (tree, Santa, elf, fireplace + the nine
       distinct reindeer), race (four toy cars + the track scenes around one
       lap), and reef (a clownfish's shell-chase + a reef full of sea creatures)
 - [x] Tap-to-animate: every picture plays its own one-shot click animation,
@@ -198,12 +211,15 @@ The shared engine is content-agnostic; each book supplies its own content.
       backdrops + looping music track (off by default)
 - [x] Shelf + per-book favicons, OG/social images (SVG), reduced-motion support
 - [ ] Raster `og.png` exports (broadest social-scraper support)
-- [ ] More books (the shelf is built for many; three exist today)
+- [ ] More books (the shelf is built for many; four exist today)
 - [ ] Custom festive font (currently the system stack)
 
 ## License / assets
 
-All art is original SVG authored in this project. Stock images (a "Santa's
+All art is original SVG authored in this project, with one documented
+exception: the space book uses real, clearly licensed planet maps (Solar
+System Scope CC BY 4.0, NASA public domain), credited in
+[`books/space/README.md`](books/space/README.md). Stock images (a "Santa's
 reindeer" group, a tree, a sleigh, an elf, a fireplace, a Santa hat) were used
 only as visual *style references* — never copied, traced, or shipped; they live
 under the gitignored `.kiro/` and stay out of the repo. The "Carol of the

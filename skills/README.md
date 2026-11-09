@@ -21,9 +21,17 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
   `data-part` grouping, layered gradients/shading, the required per-object click
   animation, no traced stock art).
 - `asset-licensing.md` — reference-vs-shipped rules; keeping stock art out of
-  the repo and redrawing everything as original vector.
+  the repo and redrawing everything as original vector (plus the one documented
+  real-imagery exception).
+- `real-sphere-books.md` — books whose pictures are *real* rendered objects
+  (canvas spheres with real surface maps, rings, irregular asteroids,
+  tap-to-zoom) instead of pseudo-3D SVG; the `space` book is the reference.
 
 ## Project-wide preferences (apply to all visual work)
+
+> These apply to the pseudo-3D SVG books. A real-object book (see
+> `real-sphere-books.md`) swaps the SVG art and per-object animation for real
+> imagery and the shared tap-to-zoom.
 
 - **Detailed & believable, kid-friendly — never flat or under-detailed.** Art
   may stay warm and a little stylised for children, but it must have the detail
