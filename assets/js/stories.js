@@ -66,6 +66,7 @@ window.STORIES = [
     url: 'books/space/',
     accent: '#ffd36e',
     theme: '#060914',
-    backdrop: 'mountSpace' // books/space/assets/js/backdrop.js (no music track)
+    backdrop: 'mountSpace', // books/space/assets/js/backdrop.js
+    track: 'books/space/assets/audio/deep_space.mp3'
   }
 ];
