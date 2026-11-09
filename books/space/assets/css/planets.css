@@ -37,13 +37,13 @@ body { background: radial-gradient(ellipse at 50% 40%, #121a3d 0%, #060914 70%, 
   overflow: hidden;
   cursor: zoom-out;
   background: rgba(2, 4, 12, 0);
-  transition: background 700ms ease;
+  transition: none;   /* the book is hidden instantly; only the picture flies */
 }
 .solar-zoom.is-closing { pointer-events: none; cursor: auto; }
-.solar-zoom.is-open { background: rgba(2, 4, 12, 0.97); }
+.solar-zoom.is-open { background: rgb(2, 4, 12); }
 .solar-zoom-sky {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  opacity: 0; transition: opacity 700ms ease;
+  opacity: 0; transition: none;
 }
 .solar-zoom.is-open .solar-zoom-sky { opacity: 1; }
 .solar-zoom-box {
@@ -65,3 +65,20 @@ body { background: radial-gradient(ellipse at 50% 40%, #121a3d 0%, #060914 70%, 
   .obj-slot.is-image.left,
   .obj-slot.is-image.right { transform: translate(-50%, -50%); }
 }
+
+/* name of the zoomed picture, along the bottom of the screen */
+.solar-zoom-name {
+  position: absolute;
+  left: 0; right: 0; bottom: 4vh;
+  z-index: 1;
+  text-align: center;
+  font: 800 clamp(22px, 3.6vw, 42px)/1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  letter-spacing: 0.04em;
+  color: #ffd36e;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  transition: opacity 400ms ease 500ms;   /* fades in as the picture lands */
+  pointer-events: none;
+}
+.solar-zoom.is-open .solar-zoom-name { opacity: 1; }
+.solar-zoom.is-closing .solar-zoom-name { transition: none; opacity: 0; }

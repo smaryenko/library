@@ -47,9 +47,10 @@
                color: '#e3cf9a' },   // ring map: tex/saturn_ring.js
     // Uranus' real map is almost featureless, so the faint real banding and
     // bright methane clouds (as Hubble/Keck see them) are enhanced onto it so
-    // the spin shows; plus its thin dark rings, standing on end with the planet.
-    uranus:  { name: 'Uranus', tex: 'uranus', enhance: 'uranus', spin: -10, tilt: 82, incl: 45,
-               ring: 'uranus', color: '#9fd8e0',
+    // the spin shows. Seen side-on (low incl) so the clouds sweep right across
+    // the disc, and it turns twice as fast as the calm default to read clearly.
+    uranus:  { name: 'Uranus', tex: 'uranus', enhance: 'uranus', spin: -10, tilt: 82, incl: 10,
+               spinBoost: 2, color: '#9fd8e0',
                atmo: 'rgba(170,240,255,0.45)' },
     neptune: { name: 'Neptune', tex: 'neptune', spin: 11, tilt: 28, color: '#3f5fd6',
                atmo: 'rgba(110,150,255,0.45)' },
@@ -98,6 +99,7 @@
                  { cx: 0.5, ax: 0.48, ay: 0.38, az: 0.44 }] } }
   };
   window.SOLAR_BODIES = BODIES;
+  // (textures are preloaded right after the loaders below are defined)
 
   // ---- texture loading (cached; falls back to a flat colour) -------------
   const texCache = {};
@@ -284,7 +286,7 @@
     const C = sp.clouds && sp.clouds.data;
     // One calm spin speed for every body (not the real day lengths); only
     // the direction comes from `spin` (negative = retrograde).
-    const per = CHILL_SPIN * Math.sign(body.spin || 1);
+    const per = CHILL_SPIN / (body.spinBoost || 1) * Math.sign(body.spin || 1);
     const turn = ((t / per) % 1 + 1) % 1;
     const off = turn * TW;
     const coff = C ? (((t / (per * 0.85)) % 1 + 1) % 1) * TW : 0;
@@ -567,7 +569,54 @@
     sp.ringTex = loadRingTex(body.ring);
   }
 
+  // Uranus' real rings, drawn live instead of from a strip: nine narrow dark
+  // ringlets at their measured radii, several slightly ECCENTRIC (off-centre
+  // ovals), and the bright epsilon ring that is thin on one side and ~5×
+  // wider on the other. The ovals swing round as the particles orbit, so the
+  // rings visibly turn. [radius, half-width, eccentricity, brightness]
+  const URANUS_RINGS = [
+    [1.637, .0025, .010, .35], [1.652, .0025, .010, .35], [1.666, .0025, .006, .4],
+    [1.750, .004, .008, .5], [1.786, .004, .010, .5], [1.846, .0025, .002, .4],
+    [1.863, .003, .004, .45], [1.891, .004, .003, .55]
+  ];
+  function renderUranusRing(sp, t) {
+    const RL = sp.ringLut;
+    const [RIN, ROUT] = RING_SPAN.uranus;
+    const [lx, ly, lz] = sp.light;
+    const bb = sp.ringBack.buf, fb = sp.ringFront.buf;
+    for (let k = 0; k < RL.n; k++) {
+      const rad = RIN + (RL.u[k] + 0.5) / RW * (ROUT - RIN);
+      const a = RL.ang[k] + t * RL.w[k] * 1.6;
+      const ca = Math.cos(a);
+      let al = 0, br = 0;
+      for (let q = 0; q < URANUS_RINGS.length; q++) {
+        const R0 = URANUS_RINGS[q];
+        const rc = R0[0] * (1 + R0[2] * ca);
+        const w = R0[1] * (1 + 0.8 * ca);
+        const d = Math.abs(rad - rc);
+        if (d < w) { al = Math.max(al, 1 - d / w); br = Math.max(br, R0[3]); }
+      }
+      // epsilon: eccentric, 20 km wide at one end, ~100 km at the other
+      const ecc = 2.0 * (1 + 0.008 * ca);
+      const ew = 0.004 + 0.012 * (1 + ca) / 2;
+      const de = Math.abs(rad - ecc);
+      if (de < ew) { al = Math.max(al, 1 - (de / ew) ** 2); br = Math.max(br, 0.75 + 0.2 * Math.sin(a * 5)); }
+      const out = RL.front[k] ? fb : bb;
+      if (al <= 0) { out[RL.idx[k]] = 0; continue; }
+      const px = RL.px[k], py = RL.py[k], pz = RL.pz[k];
+      const b = px * lx + py * ly + pz * lz, cc = px * px + py * py + pz * pz - 1;
+      const sh = (b < 0 && b * b - cc > 0) ? 0.3 : 1;
+      const v = br * sh;
+      const r = 150 * v + 25, g = 165 * v + 28, bl = 180 * v + 32;
+      out[RL.idx[k]] = (((al * 235) | 0) << 24) | ((bl | 0) << 16) | ((g | 0) << 8) | (r | 0);
+    }
+    sp.ringBack.g.putImageData(sp.ringBack.im, 0, 0);
+    sp.ringFront.g.putImageData(sp.ringFront.im, 0, 0);
+    return true;
+  }
+
   function renderRing(sp, t) {
+    if (sp.body.ring === 'uranus') return renderUranusRing(sp, t);
     const RL = sp.ringLut, T = sp.ringTex.data;
     if (!T) return false;
     const [lx, ly, lz] = sp.light;
@@ -594,6 +643,15 @@
     return true;
   }
 
+  // Decode every map up front (they're baked in the page already), so by the
+  // time a spread opens its textures are usually ready and it shows at once.
+  Object.keys(BODIES).forEach(k => {
+    const b = BODIES[k];
+    loadTex(b.tex, b.enhance);
+    if (b.clouds) loadTex(b.clouds);
+    if (b.ring === 'saturn') loadRingTex('saturn');
+  });
+
   // ---- scenes: mount spheres over the SVG markers ------------------------
   // The sphere holder is sized/centred in px to EXACTLY the box the SVG's
   // viewBox renders into (preserveAspectRatio "meet"), refreshed every frame,
@@ -617,7 +675,10 @@
     holder.className = 'solar-layer';
     layer.appendChild(holder);
 
-    const scene = { holder, layer, vb, items: {}, list: [] };
+    // hidden until EVERY body (and Saturn's ring map) is ready, then drawn
+    // and revealed in one frame — no planet or ring pops in late
+    holder.style.visibility = 'hidden';
+    const scene = { holder, layer, vb, items: {}, list: [], shown: false };
     svg.querySelectorAll('[data-body]').forEach(m => {
       const key = m.getAttribute('data-body');
       const id = m.getAttribute('data-id') || key;
@@ -680,15 +741,25 @@
     });
   }
 
+  function spReady(sp) {
+    return sp.tex.ready && (!sp.clouds || sp.clouds.ready) &&
+      (!sp.ringTex || sp.ringTex.ready);
+  }
+
   function frame(now) {
     const t = now / 1000;
     scenes.forEach(sc => {
       if (!sc.holder.isConnected) { scenes.delete(sc); return; }
       updateScene(sc, t);
+      if (!sc.shown && sc.list.every(it => spReady(it.sp))) {
+        sc.list.forEach(it => drawSphere(it.sp, t));
+        sc.holder.style.visibility = '';
+        sc.shown = true;
+      }
     });
     live.forEach(sp => {
       if (!sp.canvas.isConnected) { live.delete(sp); return; }
-      if (sp.tex.ready) drawSphere(sp, t);
+      if (spReady(sp)) drawSphere(sp, t);
     });
     requestAnimationFrame(frame);
   }
@@ -706,7 +777,7 @@
   // picture's spot. Orbits and spins are driven by the shared clock, so the
   // big copy is in step with the small one. Tap again (or Esc) to fly back.
   let zoom = null;     // { overlay, box, host, busy }
-  const ZOOM_MS = 700;
+  const ZOOM_MS = 900;   // fly time, both ways
 
   // Deep-space backdrop for the zoom: stars of a few sizes plus soft, coloured
   // nebula clouds. Built once (seeded, so it's the same every time).
@@ -780,6 +851,15 @@
     svg.removeAttribute('data-mounted');
     box.appendChild(svg);
     overlay.appendChild(box);
+    // the name of what's shown (the spread's title), along the bottom
+    const titleEl = document.querySelector('.obj-slot.is-text .title-line');
+    if (titleEl && titleEl.textContent.trim()) {
+      const label = document.createElement('div');
+      label.className = 'solar-zoom-name';
+      label.textContent = titleEl.textContent.trim();
+      overlay.appendChild(label);
+      overlay.setAttribute('aria-label', label.textContent + ' (tap to return)');
+    }
     document.body.appendChild(overlay);
     mountScene(svg, 900);
 
