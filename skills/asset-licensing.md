@@ -22,6 +22,14 @@ reference material, not source material.
 - **Fonts:** prefer the system font stack (dependency-free). If a custom font is
   added, it must be openly licensed and the license noted.
 
+## Documented exception: real planet maps (`books/space`)
+
+The solar-system book intentionally renders **real surface maps** on canvas
+spheres. Those textures are clearly licensed (Solar System Scope, CC BY 4.0;
+NASA New Horizons Pluto map, public domain) and credited in
+`books/space/README.md`. Any new real imagery must be similarly licensed and
+credited there; everything else in the repo stays original vector.
+
 ## Where things live
 
 - References (do NOT commit): a gitignored folder, with a README stating they

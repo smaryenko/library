@@ -55,5 +55,17 @@ window.STORIES = [
     theme: '#06384f',
     backdrop: 'mountReef', // books/reef/assets/js/backdrop.js
     track: 'books/reef/assets/audio/seaside.mp3'
+  },
+  {
+    id: 'space',
+    title: 'Our Solar System',
+    blurb: 'Spin the Sun, the planets and Pluto, and tap each one to see it up close!',
+    cover: 'books/space/cover.png',
+    favicon: 'books/space/favicon.svg',
+    og: 'books/space/og.png',
+    url: 'books/space/',
+    accent: '#ffd36e',
+    theme: '#060914',
+    backdrop: 'mountSpace' // books/space/assets/js/backdrop.js (no music track)
   }
 ];

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Our Solar System</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#060914">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Our Solar System">
+  <meta property="og:description" content="Spin the Sun, the planets and Pluto, and tap each one to see it up close!">
+  <meta property="og:url" content="https://smaryenko.github.io/library/books/space/">
+  <meta property="og:image" content="https://smaryenko.github.io/library/books/space/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://smaryenko.github.io/library/books/space/og.png">
+  <link rel="stylesheet" href="../../assets/css/book.css">
+  <link rel="stylesheet" href="assets/css/planets.css">
+</head>
+<body>
+  <a class="library-btn" href="../../index.html" aria-label="Back to the library">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor"
+        stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="label">Library</span>
+  </a>
+
+  <div class="book-stage" id="stage" tabindex="0"></div>
+
+  <div class="hint">
+    Tap a planet to zoom in, tap again to return · tap the right half → next · left half → back · swipe to turn
+  </div>
+
+  <!-- SHARED engine -->
+  <script src="../../assets/js/stories.js"></script>
+  <script src="../../assets/js/pseudo3d-object.js"></script>
+  <script src="../../assets/js/anim.js"></script>
+  <script src="../../assets/js/music.js"></script>
+  <script src="../../assets/js/storybook.js"></script>
+
+  <!-- THIS book: backdrop, sphere renderer, scenes, roster -->
+  <script src="assets/js/backdrop.js"></script>
+  <script src="assets/js/tex/sun.js"></script>
+  <script src="assets/js/tex/mercury.js"></script>
+  <script src="assets/js/tex/venus_atmosphere.js"></script>
+  <script src="assets/js/tex/earth_daymap.js"></script>
+  <script src="assets/js/tex/earth_clouds.js"></script>
+  <script src="assets/js/tex/moon.js"></script>
+  <script src="assets/js/tex/mars.js"></script>
+  <script src="assets/js/tex/jupiter.js"></script>
+  <script src="assets/js/tex/saturn.js"></script>
+  <script src="assets/js/tex/saturn_ring.js"></script>
+  <script src="assets/js/tex/uranus.js"></script>
+  <script src="assets/js/tex/neptune.js"></script>
+  <script src="assets/js/tex/pluto.js"></script>
+  <script src="assets/js/tex/ceres.js"></script>
+  <script src="assets/js/solar.js"></script>
+  <script src="assets/js/scenes.js"></script>
+  <script src="pages.js"></script>
+
+  <script src="../../assets/js/boot.js"></script>
+</body>
+</html>
