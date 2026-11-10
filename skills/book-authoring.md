@@ -197,6 +197,20 @@ emit the shapes into one SVG, name the movers, write a few keyframe tracks.
   `books/<id>/assets/audio/`; the shared `music.js` player just loops whatever
   the manifest's `track` points at. Public-domain or original audio only.
 
+## 4b. Full-screen view (shared, optional)
+
+Any picture can open full screen on tap: add `assets/css/fullview.css` and
+`assets/js/fullview.js` to the book page, then put `data-fullview` on the SVG
+a page's `build()` returns. `data-fullview=""` shows the same picture larger;
+`data-fullview="someBuilder"` shows the SVG markup `window.someBuilder()`
+returns (e.g. the dino book's to-scale line-up); `data-fullview-title` sets the
+heading; `data-fullview-zoom="off"` and `data-fullview-close="off"` turn off
+the pinch zoom and the × button (the dino book uses both: zooming its big
+scene was too heavy). In the view, two-finger pinch zooms (touch only) and one finger pans
+once zoomed; zoom is committed to the SVG viewBox so it stays sharp. A tap,
+the × button or Esc closes it. On a computer it just fits the window, so draw
+the scene's sky / ground past its viewBox to fill any spare space.
+
 ## 5. Checklist for a new book
 
 - [ ] `books/<id>/` folder created with `index.html`, `pages.js`, `cover`,

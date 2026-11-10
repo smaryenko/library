@@ -62,6 +62,24 @@ const OBJ_DEPTH = {
   // reef effect layers (hidden at rest, like every fx-*)
   'fx-sand': -20, 'fx-ripple': 10, 'fx-trail': 28, 'fx-bubbles': 30,
 
+  // dino — "Dinosaurs" (books/dino/assets/js/dino.js). Three-quarter view:
+  // tail + far leg recede behind the body, near leg / neck / head come toward
+  // the viewer, the scale child stands closest. Dino-only keys.
+  'dino-ground': -50, 'dino-tail': -30, 'dino-leg-far': -18, 'dino-arm-far': -4,
+  'dino-body': 0, 'dino-neck': 14, 'dino-leg-near': 18, 'dino-arm-near': 22,
+  'dino-jaw': 29, 'fx-mouth': 30, 'dino-head': 32, human: 40, 'fx-breath': 44,
+  // more dino-book parts (other species, scenery, effects, closing pages)
+  'dino-water': -46, 'dino-neck-back': -2, 'dino-leg-under': -1, 'dino-tree': -36, 'dino-tail-tip': -32,
+  'dino-wing-far': -14, 'dino-flipper-far': -12, 'dino-plates-far': -8,
+  'dino-plates': 6, 'dino-flipper-hind': 16, 'dino-leg-front': 20,
+  'dino-flipper-near': 20, 'dino-frill': 24, 'dino-wing-near': 28,
+  'fx-dust': 21, 'fx-ring': 34, 'fx-leaves': 36, 'fx-feathers': 34,
+  'fx-star': 50, 'fx-flash': 38, 'fx-cloud': 14,
+  'ladder-c': -24, 'ladder-b': -4, 'ladder-a': 16,
+  'space-stars': -50, earth: 0, 'earth-clouds': 6, asteroid: 30,
+  'sv-ground': -46, 'sv-rock': -26, 'sv-bird': -10, 'sv-bird-wing': -6,
+  'sv-turtle-limbs': 4, 'sv-turtle-shell': 10, 'sv-croc': 16, 'sv-croc-head': 20,
+
   // click-animation EFFECT parts (hidden at rest, revealed only while playing).
   // Any `data-part` whose name starts with `fx-` is an effect spawned by the
   // object's own animation (a ground crack, exhaust clouds, a sparkle burst) —

@@ -68,5 +68,18 @@ window.STORIES = [
     theme: '#060914',
     backdrop: 'mountSpace', // books/space/assets/js/backdrop.js
     track: 'books/space/assets/audio/deep_space.mp3'
+  },
+  {
+    id: 'dino',
+    title: 'Dinosaurs',
+    blurb: 'Meet real dinosaurs and see how big they were next to you!',
+    cover: 'books/dino/cover.svg',
+    favicon: 'books/dino/favicon.svg',
+    og: 'books/dino/og.png',
+    url: 'books/dino/',
+    accent: '#ffcf7a',
+    theme: '#e8d5ab',
+    backdrop: 'mountDino', // books/dino/assets/js/backdrop.js
+    track: 'books/dino/assets/audio/jurassic_park.mp3'
   }
 ];

@@ -1,0 +1,8 @@
+/* Dinosaurs — book-only styles on top of the shared book.css. */
+
+/* long species names: a smaller title that can break at the soft hyphens */
+.title-line { font-size: clamp(26px, 4.4vw, 56px); hyphens: manual; overflow-wrap: break-word; }
+@media (max-width: 760px), (orientation: portrait) {
+  .title-line { font-size: clamp(20px, 5.6vw, 34px); }
+}
+
