@@ -877,7 +877,15 @@
     const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
     const pz = touch && window.Pinch && srcSvg.hasAttribute('data-pinch') ? window.Pinch({
       max: 3,
-      apply: (s, x, y) => { box.style.translate = `${x}px ${y}px`; box.style.scale = String(s); }
+      // The box's own transform-origin is its layout centre, which sits at
+      // screen centre + D/2 (it's placed at left/top 50% and pulled back by
+      // its transform). Pinch maths is about the screen centre, so shift by
+      // (s - 1) * D/2 to make the zoom happen under the fingers.
+      apply: (s, x, y) => {
+        const k = (s - 1) * D / 2;
+        box.style.translate = `${x + k}px ${y + k}px`;
+        box.style.scale = String(s);
+      }
     }) : null;
     zoom = { overlay, box, D, srcLayer, busy: true, pz };
     setTimeout(() => { if (zoom) zoom.busy = false; }, ZOOM_MS);
