@@ -40,6 +40,8 @@ body { background: radial-gradient(ellipse at 50% 40%, #121a3d 0%, #060914 70%, 
   transition: none;   /* the book is hidden instantly; only the picture flies */
 }
 .solar-zoom.is-closing { pointer-events: none; cursor: auto; }
+/* our own two-finger pinch runs inside the zoom (pinch.js), not the browser's */
+.solar-zoom { touch-action: none; }
 .solar-zoom.is-open { background: rgb(2, 4, 12); }
 .solar-zoom-sky {
   position: absolute; inset: 0; width: 100%; height: 100%;

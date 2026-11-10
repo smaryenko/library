@@ -6,14 +6,16 @@
 //   data-fullview="buildLineup" -> calls window.buildLineup() and shows the
 //                                  SVG markup it returns (a bigger scene)
 //   data-fullview-title="…"     -> optional heading (default: the spread title)
-//   data-fullview-zoom="off"     -> no pinch zoom (just the fitted view)
+//   data-fullview-zoom="touch"   -> two-finger pinch zoom on touch screens
+//                                  (off by default; never on mouse/trackpad)
 //   data-fullview-close="off"    -> no × button (a tap or Esc still closes)
 // Books can also open it directly: FullView.open({ svg, title }).
 //
 // In the view:
 //   - the picture fits the screen (SVG "meet"); anything the SVG draws past
 //     its viewBox (e.g. sky / ground that runs on) fills the leftover space;
-//   - TWO-finger pinch zooms (touch only), and once zoomed one finger pans.
+//   - if the picture opts in (data-fullview-zoom="touch"), TWO-finger pinch
+//     zooms on touch screens (assets/js/pinch.js), and once zoomed one finger pans.
 //     There's no wheel / double-tap / keyboard zoom: on a computer it simply
 //     fits the window;
 //   - cheap + sharp zoom: the scene is drawn ONCE as an image covering the
@@ -49,14 +51,6 @@
     v.x = Math.max(-mx, Math.min(mx, v.x));
     v.y = Math.max(-my, Math.min(my, v.y));
   }
-  function zoomAbout(v, fct, px, py) {
-    const W = window.innerWidth, H = window.innerHeight;
-    const ns = Math.max(1, Math.min(MAX_ZOOM, v.s * fct)), k = ns / v.s;
-    v.x = (px - W / 2) - k * ((px - W / 2) - v.x);
-    v.y = (py - H / 2) - k * ((py - H / 2) - v.y);
-    v.s = ns;
-  }
-
   // an <img> source of the picture showing viewBox box b at W x H
   function urlFor(v, b, W, H) {
     const svg = v.src.replace(/<svg\b[^>]*>/, tag => {
@@ -110,6 +104,8 @@
     probe.src = url;
   }
 
+  const touchScreen = () => !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
   // ---------------------------------------------------------------- view --
   const CLOSE_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>';
 
@@ -128,12 +124,12 @@
       <img class="fullview-img fullview-sharp" alt="" aria-hidden="true" draggable="false">
       ${opts.title ? `<div class="fullview-title">${opts.title}</div>` : ''}
       ${opts.close === false ? '' : `<button class="fullview-close" type="button" aria-label="Close">${CLOSE_ICON}</button>`}
-      ${touch && opts.zoom !== false ? '<div class="fullview-hint">Pinch with two fingers to zoom</div>' : ''}`;
+      ${touch && opts.zoom ? '<div class="fullview-hint">Pinch with two fingers to zoom</div>' : ''}`;
     document.body.appendChild(ov);
 
     const stage = ov.querySelector('.fullview-stage');
     view = { ov, stage, base: stage.querySelector('img'), sharp: ov.querySelector('.fullview-sharp'),
-      zoom: opts.zoom !== false, src: opts.svg, vb0: { x: n[0], y: n[1], w: n[2], h: n[3] }, s: 1, x: 0, y: 0, token: 0,
+      zoom: !!opts.zoom && touchScreen(), src: opts.svg, vb0: { x: n[0], y: n[1], w: n[2], h: n[3] }, s: 1, x: 0, y: 0, token: 0,
       pts: new Map(), pinch: null, moved: false, start: null, onClose: opts.onClose };
     drawBase(view);
     wire(view);
@@ -171,60 +167,43 @@
     // A trackpad pinch on a Mac arrives as ctrl+wheel (Chrome, Firefox) or as
     // gesture* events (Safari) and makes the BROWSER zoom the whole page,
     // re-rasterising the huge scene image (slow, black tiles). Swallow both
-    // while the view is open; the view itself only zooms on touch pinch.
+    // while the view is open.
     v.onWheel = e => { if (e.ctrlKey || e.metaKey) e.preventDefault(); };
     v.onGesture = e => e.preventDefault();
     window.addEventListener('wheel', v.onWheel, { passive: false, capture: true });
     ['gesturestart', 'gesturechange', 'gestureend'].forEach(t =>
       window.addEventListener(t, v.onGesture, { passive: false, capture: true }));
 
+    // two-finger pinch (touch screens only, and only if the picture opted in)
+    const pz = v.zoom && window.Pinch ? window.Pinch({
+      max: MAX_ZOOM,
+      apply: (s, x, y) => { v.s = s; v.x = x; v.y = y; live(v); },
+      end: (s, x, y) => { v.s = s; v.x = x; v.y = y; commit(v); }
+    }) : null;
+    v.pz = pz;
+
+    let down = null;
     ov.addEventListener('pointerdown', e => {
       if (e.target.closest('.fullview-close')) return;
-      if (!v.zoom && v.pts.size) return;               // zoom off: one finger only
       try { ov.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
-      v.pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (v.pts.size === 1) { v.moved = false; v.start = { x: e.clientX, y: e.clientY }; }
-      if (v.pts.size === 2) {
-        const [a, c] = [...v.pts.values()];
-        v.pinch = { d: Math.hypot(a.x - c.x, a.y - c.y) || 1, mx: (a.x + c.x) / 2, my: (a.y + c.y) / 2 };
-        v.moved = true;
-      }
+      if (pz) pz.feed(e);
+      if (!down) down = { x: e.clientX, y: e.clientY, n: 0 };
+      down.n++;
     });
-
-    let raf = 0;
-    const schedule = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; live(v); }); };
-    ov.addEventListener('pointermove', e => {
-      const p = v.pts.get(e.pointerId);
-      if (!p) return;
-      const dx = e.clientX - p.x, dy = e.clientY - p.y;
-      p.x = e.clientX; p.y = e.clientY;
-      if (v.zoom && v.pts.size >= 2 && v.pinch) {
-        const [a, c] = [...v.pts.values()];
-        const d = Math.hypot(a.x - c.x, a.y - c.y) || 1, mx = (a.x + c.x) / 2, my = (a.y + c.y) / 2;
-        v.x += mx - v.pinch.mx; v.y += my - v.pinch.my;     // move with the fingers
-        zoomAbout(v, d / v.pinch.d, mx, my);
-        v.pinch = { d, mx, my };
-        schedule();
-      } else if (v.pts.size === 1) {
-        if (Math.hypot(e.clientX - v.start.x, e.clientY - v.start.y) > 8) v.moved = true;
-        if (v.moved && v.s > 1) { v.x += dx; v.y += dy; schedule(); }   // pan only when zoomed in
-      }
-    });
-
+    ov.addEventListener('pointermove', e => { if (pz) pz.feed(e); });
     const up = e => {
-      if (!v.pts.has(e.pointerId)) return;
-      v.pts.delete(e.pointerId);
-      if (v.pts.size < 2) v.pinch = null;
-      if (v.pts.size === 0) {
-        if (v.moved) commit(v);                        // one sharp re-render
-        else if (e.type === 'pointerup') close();      // a plain tap closes
-      }
+      if (!down) return;
+      if (pz) pz.feed(e);
+      if (--down.n > 0) return;                       // other fingers still down
+      const tap = Math.hypot(e.clientX - down.x, e.clientY - down.y) < 10;
+      down = null;
+      if (e.type === 'pointerup' && tap && !(pz && pz.gestured())) close();   // a plain tap closes
     };
     ov.addEventListener('pointerup', up);
     ov.addEventListener('pointercancel', up);
 
     let rt = 0;
-    v.onResize = () => { clearTimeout(rt); rt = setTimeout(() => drawBase(v), 150); };
+    v.onResize = () => { clearTimeout(rt); rt = setTimeout(() => { drawBase(v); if (pz) pz.reset(); }, 150); };
     window.addEventListener('resize', v.onResize);
   }
 
@@ -248,7 +227,7 @@
     const title = src.getAttribute('data-fullview-title') ||
       (titleEl ? titleEl.textContent.replace(/\u00AD/g, '').trim() : '');
     open({ svg, title,
-      zoom: src.getAttribute('data-fullview-zoom') !== 'off',
+      zoom: src.getAttribute('data-fullview-zoom') === 'touch',
       close: src.getAttribute('data-fullview-close') !== 'off' });
   }
 

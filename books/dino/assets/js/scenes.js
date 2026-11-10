@@ -18,7 +18,7 @@
   function buildSizeLadder() {
     const k = 24, M = META();
     const pl = (key, x) => (M[key] ? place(M[key], k, x, G) : '');
-    return `<svg viewBox="-40 -50 450 380" data-fullview="buildLineup" data-fullview-title="Everyone at true scale" data-fullview-zoom="off" data-fullview-close="off" xmlns="http://www.w3.org/2000/svg"
+    return `<svg viewBox="-40 -50 450 380" data-fullview="buildLineup" data-fullview-title="Everyone at true scale" data-fullview-zoom="touch" data-fullview-close="off" xmlns="http://www.w3.org/2000/svg"
         aria-label="A child, a Velociraptor, a Triceratops and a T. rex at true scale">
       <g data-part="dino-ground"><ellipse cx="190" cy="${G + 2}" rx="186" ry="14" fill="rgba(143,118,80,0.32)"/></g>
       <g data-part="ladder-c">${pl('trex', 172)}</g>

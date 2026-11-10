@@ -872,7 +872,14 @@
     box.style.transform = 'translate(-50%, -50%)';
     overlay.classList.add('is-open');
 
-    zoom = { overlay, box, D, srcLayer, busy: true };
+    // two-finger pinch inside the zoom: touch screens only, and only for
+    // pictures that opt in (data-pinch, the solar-system overview)
+    const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    const pz = touch && window.Pinch && srcSvg.hasAttribute('data-pinch') ? window.Pinch({
+      max: 3,
+      apply: (s, x, y) => { box.style.translate = `${x}px ${y}px`; box.style.scale = String(s); }
+    }) : null;
+    zoom = { overlay, box, D, srcLayer, busy: true, pz };
     setTimeout(() => { if (zoom) zoom.busy = false; }, ZOOM_MS);
   }
 
@@ -892,6 +899,7 @@
     const z = zoom;
     zoom = null;
     finishClose();
+    z.box.style.translate = ''; z.box.style.scale = '';   // fly home from 1x
     z.overlay.classList.add('is-closing');
     if (z.srcLayer.isConnected) flyFrom(z.srcLayer.getBoundingClientRect(), z.box, z.D);
     else z.box.style.opacity = '0';
@@ -910,8 +918,20 @@
 
   let press = null;
   window.addEventListener('pointerdown', e => {
+    if (zoom && zoom.pz) zoom.pz.feed(e);
+    if (zoom && press) { e.stopImmediatePropagation(); return; }   // a 2nd finger
     press = { x: e.clientX, y: e.clientY, host: solarHost(e.target) };
     if (zoom || press.host) e.stopImmediatePropagation();   // engine ignores it
+  }, true);
+
+  window.addEventListener('pointermove', e => {
+    if (!zoom || !zoom.pz) return;
+    zoom.pz.feed(e);
+    e.stopImmediatePropagation();
+  }, true);
+  window.addEventListener('pointercancel', e => {
+    if (zoom && zoom.pz) zoom.pz.feed(e);
+    if (zoom && zoom.pz && !zoom.pz.active()) press = null;
   }, true);
 
   window.addEventListener('pointerup', e => {
@@ -921,6 +941,11 @@
     const tap = Math.hypot(dx, dy) < 10;
     if (zoom) {
       e.stopImmediatePropagation();
+      if (zoom.pz) {
+        zoom.pz.feed(e);
+        if (zoom.pz.active()) { press = p; return; }      // fingers still down
+        if (zoom.pz.gestured()) return;                    // it was a pinch / pan
+      }
       if (tap) closeZoom();
       return;
     }
@@ -933,6 +958,11 @@
         { key: dx < 0 ? 'ArrowRight' : 'ArrowLeft' }));
     }
   }, true);
+
+  // iOS Safari ignores the viewport's no-zoom setting and pinch-zooms the
+  // whole page via gesture* events; cancel those while the zoom is open
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(t =>
+    window.addEventListener(t, e => { if (zoom) e.preventDefault(); }, { passive: false, capture: true }));
 
   window.addEventListener('keydown', e => {
     if (!zoom) return;

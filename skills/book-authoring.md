@@ -204,12 +204,12 @@ Any picture can open full screen on tap: add `assets/css/fullview.css` and
 a page's `build()` returns. `data-fullview=""` shows the same picture larger;
 `data-fullview="someBuilder"` shows the SVG markup `window.someBuilder()`
 returns (e.g. the dino book's to-scale line-up); `data-fullview-title` sets the
-heading; `data-fullview-zoom="off"` and `data-fullview-close="off"` turn off
-the pinch zoom and the × button (the dino book uses both: zooming its big
-scene was too heavy). In the view, two-finger pinch zooms (touch only) and one finger pans
-once zoomed; zoom is committed to the SVG viewBox so it stays sharp. A tap,
-the × button or Esc closes it. On a computer it just fits the window, so draw
-the scene's sky / ground past its viewBox to fill any spare space.
+heading; `data-fullview-zoom="touch"` turns on two-finger pinch zoom (touch
+screens only, via the shared `assets/js/pinch.js`; never mouse / trackpad) and
+`data-fullview-close="off"` hides the × button. Without the zoom flag the view
+just fits the screen. A tap or Esc closes it. Draw the scene's sky / ground
+past its viewBox so it fills any spare space. The space book's own planet zoom
+uses the same `pinch.js` for its first page (`data-pinch` on the overview SVG).
 
 ## 5. Checklist for a new book
 
