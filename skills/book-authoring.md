@@ -209,7 +209,7 @@ screens only, via the shared `assets/js/pinch.js`; never mouse / trackpad) and
 `data-fullview-close="off"` hides the × button. Without the zoom flag the view
 just fits the screen. A tap or Esc closes it. Draw the scene's sky / ground
 past its viewBox so it fills any spare space. The space book's own planet zoom
-uses the same `pinch.js` for its first page (`data-pinch` on the overview SVG).
+uses the same `pinch.js` on every zoomed view.
 
 ## 5. Checklist for a new book
 

@@ -80,7 +80,7 @@
       period: 260, phase: 200, lit: 'sun' });
 
     return `
-    <svg data-solar data-pinch data-zoom-fit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <svg data-solar data-zoom-fit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
       <g>${orbits}</g>
       <g>${asteroids}</g>
       <g>${belt}</g>

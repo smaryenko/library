@@ -872,22 +872,19 @@
     box.style.transform = 'translate(-50%, -50%)';
     overlay.classList.add('is-open');
 
-    // two-finger pinch inside the zoom: touch screens only, and only for
-    // pictures that opt in (data-pinch, the solar-system overview)
+    // two-finger pinch inside the zoom (touch screens only). It moves a
+    // full-screen wrapper whose transform-origin IS the screen centre, so the
+    // gesture maths in pinch.js maps 1:1 and the zoom stays under the fingers.
     const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    const pz = touch && window.Pinch && srcSvg.hasAttribute('data-pinch') ? window.Pinch({
+    const pan = document.createElement('div');
+    pan.className = 'solar-zoom-pan';
+    overlay.insertBefore(pan, box);
+    pan.appendChild(box);
+    const pz = touch && window.Pinch ? window.Pinch({
       max: 3,
-      // The box's own transform-origin is its layout centre, which sits at
-      // screen centre + D/2 (it's placed at left/top 50% and pulled back by
-      // its transform). Pinch maths is about the screen centre, so shift by
-      // (s - 1) * D/2 to make the zoom happen under the fingers.
-      apply: (s, x, y) => {
-        const k = (s - 1) * D / 2;
-        box.style.translate = `${x + k}px ${y + k}px`;
-        box.style.scale = String(s);
-      }
+      apply: (s, x, y) => { pan.style.transform = `translate(${x}px, ${y}px) scale(${s})`; }
     }) : null;
-    zoom = { overlay, box, D, srcLayer, busy: true, pz };
+    zoom = { overlay, box, pan, D, srcLayer, busy: true, pz };
     setTimeout(() => { if (zoom) zoom.busy = false; }, ZOOM_MS);
   }
 
@@ -907,7 +904,7 @@
     const z = zoom;
     zoom = null;
     finishClose();
-    z.box.style.translate = ''; z.box.style.scale = '';   // fly home from 1x
+    z.pan.style.transition = 'transform 300ms ease'; z.pan.style.transform = '';   // back to 1x
     z.overlay.classList.add('is-closing');
     if (z.srcLayer.isConnected) flyFrom(z.srcLayer.getBoundingClientRect(), z.box, z.D);
     else z.box.style.opacity = '0';
