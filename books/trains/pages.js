@@ -23,4 +23,28 @@
     { title: "Double-Decker", body: "More riders? Add a floor! Seats upstairs and seats downstairs.", build: T.doubledecker },
     { title: "The Next Train", body: "And the next train? Maybe you’ll build it. Let’s start with this one.", build: T.toy }
   ];
+
+  // Prerender every photo as soon as the book opens, so flipping to a page
+  // never waits for its picture. The image list is read from the built pages
+  // themselves (every href="img/….jpg"), so new pages are picked up for free.
+  // The first page loads first; the rest follow one by one, each fetched and
+  // decoded off the main thread. The Image objects are kept so the browser
+  // holds them in its memory cache.
+  const hrefs = [];
+  window.BOOK_PAGES.forEach(p => {
+    const svg = p.build();
+    (svg.match(/href="img\/[^"]+\.jpg"/g) || []).forEach(m => {
+      const h = m.slice(6, -1);
+      if (!hrefs.includes(h)) hrefs.push(h);
+    });
+  });
+  const keep = window.TRAINS_PRELOADED = [];
+  const load = href => new Promise(done => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = href;
+    keep.push(img);
+    (img.decode ? img.decode() : Promise.resolve()).then(done, done);
+  });
+  hrefs.reduce((chain, h) => chain.then(() => load(h)), Promise.resolve());
 })();
