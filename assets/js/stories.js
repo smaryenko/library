@@ -19,6 +19,7 @@
 window.STORIES = [
   {
     id: 'xmas',
+    category: 'fiction',  // shelf-card corner label: 'fiction' | 'non-fiction'
     title: 'Christmas Storybook',
     blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!',
     cover: 'books/xmas/cover.svg',
@@ -32,6 +33,7 @@ window.STORIES = [
   },
   {
     id: 'race',
+    category: 'fiction',
     title: 'Race Day',
     blurb: 'Four toy cars zoom and chase around the living room!',
     cover: 'books/race/cover.svg',
@@ -45,6 +47,7 @@ window.STORIES = [
   },
   {
     id: 'reef',
+    category: 'fiction',
     title: 'A Day on the Reef',
     blurb: 'A clownfish chases a runaway shell and meets the whole reef!',
     cover: 'books/reef/cover.svg',
@@ -58,6 +61,7 @@ window.STORIES = [
   },
   {
     id: 'space',
+    category: 'non-fiction',
     title: 'Our Solar System',
     blurb: 'Spin the Sun, the planets and Pluto, and tap each one to see it up close!',
     cover: 'books/space/cover.png',
@@ -66,11 +70,13 @@ window.STORIES = [
     url: 'books/space/',
     accent: '#ffd36e',
     theme: '#060914',
+    hint: 'Tap a planet to zoom in, tap again to return \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
     backdrop: 'mountSpace', // books/space/assets/js/backdrop.js
     track: 'books/space/assets/audio/deep_space.mp3'
   },
   {
     id: 'dino',
+    category: 'non-fiction',
     title: 'Dinosaurs',
     blurb: 'Meet real dinosaurs and see how big they were next to you!',
     cover: 'books/dino/cover.svg',
@@ -81,5 +87,20 @@ window.STORIES = [
     theme: '#e8d5ab',
     backdrop: 'mountDino', // books/dino/assets/js/backdrop.js
     track: 'books/dino/assets/audio/jurassic_park.mp3'
+  },
+  {
+    id: 'seasons',
+    category: 'fiction',
+    title: 'A Fox\u2019s Year',
+    blurb: 'Follow a red fox through spring, summer, autumn and winter!',
+    cover: 'books/seasons/cover.svg',
+    favicon: 'books/seasons/favicon.svg',
+    og: 'books/seasons/og.png',
+    url: 'books/seasons/',
+    accent: '#ffb46a',
+    theme: '#4a3a22',
+    backdrop: 'mountSeasons', // books/seasons/assets/js/backdrop.js
+    track: 'books/seasons/assets/audio/cello_concerto.mp3'
+    // no track yet: add a public-domain / original loop under assets/audio/
   }
 ];

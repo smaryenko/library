@@ -255,3 +255,23 @@ body {
   .story-card:hover,
   .story-card:focus-visible { transform: none; }
 }
+
+/* fiction / non-fiction label in the card's top-right corner */
+.story-card { position: relative; }
+.story-card .category {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: #fff;
+  background: rgba(20, 24, 36, 0.78);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+.story-card .category.fiction { background: rgba(150, 52, 120, 0.88); }
+.story-card .category.non-fiction { background: rgba(24, 110, 96, 0.88); }

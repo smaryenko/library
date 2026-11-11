@@ -93,6 +93,19 @@ const OBJ_DEPTH = {
   // car exhaust clouds sit just behind the body (over the shadow, under the car)
   'fx-smoke1': -16, 'fx-smoke2': -18, 'fx-smoke3': -20,
 
+  // seasons — "A Fox's Year" (books/seasons/assets/js/{fox,nature,scenes}.js).
+  // Blurred landscape plate furthest back, the fox in the middle, crisp
+  // foreground grass / snow in front. Seasons-only keys.
+  'sn-plate': -54, 'sn-mid': -22, 'fox-shadow': -12, 'fox-tail': -10, 'fox-leg-far': -6,
+  'fox-body': 0, 'fox-leg-near': 6, 'fox-leg-front': 8, 'fox-head': 14,
+  'fx-yawn': 15, 'fx-eyeshine': 16, 'fox-tail-front': 18,
+  'kit-b': 10, 'kit-a': 14, 'kit-c': 22, 'sn-prop': 4, apple: 16,
+  mouse: 20, butterfly: 26, squirrel: -14, hedgehog: 12, robin: -12,
+  'sn-fireflies': 28, 'sn-front': 32, 'sn-snowfall': 44,
+  bee: 28, dragonfly: 30, geese: -40, 'sn-water': 10, 'fx-sneeze': 18,
+  'fx-splash': 26, 'fx-snowburst': 34,
+  'fx-grass': 30, 'fx-fall-leaves': 24, 'fx-dirt': 20, 'fx-snow': 26, 'fx-zz': 36,
+
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

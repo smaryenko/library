@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- original vector: red fox face in the book's painted palette -->
+  <defs>
+    <radialGradient id="c" cx="0.38" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#efa765"/><stop offset="0.55" stop-color="#dc742f"/><stop offset="1" stop-color="#a9441a"/>
+    </radialGradient>
+    <linearGradient id="w" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f7f2ec"/><stop offset="1" stop-color="#d6c9bc"/>
+    </linearGradient>
+  </defs>
+  <path d="M9 4 C18 9 24 17 26 24 L13 31 C8 22 7 13 9 4 Z" fill="#1c1411"/>
+  <path d="M55 4 C46 9 40 17 38 24 L51 31 C56 22 57 13 55 4 Z" fill="#1c1411"/>
+  <path d="M14 11 C19 15 22 20 23 24 L16 27 C13 22 13 16 14 11 Z" fill="#f4f0ea"/>
+  <path d="M50 11 C45 15 42 20 41 24 L48 27 C51 22 51 16 50 11 Z" fill="#f4f0ea"/>
+  <path d="M11 28 C13 17 51 17 53 28 C55 38 45 50 32 59 C19 50 9 38 11 28 Z" fill="url(#c)"/>
+  <path d="M6 36 C14 42 24 44 32 59 C40 44 50 42 58 36 C48 44 40 46 32 46 C24 46 16 44 6 36 Z" fill="url(#w)"/>
+  <path d="M21 32 Q26 27 30 32 Q25 34.5 21 32 Z M34 32 Q38 27 43 32 Q39 34.5 34 32 Z" fill="#d99a2b" stroke="#1c1411" stroke-width="1.4"/>
+  <ellipse cx="26" cy="31.6" rx="0.9" ry="1.8" fill="#1c1411"/><ellipse cx="38" cy="31.6" rx="0.9" ry="1.8" fill="#1c1411"/>
+  <path d="M28.5 52 C28.5 49 35.5 49 35.5 52 C35.5 55 32 57 32 57 C32 57 28.5 55 28.5 52 Z" fill="#171110"/>
+</svg>

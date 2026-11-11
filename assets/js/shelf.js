@@ -35,6 +35,13 @@
 
     a.appendChild(cover);
     a.appendChild(meta);
+    // top-right corner label: fiction / non-fiction
+    if (story.category) {
+      const tag = document.createElement('span');
+      tag.className = 'category ' + story.category;
+      tag.textContent = story.category === 'fiction' ? 'Fiction' : 'Non-fiction';
+      a.appendChild(tag);
+    }
     return a;
   }
 

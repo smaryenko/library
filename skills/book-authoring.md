@@ -215,9 +215,11 @@ uses the same `pinch.js` on every zoomed view.
 
 - [ ] `books/<id>/` folder created with `index.html`, `pages.js`, `cover`,
       `favicon.svg`, `og` image, and `assets/js/` character builders.
-- [ ] The book page includes the top-left **back-to-library** link
-      (`<a class="library-btn" href="../../index.html">…</a>`, styled by the
-      shared `book.css`) so readers can always return to the shelf.
+- [ ] The book page `<body>` holds **only `<script>` tags**. The shared
+      `boot.js` adds the back-to-library button, the `#stage` and the hint
+      line. Set `hint` in the manifest entry only if the book needs
+      different hint text (as `space` does). Set `category`
+      (`'fiction'` | `'non-fiction'`) for the shelf-card label.
 - [ ] The manifest `blurb` is a short, **kid-friendly** line (what a child
       will see/meet), not a technical description of the tech.
 - [ ] One entry added to `assets/js/stories.js`.

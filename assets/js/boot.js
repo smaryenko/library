@@ -52,8 +52,43 @@
     return path;
   }
 
+  // Shared page chrome: the "Library" back button, the stage and the hint
+  // line. Every book page used to repeat this markup; now a book's <body>
+  // only needs its <script> tags. Anything the page already has (e.g. a
+  // hand-written #stage) is left alone. A book can override the hint text
+  // with `hint` in its manifest entry.
+  var DEFAULT_HINT = 'Tap/click the right half \u2192 next \u00b7 left half \u2192 back \u00b7 ' +
+    'swipe right-to-left = next, left-to-right = back \u00b7 arrows/Space/PageUp\u00b7Down \u00b7 hover to tilt';
+  function ensureChrome(entry) {
+    var body = document.body, first = body.firstChild;
+    if (!document.querySelector('.library-btn')) {
+      var a = document.createElement('a');
+      a.className = 'library-btn';
+      a.href = fromShelfRoot('index.html');
+      a.setAttribute('aria-label', 'Back to the library');
+      a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor" ' +
+        'stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '<span class="label">Library</span>';
+      body.insertBefore(a, first);
+    }
+    if (!document.getElementById('stage')) {
+      var stage = document.createElement('div');
+      stage.className = 'book-stage';
+      stage.id = 'stage';
+      stage.tabIndex = 0;
+      body.insertBefore(stage, first);
+    }
+    if (!document.querySelector('.hint')) {
+      var hint = document.createElement('div');
+      hint.className = 'hint';
+      hint.textContent = (entry && entry.hint) || DEFAULT_HINT;
+      body.insertBefore(hint, first);
+    }
+  }
   function start() {
     var entry = resolveEntry();
+    try { ensureChrome(entry); } catch (e) { /* non-fatal */ }
 
     // Each step is independent and guarded, so a failure in one (e.g. no music
     // player yet) can never silently suppress the others (like the backdrop).
