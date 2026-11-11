@@ -26,6 +26,9 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `real-sphere-books.md` — books whose pictures are *real* rendered objects
   (canvas spheres with real surface maps, rings, irregular asteroids,
   tap-to-zoom) instead of pseudo-3D SVG; the `space` book is the reference.
+- `photo-cutout-books.md` — books whose pictures are real colour photos turned
+  into layered pop-up cut-outs (clip-path polygons, painted-out moving parts);
+  the `trains` book is the reference.
 
 ## Project-wide preferences (apply to all visual work)
 

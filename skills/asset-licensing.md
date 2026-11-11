@@ -30,6 +30,14 @@ NASA New Horizons Pluto map, public domain) and credited in
 `books/space/README.md`. Any new real imagery must be similarly licensed and
 credited there; everything else in the repo stays original vector.
 
+## Documented exception: real train photos (`books/trains`)
+
+The trains book is built from real colour photos (Wikimedia Commons) turned
+into cut-outs (`skills/photo-cutout-books.md`). The owner explicitly chose to
+ship them **without credits**; that decision applies to this book only. Edited
+photos (e.g. `img/clock.jpg` with its hands painted out) count as the same
+source. Its `train.mp3` comes from the owner's own reference files.
+
 ## Where things live
 
 - References (do NOT commit): a gitignored folder, with a README stating they
@@ -45,7 +53,8 @@ credited there; everything else in the repo stays original vector.
 
 ## Checklist
 
-- [ ] Every shipped image is original vector (nothing traced/embedded).
+- [ ] Every shipped image is original vector (nothing traced/embedded), or
+      falls under a documented exception above.
 - [ ] Reference images stay in a gitignored folder with a README.
 - [ ] Audio is public-domain or original, noted in the README/license section.
 - [ ] Fonts are system or openly licensed.

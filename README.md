@@ -13,7 +13,7 @@ little animation.** No WebGL, no build step, no libraries.
 > under-detailed placeholder art (no one-rectangle rug, no two-dot face). See
 > [`skills/svg-character-authoring.md`](skills/svg-character-authoring.md).
 
-Four books ship today:
+Seven books ship today:
 
 - **xmas** (Christmas): a Christmas tree, Santa in his sleigh, an elf, the nine
   reindeer, and a cozy fireplace.
@@ -28,6 +28,12 @@ Four books ship today:
   both asteroid belts. Unlike the others, these are **real rotating spheres**
   made from real surface maps, not SVG. Tap a picture and it flies up to fill
   the screen.
+- **trains** (Trains Through Time): how trains evolved, from a horse tram to a
+  maglev, in **real colour photos** turned into pop-up cut-outs, with a station
+  clock intro and a wooden toy train ending.
+- **dino** (Dinosaurs): real dinosaurs, each shown to scale next to a child.
+- **seasons** (A Fox's Year): one red fox through spring, summer, autumn and
+  winter, in a realistic painted-fur style.
 
 The multi-book `stories` shelf is in place: the engine, controls, and generic
 music player are shared, and each book owns its folder (page roster, backdrop,
@@ -61,6 +67,16 @@ stories/
       index.html, pages.js, favicon.svg, og.png, cover.png, preview.py
       assets/ js/{backdrop,solar,scenes}.js  js/tex/*.js (baked maps)
               css/planets.css  audio/*.mp3
+    trains/
+      index.html, pages.js, favicon.svg, og.png, cover.png, img/*.jpg
+      assets/ js/{backdrop,photocut,scenes,scenes2}.js  css/trains.css
+              audio/train.mp3   preview/ (canvas + three.js backups)
+    dino/
+      index.html, pages.js, preview.js, favicon.svg, og.*, cover.svg
+      assets/ js/{backdrop,kit,dino,animals,scenes}.js  css/dino.css  audio/
+    seasons/
+      index.html, pages.js, preview.js, favicon.svg, og.*, cover.svg
+      assets/ js/{backdrop,furpaint,fox,nature,scenes}.js  audio/
   skills/                      committed authoring guides (NOT gitignored)
 ```
 
@@ -79,7 +95,9 @@ in [`skills/book-authoring.md`](skills/book-authoring.md); the visual technique
 (turning a reference into a layered pop-up object) is in
 [`skills/3d-animation-from-reference.md`](skills/3d-animation-from-reference.md).
 For real rendered objects instead of SVG art, see
-[`skills/real-sphere-books.md`](skills/real-sphere-books.md).
+[`skills/real-sphere-books.md`](skills/real-sphere-books.md); for real photos
+as pop-up cut-outs, see
+[`skills/photo-cutout-books.md`](skills/photo-cutout-books.md).
 
 ## Run
 
@@ -117,6 +135,11 @@ python3 -m http.server 8777
 - **space (14 pages):** the whole system on its orbits → the Sun → Mercury →
   Venus → Earth with the Moon → the Moon → Mars → the Asteroid Belt → Jupiter
   → Saturn → Uranus → Neptune → Pluto with Charon → the Kuiper Belt.
+- **trains (16 pages):** a station clock → horse tram → steam (Rocket,
+  Jupiter, mail car, logging engine, Mallard) → diesel → electric →
+  Shinkansen → Underground → funicular → monorail → maglev → double-decker →
+  a wooden toy train ("maybe you'll build the next one").
+- **dino (14 pages)** and **seasons (12 pages):** see each book's folder.
 
 Each spread shows one object on one page and its line of text on the other; the
 image/text side alternates as you turn.
@@ -195,7 +218,7 @@ The shared engine is content-agnostic; each book supplies its own content.
 - [x] Multi-book shelf: card grid landing page driven by a manifest
 - [x] Shared, content-agnostic engine (stage, flip, nav, tilt, idle sway, music)
 - [x] Per-book folders: roster, backdrop, character art, favicon, cover, track
-- [x] **Four books live** (incl. space: real canvas planets, tap-to-zoom); xmas (tree, Santa, elf, fireplace + the nine
+- [x] **Seven books live** (incl. trains: real photo cut-outs; dino; seasons) (incl. space: real canvas planets, tap-to-zoom); xmas (tree, Santa, elf, fireplace + the nine
       distinct reindeer), race (four toy cars + the track scenes around one
       lap), and reef (a clownfish's shell-chase + a reef full of sea creatures)
 - [x] Tap-to-animate: every picture plays its own one-shot click animation,
@@ -211,7 +234,7 @@ The shared engine is content-agnostic; each book supplies its own content.
       backdrops + looping music track (off by default)
 - [x] Shelf + per-book favicons, OG/social images (SVG), reduced-motion support
 - [ ] Raster `og.png` exports (broadest social-scraper support)
-- [ ] More books (the shelf is built for many; four exist today)
+- [ ] More books (the shelf is built for many; seven exist today)
 - [ ] Custom festive font (currently the system stack)
 
 ## License / assets
@@ -219,7 +242,9 @@ The shared engine is content-agnostic; each book supplies its own content.
 All art is original SVG authored in this project, with one documented
 exception: the space book uses real, clearly licensed planet maps (Solar
 System Scope CC BY 4.0, NASA public domain), credited in
-[`books/space/README.md`](books/space/README.md). Stock images (a "Santa's
+[`books/space/README.md`](books/space/README.md). The trains book ships real
+Wikimedia Commons photos, by the owner's choice without credits (see
+[`books/trains/README.md`](books/trains/README.md)). Stock images (a "Santa's
 reindeer" group, a tree, a sleigh, an elf, a fireplace, a Santa hat) were used
 only as visual *style references* — never copied, traced, or shipped; they live
 under the gitignored `.kiro/` and stay out of the repo. The "Carol of the

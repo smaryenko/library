@@ -117,7 +117,9 @@ story you like:
 If the pictures should be *real* objects (planets, globes) showing real
 imagery, follow `real-sphere-books.md` (the `space` book). Same engine and
 roster; the book brings its own canvas renderer and tap-to-zoom, and turns
-the tilt off for itself only.
+the tilt off for itself only. If they should be *real photos* that still pop
+off the page, follow `photo-cutout-books.md` (the `trains` book): same engine,
+the photo is stacked as clipped `data-part` layers.
 
 Pick the page count and structure that serve the story. Don't pad to match the
 other books' 14 pages, and don't add characters just to have more cards.
