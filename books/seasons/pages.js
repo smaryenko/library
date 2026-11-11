@@ -14,7 +14,7 @@
       body: 'The woods turn blue with flowers. A bumblebee tickles the fox\u2019s nose... ah-choo!',
       build: () => buildBluebells() },
     { title: 'Summer',
-      body: 'In the tall grass the fox listens for mice, then jumps high and dives nose-first!',
+      body: 'In the warm summer grass a butterfly flutters by. The fox jumps up to play, but the butterfly floats away!',
       build: () => buildMeadow() },
     { title: 'The stream',
       body: 'On a hot day the fox splashes across a cool stream, and a dragonfly zips over the water.',
