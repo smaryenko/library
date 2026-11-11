@@ -106,6 +106,15 @@ const OBJ_DEPTH = {
   'fx-splash': 26, 'fx-snowburst': 34,
   'fx-grass': 30, 'fx-fall-leaves': 24, 'fx-dirt': 20, 'fx-snow': 26, 'fx-zz': 36,
 
+  // trains — "Trains Through Time" (books/trains/assets/js/photocut.js).
+  // A full photo plate furthest back, the train cut out of it in front, the
+  // nearest end (nose / big wheel / horse) closest. Trains-only keys.
+  'tr-photo': -36, 'tr-body': 12, 'tr-front': 26, 'tr-top': 32, 'tr-near': 30,
+  'fx-tr-back': 6, 'fx-tr': 44, 'fx-tr-2': 42,
+  'tr-clock-face': 0, 'tr-clock-hands': 16, 'tr-loop': -12, 'tr-toy': 20,
+  'tr-clock-hour': 10, 'tr-clock-min': 14, 'tr-clock-sec': 18, 'tr-clock-glass': 24,
+  'tr-hand-hour': 34, 'tr-hand-min': 36, 'tr-hand-sec': 38,
+  'tr-table': -30, 'tr-scenery': 14,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

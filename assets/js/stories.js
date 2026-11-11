@@ -75,6 +75,21 @@ window.STORIES = [
     track: 'books/space/assets/audio/deep_space.mp3'
   },
   {
+    id: 'trains',
+    category: 'non-fiction',
+    title: 'Trains Through Time',
+    blurb: 'From horse trams to floating maglevs: tap each real train to bring it to life!',
+    cover: 'books/trains/cover.png',
+    favicon: 'books/trains/favicon.svg',
+    og: 'books/trains/og.png',
+    url: 'books/trains/',
+    accent: '#ffb36b',
+    theme: '#2d3b55',
+    hint: 'Tap a train to bring it to life \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountTrains', // books/trains/assets/js/backdrop.js
+    track: 'books/trains/assets/audio/train.mp3'
+  },
+  {
     id: 'dino',
     category: 'non-fiction',
     title: 'Dinosaurs',

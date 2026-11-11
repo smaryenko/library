@@ -35,12 +35,14 @@
     'M128 104 C138 100 150 112 156 130 C160 146 150 160 138 166 ' +
     'C130 168 126 160 126 150 C126 138 128 126 132 120 C128 112 126 108 128 104 Z';
   const LEG_NEAR =
-    'M182 166 C206 160 222 176 218 200 C214 216 204 226 196 232 ' +
-    'C198 242 202 252 204 260 C206 268 202 276 198 284 ' +
-    'C204 288 206 292 200 293 L186 293 C180 296 168 297 160 294 ' +
-    'L150 293 C146 291 148 287 154 286 C168 284 182 282 186 278 ' +
-    'C190 270 190 264 186 258 C182 250 174 244 170 236 ' +
-    'C164 226 160 212 162 196 C164 180 172 168 182 166 Z';
+    // a heavy, pillar-like hind leg: thick thigh, thick shin and a short stout
+    // foot with three broad toes (no slim "ankle" or curvy calf)
+    'M178 164 C204 158 224 172 224 196 C224 214 218 226 212 234 ' +
+    'C214 248 214 262 210 276 C216 282 222 288 216 293 ' +
+    'L198 293 C194 295 184 295 178 293 L160 293 ' +
+    'C154 292 154 287 160 285 C170 282 178 278 182 272 ' +
+    'C184 262 182 252 178 244 C168 236 160 222 160 204 ' +
+    'C160 184 166 168 178 164 Z';
   // far leg: the same leg a step behind and further away (drawn offset)
   const LEG_FAR = LEG_NEAR;
   const FAR_OFFSET = 'translate(34 -4)';
@@ -181,8 +183,8 @@
         ${volume(id('neck'), P.light, P.mid, P.deep, '30%', '24%')}
         ${volume(id('head'), P.light, P.mid, P.deep, '40%', '26%')}
         ${volume(id('cheek'), P.mid, P.dark, P.deepest)}
-        ${volume(id('legN'), P.light, P.mid, P.deep, '34%', '18%')}
-        ${volume(id('legF'), P.mid, P.dark, P.deepest, '34%', '18%')}
+        ${volume(id('legN'), P.mid, P.dark, P.deep, '42%', '30%')}
+        ${volume(id('legF'), P.dark, P.deep, P.deepest, '42%', '30%')}
         <!-- countershading: pale belly / throat / jaw underneath -->
         <linearGradient id="${id('belly')}" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="${P.belly}" stop-opacity="0"/>
@@ -243,7 +245,7 @@
         <g transform="${FAR_OFFSET}">
           ${skinned(LEG_FAR, 'legF')}
           <ellipse cx="192" cy="172" rx="24" ry="10" fill="${url('cs')}"/>
-          <g fill="${P.claw}"><path d="M150 293 l-5 1 3 -5 z"/><path d="M160 294 l-3 4 -2 -5 z"/></g>
+          <g fill="${P.claw}"><path d="M157 292 l-5 1 3 -5 z"/><path d="M186 294 l-2 4 -3 -4 z"/><path d="M216 292 l5 1 -3 -5 z"/></g>
         </g>
       </g>
 
@@ -292,17 +294,19 @@
       <g data-part="dino-leg-near">
         ${skinned(LEG_NEAR, 'legN')}
         <g clip-path="${url('cLegN')}">
-          <ellipse cx="182" cy="186" rx="14" ry="18" fill="${url('hl')}"/>
-          <ellipse cx="212" cy="206" rx="9" ry="20" fill="${url('cs')}" opacity="0.7"/>
-          <ellipse cx="190" cy="166" rx="26" ry="7" fill="${url('cs')}" opacity="0.6"/>
-          <ellipse cx="190" cy="244" rx="10" ry="14" fill="${url('cs')}" opacity="0.4"/>
-          <g fill="none" stroke="#1a1209" stroke-opacity="0.35" stroke-width="0.6">
-            <path d="M186 262 l16 1"/><path d="M187 268 l16 1"/><path d="M188 274 l14 0.6"/>
-            <path d="M156 289 l10 -1.5"/><path d="M172 291 l10 -1"/>
+          <!-- matte, wrinkled skin: shade at the knee and down the back of the leg -->
+          <ellipse cx="216" cy="210" rx="12" ry="26" fill="${url('cs')}" opacity="0.8"/>
+          <ellipse cx="190" cy="166" rx="28" ry="8" fill="${url('cs')}" opacity="0.7"/>
+          <ellipse cx="178" cy="250" rx="10" ry="22" fill="${url('cs')}" opacity="0.5"/>
+          <g fill="none" stroke="#1a1209" stroke-opacity="0.4" stroke-width="0.8" stroke-linecap="round">
+            <path d="M200 228 q8 3 14 0"/><path d="M198 234 q8 3 15 0"/><path d="M200 240 q6 2 12 0"/>
+            <path d="M186 258 l22 1"/><path d="M185 264 l24 1"/><path d="M185 270 l24 0.6"/><path d="M186 276 l22 0"/>
+            <path d="M166 290 l2 -5"/><path d="M190 291 l0 -5"/><path d="M206 291 l-1 -5"/>
+            <path d="M170 196 q6 8 4 18"/><path d="M182 190 q6 8 4 18"/><path d="M196 188 q6 8 4 18"/>
           </g>
         </g>
         <g fill="${P.claw}">
-          <path d="M150 293 l-6 1 3 -6 z"/><path d="M160 294 l-2 4 -3 -5 z"/><path d="M200 293 l5 1 -3 -6 z"/>
+          <path d="M157 292 l-6 1 3 -6 z"/><path d="M186 294 l-2 5 -3 -5 z"/><path d="M216 292 l6 1 -3 -6 z"/>
         </g>
       </g>
 

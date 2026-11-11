@@ -1,0 +1,9 @@
+/* TRAINS book: the photos are wide (3:2), not square like the drawn books.
+   Fit each picture inside its page half and centre it vertically on the page
+   (same anchor as the text), so the top and bottom margins match. */
+.obj-slot.is-image {
+  width: 48%;
+  aspect-ratio: 1560 / 1060;
+}
+.obj-slot.is-image.left,
+.obj-slot.is-image.right { transform: translate(-50%, -44%); }
