@@ -24,27 +24,40 @@
     { title: "The Next Train", body: "And the next train? Maybe you’ll build it. Let’s start with this one.", build: T.toy }
   ];
 
-  // Prerender every photo as soon as the book opens, so flipping to a page
-  // never waits for its picture. The image list is read from the built pages
-  // themselves (every href="img/….jpg"), so new pages are picked up for free.
-  // The first page loads first; the rest follow one by one, each fetched and
-  // decoded off the main thread. The Image objects are kept so the browser
-  // holds them in its memory cache.
-  const hrefs = [];
-  window.BOOK_PAGES.forEach(p => {
-    const svg = p.build();
-    (svg.match(/href="img\/[^"]+\.jpg"/g) || []).forEach(m => {
-      const h = m.slice(6, -1);
-      if (!hrefs.includes(h)) hrefs.push(h);
-    });
-  });
-  const keep = window.TRAINS_PRELOADED = [];
-  const load = href => new Promise(done => {
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = href;
-    keep.push(img);
-    (img.decode ? img.decode() : Promise.resolve()).then(done, done);
-  });
-  hrefs.reduce((chain, h) => chain.then(() => load(h)), Promise.resolve());
+  // Prerender the NEXT page only: whenever a page appears, the next page's
+  // picture is mounted for real in a hidden full-size warm-up stage behind
+  // the backdrop. The browser downloads, decodes and paints its photo there
+  // (clip + drop shadow, once per layer), so the turn doesn't stall on it.
+  // No engine edits: a MutationObserver spots the new picture and reads its
+  // data-train key to know which page is showing.
+  const keyOf = svg => (svg.match(/data-train="([^"]+)"/) || [])[1];
+  const keys = window.BOOK_PAGES.map(p => keyOf(p.build()));
+  const warm = document.createElement('div');
+  warm.setAttribute('aria-hidden', 'true');
+  warm.style.cssText = 'position:fixed;left:26vw;top:20vh;width:48vw;aspect-ratio:1560/1060;' +
+    'z-index:0;opacity:.01;pointer-events:none;';
+  let warmKey = null;
+  function warmUp(i) {
+    const page = window.BOOK_PAGES[i];
+    if (!page || keys[i] === warmKey || typeof window.mountObject !== 'function') return;
+    warmKey = keys[i];
+    if (!warm.isConnected) document.body.appendChild(warm);
+    warm.innerHTML = '';
+    const host = document.createElement('div');
+    host.className = 'obj-host';
+    host.style.cssText = 'position:absolute;inset:0;';
+    warm.appendChild(host);
+    window.mountObject(host, page.build());
+  }
+  let shownKey = null;
+  function onChange() {
+    const el = document.querySelector('.obj-host:not(#trainsWarm *) svg[data-train]');
+    const k = el && !warm.contains(el) ? el.getAttribute('data-train') : null;
+    if (!k || k === shownKey) return;
+    shownKey = k;
+    const i = keys.indexOf(k);
+    if (i >= 0) setTimeout(() => warmUp(i + 1), 300);   // after the flip settles
+  }
+  warm.id = 'trainsWarm';
+  new MutationObserver(onChange).observe(document.documentElement, { childList: true, subtree: true });
 })();
