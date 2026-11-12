@@ -16,12 +16,16 @@ books/reef/
   pages.js                  the 14-page roster (all object pages, no text-only)
   cover.svg                 shelf-card preview art (clownfish + shell on a reef)
   favicon.svg               clownfish-on-a-teal-disc icon
-  og.svg                    social preview image
+  og.svg / og.png           social preview (og.png is what og:image uses;
+                            raster export of og.svg)
+  preview.js                cover + og scene for tools/build-previews.js
   assets/
+    audio/seaside.mp3       looping track
     js/
       backdrop.js           sunlit reef scene + drifting bubbles (mountReef)
       reeflife.js           draw helpers per species (see Cast) — each returns
-                            { defs, <layers>, pt() } for a flat scene SVG
+                            { defs, <layers>, pt() } for a flat scene SVG;
+                            reefShade() wraps the shared assets/js/color.js shade()
       props.js              the 14 page scenes (one flat SVG each, race-book
                             style), animated with the shared Motion library
 ```

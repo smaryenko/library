@@ -53,13 +53,22 @@ changes. The cost is hard edges, so trace carefully.
 
 ## Layout
 
-Photos are 3:2, not square: a per-book CSS file (`trains.css`) sizes
-`.obj-slot.is-image` to `aspect-ratio: 1560 / 1060` and centres it on the page.
-Follow the placement rule in `book-authoring.md`: the photo fills the page
-width, with equal margins above and below it.
+Photos are 3:2, not square. No per-book CSS is needed: the engine's picture
+wrapper reads the SVG's viewBox (`0 0 1500 1000`, plus any padding) and fills
+the page width at that ratio, centred on the page (`book-authoring.md`,
+placement).
 
 ## Previews
 
 `cover.png` and `og.png` are composited with PIL from the book's own cut
 polygons (dimmed photo + lifted, shadowed cut-out), so the preview looks like
 the page does in the book.
+
+## Loading
+
+Photos are big, so the first paint of a page can stall a turn. The shared
+engine's next-page prerender (`book-authoring.md` §4b; opt in with
+`window.BOOK_PRERENDER = true` in `pages.js`) mounts the next
+picture in a hidden, slot-sized box, so its photo is downloaded, decoded and
+painted before the turn; no per-book warm-up code is needed (trains used to
+carry its own in `pages.js`).

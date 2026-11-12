@@ -96,3 +96,12 @@ numpy) ray-casts the same baked maps into `cover.png` (800×600) and `og.png`
 Real imagery is allowed only under the documented exception in
 `asset-licensing.md`. Every map must be clearly licensed (CC BY, public domain)
 and credited in the book's README.
+
+## Placement
+
+The engine's picture wrapper fits and centres each picture by its drawn
+content, but spheres are canvases over invisible markers. So every
+`data-solar` SVG declares its content box: `data-fit="x y w h"` (viewBox
+units), covering the body plus any orbit / moon it shows (`buildBody`'s
+`opts.fit`; default is the body's own circle).
+

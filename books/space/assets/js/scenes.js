@@ -80,7 +80,7 @@
       period: 260, phase: 200, lit: 'sun' });
 
     return `
-    <svg data-solar data-zoom-fit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <svg data-solar data-fit="2 112 396 176" data-zoom-fit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
       <g>${orbits}</g>
       <g>${asteroids}</g>
       <g>${belt}</g>
@@ -92,8 +92,13 @@
   // opts.orbit: extra orbit line; opts.extra: more markers (e.g. Charon)
   function buildBody(body, opts = {}) {
     const r = opts.r || 92;
+    // content box for the engine's picture wrapper (the spheres are canvases
+    // over invisible markers, so it can't be measured): the body, or the
+    // body plus its orbit / moon when the page declares one
+    const cy = opts.cy || 150;
+    const fit = opts.fit || [150 - r, cy - r, 2 * r, 2 * r];
     return `
-    <svg data-solar viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <svg data-solar data-fit="${fit.join(' ')}" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
       ${opts.orbit || ''}
       ${marker({ body, id: body, cx: 150, cy: opts.cy || 150, r })}
       ${opts.extra || ''}
@@ -104,6 +109,7 @@
     // Pluto and its big moon Charon circle each other
     return buildBody('pluto', {
       r: 70,
+      fit: [14, 80, 272, 140],          // Pluto + Charon's orbit
       orbit: `<ellipse cx="150" cy="150" rx="118" ry="34" fill="none" stroke="${ORBIT}" stroke-width="0.8"/>`,
       extra: marker({ body: 'charon', id: 'charon', cx: 268, cy: 150, r: 18, a: 118, b: 34,
         period: 16, phase: 30, around: 'pluto' })
@@ -149,6 +155,7 @@
     const R = 66;
     return buildBody('earth', {
       r: R,
+      fit: [4, 84, 292, 132],           // Earth + the Moon's orbit
       orbit: `<ellipse cx="150" cy="150" rx="128" ry="36" fill="none" stroke="rgba(70,80,110,0.35)" stroke-width="0.8"/>`,
       extra: marker({ body: 'moon', id: 'moon', cx: 278, cy: 150, r: (R * 0.273).toFixed(1),
         a: 128, b: 36, period: 24, phase: 20, around: 'earth' })

@@ -72,14 +72,16 @@ canvas.snow {
 
 /* The root sets the perspective; the book lies flat inside it. */
 .book-stage {
-  perspective: 1900px;
+  /* a longer perspective distance flares the near (bottom) edge less, so the
+     book itself can be wider without its near corners running off screen */
+  perspective: 3000px;
   perspective-origin: 50% 42%;
-  /* ~75% of screen width, taller so the open spread keeps real page depth */
-  width: 78vw;
+  /* wide spread: more room for each page's picture */
+  width: 88vw;
   height: min(88vh, 800px);
   /* sit a little above centre: the tilted book's far edge leaves empty space
      at the top, the nav bar needs a bit at the bottom */
-  margin-top: -4vh;
+  margin-top: -14vh;
   position: relative;
   z-index: 10;        /* above the winter backdrop + snow */
   cursor: pointer;
@@ -215,7 +217,9 @@ canvas.snow {
   display: grid;
   place-items: center;
 }
-/* Object slot (deer): square, centred over its page half. Bigger now. */
+/* Image slot = the generic picture wrapper. storybook.js (fitImageSlot) sets
+   its left/top/width/height inline from the picture's viewBox aspect ratio and
+   the page's on-screen box; these rules are only the pre-JS fallback. */
 .obj-slot.is-image {
   width: 58%;
   aspect-ratio: 1 / 1;
@@ -541,9 +545,9 @@ canvas.snow {
     /* narrow enough that BOTH pages (and their centred content) fit inside the
        viewport, so the text sits mid-page like desktop without clipping.
        Taller on phones so the open spread fills more of the screen. */
-    width: 94vw;
+    width: 98vw;
     height: min(72vh, 640px);
-    perspective: 1300px;
+    perspective: 2200px;
     perspective-origin: 50% 50%;
   }
 

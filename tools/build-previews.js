@@ -29,6 +29,8 @@ const BOOKS = path.join(ROOT, 'books');
 
 // static previews: builders call buildAnim() for their tap animation — no-op it
 global.buildAnim = () => '';
+// shared colour helper the builders call as a global (assets/js/color.js)
+global.shade = require(path.join(ROOT, 'assets/js/color.js')).shade;
 
 const helpers = {
   ROOT, BOOKS,

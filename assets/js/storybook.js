@@ -205,8 +205,11 @@
     rightPanelEl.innerHTML = '';
     objLeftSlot.innerHTML = '';
     objRightSlot.innerHTML = '';
-    [objLeftSlot, objRightSlot].forEach(s =>
-      s.classList.remove('is-image', 'is-text'));
+    [objLeftSlot, objRightSlot].forEach(s => {
+      s.classList.remove('is-image', 'is-text');
+      clearImageSlot(s);
+    });
+    fitted = null;
 
     const page = PAGES[((i % PAGES.length) + PAGES.length) % PAGES.length];
 
@@ -227,9 +230,16 @@
 
     // Both the object AND the text live in the FLAT overlay so neither
     // inherits the book's tilt (text was slanting on the page before).
-    const host = document.createElement('div');
-    host.className = 'obj-host is-tappable';   // clickable: taps PLAY, not turn
-    const obj = mountObject(host, page.build());
+    // Reuse the prerendered picture if it was built for exactly this page.
+    let host, obj;
+    const pre = takePrerender(page);
+    if (pre) {
+      ({ host, obj } = pre);
+    } else {
+      host = document.createElement('div');
+      host.className = 'obj-host is-tappable';   // clickable: taps PLAY, not turn
+      obj = mountObject(host, page.build());
+    }
     activeObjects.push(obj);
     // Remember this spread's object so a tap on its image can trigger the
     // object's own one-shot animation (instead of a page turn).
@@ -244,7 +254,256 @@
 
     overlayEl.classList.add('img-left', 'img-right'); // both slots visible now
 
+    fitImageSlot(imgSlot, imgLeft ? leftPanelEl : rightPanelEl, aspectOf(host), page);
     if (animate !== false) popIn();
+    schedulePrerender(i + 1, imgSlot);
+  }
+
+  // --- the generic picture wrapper: place + scale every image the same way --
+  // The image slot is the wrapper around every book's picture. It is sized
+  // from the picture's own aspect ratio (its SVG viewBox) and the page half it
+  // sits on, following the placement rule in skills/book-authoring.md:
+  //   - fill the page width (minus a small even side margin),
+  //   - keep the picture's real aspect ratio (square art, 3:2 photos, …),
+  //   - centre it vertically on the page as seen (the page's on-screen box),
+  //   - never taller than PIC_MAX_H of the stage, so tall art stays on screen.
+  // Books don't need per-book slot CSS; art margins come from the viewBox.
+  const PIC_MARGIN = 0.04;     // side margin, fraction of the page width
+  const PIC_MAX_H = 0.78;      // max picture height, fraction of the stage
+  let fitted = null;           // { slot, panel, ar } of the shown picture
+
+  function aspectOf(host) {
+    const svg = host.querySelector('svg');
+    if (!svg) return 1;
+    const vb = (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+    if (vb.length === 4 && vb[2] > 0 && vb[3] > 0) return vb[2] / vb[3];
+    const w = parseFloat(svg.getAttribute('width')), h = parseFloat(svg.getAttribute('height'));
+    return w > 0 && h > 0 ? w / h : 1;
+  }
+
+  // The drawn content's box inside the viewBox, as fractions of the viewBox
+  // ({ x, y, w, h } in 0..1). Art is often drawn low in its viewBox (a tree
+  // standing on y≈290 of 300, empty sky above), so fitting the viewBox alone
+  // leaves the picture sitting at the bottom of the page. Union of every
+  // layer's getBBox(); effect-only `fx-*` parts (hidden at rest) are skipped.
+  // Measured once per host and cached; falls back to the whole viewBox.
+  const cboxCache = new WeakMap();   // page -> content box (measured once)
+  function contentBox(host, page) {
+    if (page && cboxCache.has(page)) return cboxCache.get(page);
+    if (host.__cbox) return host.__cbox;
+    const whole = { x: 0, y: 0, w: 1, h: 1 };
+    const svgs = Array.from(host.querySelectorAll('.layer'))
+      .filter(l => !/^fx-/.test(l.dataset.part || ''))
+      .map(l => l.querySelector(':scope > svg')).filter(Boolean);
+    if (!svgs.length) return whole;
+    const vb = (svgs[0].getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number);
+    if (vb.length !== 4 || !(vb[2] > 0 && vb[3] > 0)) return whole;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    // A builder can declare its content box explicitly (viewBox units), for
+    // pictures whose visible content isn't SVG geometry (e.g. canvas planets
+    // drawn over invisible markers): <svg data-fit="x y w h" …>.
+    const declared = (svgs[0].getAttribute('data-fit') || '').trim().split(/[\s,]+/).map(Number);
+    if (declared.length === 4 && declared[2] > 0 && declared[3] > 0) {
+      [x0, y0] = declared; x1 = x0 + declared[2]; y1 = y0 + declared[3];
+    } else svgs.forEach(s => {
+      try {
+        const b = s.getBBox();
+        if (!b.width || !b.height) return;
+        x0 = Math.min(x0, b.x); y0 = Math.min(y0, b.y);
+        x1 = Math.max(x1, b.x + b.width); y1 = Math.max(y1, b.y + b.height);
+      } catch (e) { /* not rendered yet */ }
+    });
+    if (!(x1 > x0 && y1 > y0)) return whole;
+    // clamp to the viewBox: art drawn past it (sky/ground run-ons) doesn't count
+    x0 = Math.max(x0, vb[0]); y0 = Math.max(y0, vb[1]);
+    x1 = Math.min(x1, vb[0] + vb[2]); y1 = Math.min(y1, vb[1] + vb[3]);
+    if (!(x1 > x0 && y1 > y0)) return whole;
+    const box = { x: (x0 - vb[0]) / vb[2], y: (y0 - vb[1]) / vb[3],
+                  w: (x1 - x0) / vb[2], h: (y1 - y0) / vb[3] };
+    host.__cbox = box;
+    if (page) cboxCache.set(page, box);
+    return box;
+  }
+
+  // The page as SEEN. The page is tilted in perspective, so on screen it is a
+  // trapezoid (narrow far edge at the top, wide near edge at the bottom); its
+  // getBoundingClientRect() is as wide as the bottom edge, which put pictures
+  // off-centre towards the outer edge. Four zero-size corner markers inside
+  // the panel give the real projected corners; the usable box is the
+  // trapezoid's mid-height width between its top and bottom edges.
+  function pageBox(panel) {
+    let marks = panel.querySelectorAll(':scope > .page-corner');
+    if (marks.length !== 4) {
+      marks.forEach(m => m.remove());
+      ['0 auto auto 0', '0 0 auto auto', 'auto auto 0 0', 'auto 0 0 auto'].forEach(inset => {
+        const m = document.createElement('i');
+        m.className = 'page-corner';
+        m.setAttribute('aria-hidden', 'true');
+        m.style.cssText = `position:absolute;inset:${inset};width:0;height:0;pointer-events:none;`;
+        panel.appendChild(m);
+      });
+      marks = panel.querySelectorAll(':scope > .page-corner');
+    }
+    const [tl, tr, bl, br] = Array.from(marks, m => m.getBoundingClientRect());
+    const left = (tl.left + bl.left) / 2, right = (tr.left + br.left) / 2;
+    const top = (tl.top + tr.top) / 2, bottom = (bl.top + br.top) / 2;
+    return { left, top, width: right - left, height: bottom - top };
+  }
+
+  function fitImageSlot(slot, panel, ar, page) {
+    if (!page && fitted && fitted.slot === slot) page = fitted.page;
+    fitted = { slot, panel, ar, page };
+    const o = overlayEl.getBoundingClientRect();
+    const p = pageBox(panel);
+    if (!(p.width > 0) || !(p.height > 0) || !o.width) return;
+    const host = slot.querySelector('.obj-host');
+    const c = host ? contentBox(host, page) : { x: 0, y: 0, w: 1, h: 1 };
+    // size the DRAWN CONTENT to the rule (page width minus margins, height
+    // cap), then grow the slot so the whole viewBox keeps that scale
+    const cAr = ar * c.w / c.h;
+    let cw = p.width * (1 - 2 * PIC_MARGIN);
+    let ch = cw / cAr;
+    // never taller than the page as seen (minus the same margin): on phones /
+    // tablets the tilted page is short, so height, not width, is the limit
+    const maxH = Math.min(o.height * PIC_MAX_H, p.height * (1 - 2 * PIC_MARGIN));
+    if (ch > maxH) { ch = maxH; cw = ch * cAr; }
+    const w = cw / c.w, h = ch / c.h;
+    // centre the content (not the viewBox) on the page as seen
+    const cx = p.left + p.width / 2 - o.left;
+    const cy = p.top + p.height / 2 - o.top;
+    Object.assign(slot.style, {
+      left: `${cx - cw / 2 - c.x * w}px`, top: `${cy - ch / 2 - c.y * h}px`,
+      width: `${w}px`, height: `${h}px`,
+      aspectRatio: 'auto', transform: 'none'
+    });
+  }
+
+  function clearImageSlot(slot) {
+    ['left', 'top', 'width', 'height', 'aspectRatio', 'transform']
+      .forEach(k => { slot.style[k] = ''; });
+  }
+
+  let refitTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(refitTimer);
+    refitTimer = setTimeout(() => {
+      if (fitted && fitted.slot.classList.contains('is-image')) {
+        fitImageSlot(fitted.slot, fitted.panel, fitted.ar);
+      }
+    }, 120);
+  });
+
+  // --- prerender the NEXT page's picture ----------------------------------
+  // After a spread lands, the next page's picture is built and mounted for
+  // real in a hidden, slot-sized warm-up box, so its SVG parse, layer split,
+  // image decode and first paint happen while the reader is still looking at
+  // this page. When the turn arrives, renderSpread moves that host into the
+  // slot instead of building it again. Only the next page (the common turn)
+  // is prepared; any other jump just builds as before.
+  //
+  // While parked, the picture's <style> blocks are switched off
+  // (media="not all"): buildAnim's rules match by part name, so a parked
+  // copy's keyframes would otherwise also hit the shown picture's parts.
+  // OPT-IN: only books that set `window.BOOK_PRERENDER = true` in pages.js
+  // (trains: big photos). For SVG books the extra build cost more than it saved.
+  let prerender = null;     // { page, host, obj }
+  let prerenderTimer = null;
+  let prerenderBox = null;
+  let prerenderIdle = null;  // { id, idle } pending idle build
+  let leaving = false;       // set once the reader heads back to the library
+
+  function cancelPrerenderWork() {
+    if (prerenderTimer) { clearTimeout(prerenderTimer); prerenderTimer = null; }
+    if (prerenderIdle) {
+      (prerenderIdle.idle ? cancelIdleCallback : clearTimeout)(prerenderIdle.id);
+      prerenderIdle = null;
+    }
+  }
+
+  // Leaving the book (Library button, back gesture, closing the tab): stop
+  // all pending work and drop the parked picture right away, so navigation
+  // isn't held up by a build or by tearing down two heavy pictures.
+  function leaveBook() {
+    leaving = true;
+    dropPrerender();
+  }
+  window.addEventListener('pagehide', leaveBook);
+  window.addEventListener('pageshow', e => { if (e.persisted) leaving = false; });
+  document.addEventListener('pointerdown', e => {
+    if (e.target.closest && e.target.closest('.library-btn')) leaveBook();
+  }, true);
+
+  function dropPrerender() {
+    cancelPrerenderWork();
+    if (prerender) { prerender.host.remove(); prerender = null; }
+  }
+
+  function takePrerender(page) {
+    cancelPrerenderWork();
+    const pre = prerender;
+    prerender = null;
+    if (!pre) return null;
+    if (pre.page !== page) { pre.host.remove(); return null; }
+    pre.host.removeAttribute('style');
+    pre.host.className = 'obj-host is-tappable';
+    pre.host.querySelectorAll('style[data-parked]').forEach(s => {
+      s.removeAttribute('media');
+      s.removeAttribute('data-parked');
+    });
+    return pre;
+  }
+
+  function schedulePrerender(i, slot) {
+    dropPrerender();
+    if (window.BOOK_PRERENDER !== true || i >= PAGES.length) return;
+    const page = PAGES[i];
+    if (!page || page.textOnly || typeof page.build !== 'function') return;
+    // wait for the current flip + pop to settle, then build only when the
+    // main thread is idle so it never competes with a tap, a turn or leaving
+    // the book
+    prerenderTimer = setTimeout(() => {
+      prerenderTimer = null;
+      const run = () => { prerenderIdle = null; buildPrerender(page, slot); };
+      prerenderIdle = window.requestIdleCallback
+        ? { id: requestIdleCallback(run, { timeout: 1500 }), idle: true }
+        : { id: setTimeout(run, 0), idle: false };
+    }, FLIP_MS * 0.5 + 400);
+  }
+
+  function buildPrerender(page, slot) {
+    {
+      if (leaving) return;
+      const r = slot.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      if (!prerenderBox) {
+        prerenderBox = document.createElement('div');
+        prerenderBox.className = 'obj-prerender';
+        prerenderBox.setAttribute('aria-hidden', 'true');
+        prerenderBox.style.cssText =
+          'position:fixed;left:0;top:0;width:0;height:0;z-index:0;' +
+          'opacity:.01;pointer-events:none;';
+        document.body.appendChild(prerenderBox);
+      }
+      const host = document.createElement('div');
+      host.className = 'obj-host';
+      host.style.cssText = `position:fixed;left:${r.left}px;top:${r.top}px;` +
+        `width:${r.width}px;height:${r.height}px;`;
+      let obj;
+      try { obj = mountObject(host, page.build()); } catch (e) { return; }
+      host.querySelectorAll('style').forEach(s => {
+        if (s.hasAttribute('media')) return;
+        s.setAttribute('media', 'not all');
+        s.setAttribute('data-parked', '');
+      });
+      prerenderBox.appendChild(host);
+      host.__obj = obj;
+      prerender = { page, host, obj };
+      // let it paint twice (decode images, rasterise once), then hide it so
+      // the parked copy costs no compositing / GPU memory while it waits
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (prerender && prerender.host === host) host.style.visibility = 'hidden';
+      }));
+    }
   }
 
   // --- the three-step content swap --------------------------------------

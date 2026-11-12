@@ -169,6 +169,7 @@ function mountObject(host, svgString, opts = {}) {
       layer.innerHTML = new XMLSerializer().serializeToString(doc.documentElement);
       const z = OBJ_DEPTH[part] ?? 0;
       layer.dataset.z = z;
+      layer.dataset.part = part;
       layer.style.transform = `translateZ(${z}px)`;
       scene.appendChild(layer);
     });

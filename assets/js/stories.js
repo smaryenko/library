@@ -52,7 +52,7 @@ window.STORIES = [
     blurb: 'A clownfish chases a runaway shell and meets the whole reef!',
     cover: 'books/reef/cover.svg',
     favicon: 'books/reef/favicon.svg',
-    og: 'books/reef/og.svg',
+    og: 'books/reef/og.png',
     url: 'books/reef/',
     accent: '#7fe3dc',   // shelf-card title colour
     theme: '#06384f',
@@ -116,6 +116,5 @@ window.STORIES = [
     theme: '#4a3a22',
     backdrop: 'mountSeasons', // books/seasons/assets/js/backdrop.js
     track: 'books/seasons/assets/audio/cello_concerto.mp3'
-    // no track yet: add a public-domain / original loop under assets/audio/
   }
 ];

@@ -13,11 +13,14 @@ books/race/
   pages.js                  the 14-page roster (cars → race sections → friendly tie)
   cover.svg                 shelf-card preview art (orange loop + two cars)
   favicon.svg               red-car-in-a-loop icon
-  og.svg                    social preview image
+  og.svg / og.png           social preview (og.png is what og:image uses)
+  preview.js                cover + og scene for tools/build-previews.js
   assets/
+    audio/racing.mp3        looping track
     js/
       backdrop.js           cozy living-room scene (mountLivingRoom)
-      car.js                buildCar(cfg) — the four racers (one DNA, varied)
+      car.js                buildCar(cfg) — the four racers (one DNA, varied);
+                            uses the shared shade() from assets/js/color.js
       props.js              buildHallway / buildRamp / buildKitchen / buildLoop /
                             buildFinish (the track-section scene pages)
 ```
@@ -45,9 +48,8 @@ podium).
 - Depth keys for the new car / prop parts were added **additively** to
   `OBJ_DEPTH` in the shared `assets/js/pseudo3d-object.js` (no existing key
   repurposed, so the xmas book is unaffected).
-- **Music:** no cleared track yet. The manifest `track` is empty, so the music
-  button stays idle for this book until a public-domain / original loop is
-  supplied under `books/race/assets/audio/`.
+- **Music:** `assets/audio/racing.mp3`, named by the manifest `track` and looped
+  by the shared player.
 - **Licensing:** all art is original vector authored here. The Hot Wheels brand,
   logo, and specific castings are deliberately NOT used — the cars are generic
   chunky toy racers. Reference images live only in gitignored `.kiro/reference/`.

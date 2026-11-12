@@ -4,8 +4,8 @@
 shows up as a card on the landing shelf and opens into the shared page-turn
 engine.
 
-The engine (book stage, page-turn flip, navigation, pseudo-3D tilt, music
-button, winter backdrop) is **shared and content-agnostic**. A book is just:
+The engine (book stage, page-turn flip, navigation, pseudo-3D tilt, opt-in next-page
+prerender, music button) is **shared and content-agnostic**. A book is just:
 its own folder, a manifest entry, per-book assets, and a page roster. You should
 not have to touch the engine to add a book.
 
@@ -17,23 +17,29 @@ stories/
   assets/                     SHARED — the engine + global controls + chrome
     og.svg                    shelf's own social preview image
     favicon.svg               shelf favicon (a bookshelf; book-neutral)
-    css/   shelf.css, book.css
+    css/   shelf.css, book.css, fullview.css
     js/    stories.js         the manifest: list of available books
            boot.js            generic boot: reads manifest, mounts a book
            shelf.js           builds the shelf card grid
-           storybook.js       the page-turn engine (content-agnostic)
-           pseudo3d-object.js the tilt / parallax rig
+           storybook.js       the page-turn engine (content-agnostic) + opt-in next-page prerender
+           pseudo3d-object.js the tilt / parallax rig (+ the shared OBJ_DEPTH map)
+           anim.js            buildAnim(uid, {tracks}) → scoped click-animation <style>
+           motion.js          optional Motion library (Motion.rig + move primitives)
+           color.js           optional shade(hex, pct) colour helper
+           fullview.js        optional tap-to-full-screen (+ pinch.js for touch zoom)
            music.js           generic looping-audio player (feed it a track)
   books/
     <book-id>/               ONE folder per book, everything it needs inside
       index.html             book entry page (so books/<id>/ is a short link)
       pages.js               this book's page roster (title/body/build per page)
+      preview.js             optional node scene for cover.svg / og.svg (tools/build-previews.js)
       cover.svg|png          the shelf-card preview art
       favicon.svg            per-book favicon
       og.svg|png             per-book Open Graph / social preview image
       assets/                book-specific media + character builders
         js/    backdrop.js   this book's backdrop scene (e.g. winter night)
                <character>.js builders returning layered data-part SVG
+        css/   <book>.css     optional book-specific layout (dino, space, trains)
         audio/ <track>.mp3    this book's music track
 ```
 
@@ -43,12 +49,11 @@ flip engine, nav controls, tilt rig, shelf, and the *generic* music **player**.
 Per-book: favicon, og image, cover art, character art, the page roster, the
 **backdrop scene**, and the music **track** the player loops.
 
-> Note on music: the player (`assets/js/music.js`, generalised from the old
-> xmas-only `carol.js`) is shared and content-agnostic — it just loops whatever
+> Note on music: the player (`assets/js/music.js`) is shared and content-agnostic — it just loops whatever
 > track it is given. The actual audio file is a per-book asset under
 > `books/<id>/assets/audio/`. The xmas book feeds it `carol_of_the_bells.mp3`.
 
-> Note on the backdrop: the night-sky/snow scene (`winter.js`) is **xmas
+> Note on the backdrop: the night-sky/snow scene (`mountWinter`) is **xmas
 > specific**, so it lives at `books/xmas/assets/js/backdrop.js`, not in shared
 > `assets/`. Each book supplies its own backdrop builder; the engine mounts
 > whichever the manifest points at. A book with no backdrop just skips it.
@@ -63,7 +68,8 @@ window.STORIES = [
   {
     id: 'xmas',                         // folder name under books/
     title: 'Christmas Storybook',
-    blurb: 'A pop-up Christmas tale.',  // small line under the card title
+    blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!', // kid-friendly line under the card title
+    category: 'fiction',                // card corner label: 'fiction' | 'non-fiction'
     cover: 'books/xmas/cover.svg',      // card preview art
     favicon: 'books/xmas/favicon.svg',
     og: 'books/xmas/og.svg',
@@ -72,6 +78,7 @@ window.STORIES = [
     theme: '#0a1b3a',                   // theme-color
     backdrop: 'mountWinter',            // name of the backdrop fn (optional)
     track: 'books/xmas/assets/audio/carol_of_the_bells.mp3'  // looping music
+    // hint: '…'                        // optional: replaces the default hint line
   }
   // ...more books
 ];
@@ -79,8 +86,8 @@ window.STORIES = [
 
 ## 3. Author the page roster
 
-Each book's `pages.js` exports a `PAGES` array in the same shape the engine
-already consumes (see `storybook.js`). Each page is either:
+Each book's `pages.js` sets `window.BOOK_PAGES`, the array `storybook.js`
+renders. Each page is either:
 
 - an **object page**: `{ title, body, build }`, where `build()` returns a
   layered `data-part` SVG string (via your character builders). Every object
@@ -95,7 +102,7 @@ turn — the engine handles that; you only supply content.
 
 ### The story is free — there is no required shape
 
-The two books that ship (xmas, race) happen to parade a big cast one
+Some of the books that ship (xmas, race) happen to parade a big cast one
 character per spread, but **that is not a template to copy.** A book can be any
 story you like:
 
@@ -154,31 +161,38 @@ The pattern that works, and why:
   wrapper is never removed by the splitter, so the placement survives on every
   layer.
 
-**Fit the half page.** The image slot is a square ~58% of the spread wide,
-lifted above centre — wider than one page. Art drawn edge-to-edge in
-`0 0 360 300` spills off the page and over its top. Keep the characters'
-natural margins (as xmas/race do) or pad the viewBox, e.g. the reef book's
-`viewBox="-25 -78 452 377"`: same design coordinates, rendered ~80% and
-nudged down. Padding is safe for animations (view-box pivots are measured
-from user-space 0,0).
+**Placement is generic: the engine's picture wrapper does it.** The image
+slot (`.obj-slot.is-image`) wraps every book's picture, and `storybook.js`
+(`fitImageSlot`) sizes and places it on every render and resize:
 
-**Placement rule for every picture (all books):**
+- **Fill the page width.** The picture spans its page half on screen, minus
+  a small even side margin (`PIC_MARGIN`, 4% each side).
+- **Real aspect ratio.** The wrapper takes the ratio from the picture's own
+  SVG `viewBox` (or `width`/`height`), so square art, 3:2 photos and wide
+  scenes all fit without per-book CSS. Don't add `.obj-slot` overrides.
+- **Centred vertically on the page.** The wrapper's centre is the centre of
+  the page as seen: the tilted page is a trapezoid on screen, so the engine
+  measures its projected corners and uses the mid-height width, so the space above and below is equal.
+- **Never off the page.** Height is capped at the page's on-screen height
+  (minus the same margin) and at `PIC_MAX_H` (78%) of the stage; on phones
+  and tablets the tilted page is short, so the picture gets narrower instead.
 
-- **Fill the page width.** Each image or scene should span its page half,
-  edge to edge minus a small even side margin, not float small in the
-  middle with empty paper left and right.
-- **Centre it vertically on the page.** The space above the picture and below
-  it should be equal. Don't leave the default "lifted above centre" offset
-  if it leaves more paper at the bottom than the top.
-- **Size by the picture's real aspect ratio.** A square slot only suits
-  square art. For wide art (e.g. 3:2 photos), override `.obj-slot.is-image`
-  in a per-book CSS file with the real `aspect-ratio` and a width that fills
-  the page, then set the vertical translate so the top and bottom margins
-  match (the trains book's `assets/css/trains.css` is the example: about 48%
-  of the spread wide, `translate(-50%, -44%)`).
-- **Check the extremes.** The page is drawn in perspective, so "centred"
-  is judged on the page as seen, not on the slot box. Look at the first and
-  last pages and a phone-width layout as well.
+The wrapper fits and centres the **drawn content**, not the bare viewBox: it
+measures the union of every layer's `getBBox()` (skipping hidden `fx-*`
+parts, clamped to the viewBox) and scales/offsets the slot so that box fills
+the page width and sits centred on the page. Art drawn low in its viewBox (a
+tree on the ground line, empty sky above) still ends up centred. Full-bleed
+scene SVGs (a background rect over the whole viewBox) simply fit by their
+viewBox. If the visible content isn't plain SVG geometry (space's canvas planets
+sit on invisible marker circles; seasons' scenes are masked plates whose
+blurred over-draw `getBBox` still counts, since it ignores masks and clips),
+declare it on the root: `<svg
+data-fit="x y w h">` in viewBox units, and the wrapper uses that instead of
+measuring. Empty viewBox padding is therefore harmless for placement; pad it
+when a character needs room to animate into (e.g. reef's
+`viewBox="-25 -78 452 377"`). Padding is safe for
+animations (view-box pivots are measured from user-space 0,0). Look at the
+first and last pages and a phone-width layout when you can render.
 
 Two CSS gotchas that bit the reef book (worth stating so nobody re-discovers
 them the hard way):
@@ -217,17 +231,47 @@ emit the shapes into one SVG, name the movers, write a few keyframe tracks.
   `books/<id>/assets/audio/`; the shared `music.js` player just loops whatever
   the manifest's `track` points at. Public-domain or original audio only.
 
-## 4b. Full-screen view (shared, optional)
+## 4a. Index.html and cache-busting
 
-Any picture can open full screen on tap: add `assets/css/fullview.css` and
-`assets/js/fullview.js` to the book page, then put `data-fullview` on the SVG
+Copy an existing book's `index.html`: the meta block, then only `<script>`
+tags (shared engine, this book's builders, `pages.js`, shared `boot.js` last).
+Load optional shared modules (`motion.js`, `color.js`, `fullview.*`,
+`pinch.js`) only if the book uses them. Every shared `../../assets/` reference
+carries the SAME `?v=N` in every book; when a shared file changes, bump that
+number in all seven `index.html` files together. Book-local files keep their
+own `?v=`, bumped when they change.
+
+## 4b. Next-page prerender (shared, opt-in)
+
+Off by default; a book turns it on with `window.BOOK_PRERENDER = true` in
+`pages.js`. Use it only for photo books (trains), where decoding big images
+stalls the turn; for SVG books the extra build cost more than it saved and
+made every book feel slower. When on, `storybook.js` builds the next page's picture in a hidden, slot-sized box once
+a spread settles, and moves that host into the slot on the turn. Builders need
+nothing special, but:
+
+- `build()` may now run twice per page (once parked, once if the reader jumps
+  elsewhere), so keep it free of side effects and give every call a fresh uid.
+- Parked pictures have their `<style>`s disabled (`media="not all"`), so the
+  name-only `buildAnim` selectors can't leak onto the shown picture. Don't put
+  `media` on your own `<style>`s.
+- Code that scans the DOM for mounted pictures sees parked ones too: they sit
+  in `.obj-prerender`, their host has no `is-tappable` class, and they move
+  into `.obj-slot` when shown.
+- Don't turn it on for pictures that do live work once mounted (space's
+  canvas spheres would spin in the parked copy).
+
+## 4c. Full-screen view (shared, optional)
+
+Any picture can open full screen on tap: add `assets/css/fullview.css`,
+`assets/js/pinch.js` and `assets/js/fullview.js` to the book page, then put `data-fullview` on the SVG
 a page's `build()` returns. `data-fullview=""` shows the same picture larger;
 `data-fullview="someBuilder"` shows the SVG markup `window.someBuilder()`
 returns (e.g. the dino book's to-scale line-up); `data-fullview-title` sets the
-heading; `data-fullview-zoom="touch"` turns on two-finger pinch zoom (touch
-screens only, via the shared `assets/js/pinch.js`; never mouse / trackpad) and
-`data-fullview-close="off"` hides the × button. Without the zoom flag the view
-just fits the screen. A tap or Esc closes it. Draw the scene's sky / ground
+heading; every full-screen view pinch-zooms with two fingers on touch screens
+(the shared `assets/js/pinch.js`, never mouse / trackpad; on a computer it just
+fits the window), and `data-fullview-zoom="off"` turns that off;
+`data-fullview-close="off"` hides the × button. A tap or Esc closes it. Draw the scene's sky / ground
 past its viewBox so it fills any spare space. The space book's own planet zoom
 uses the same `pinch.js` on every zoomed view.
 
@@ -266,7 +310,7 @@ uses the same `pinch.js` on every zoomed view.
 
 ## 6. Engine boundaries — keep content out of the engine
 
-- `storybook.js` must stay content-agnostic: it takes a `PAGES` roster, it does
+- `storybook.js` must stay content-agnostic: it takes the `BOOK_PAGES` roster, it does
   not hard-code any story. If you find yourself editing it to add a book, stop —
   the content belongs in `books/<id>/pages.js`.
 - `OBJ_DEPTH` is the one shared map books extend; only ADD keys, never repurpose

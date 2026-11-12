@@ -11,7 +11,7 @@ pop-up cut-out** (see `skills/photo-cutout-books.md`).
 
 ```
 books/trains/
-  index.html              entry page; loads assets/css/trains.css after book.css
+  index.html              entry page
   pages.js                the 16-page roster (window.BOOK_PAGES)
   cover.png, og.png       shelf card + social image: the toy-train page as it
                           looks in the book (cut-out lifted off the photo)
@@ -21,7 +21,6 @@ books/trains/
                           electric, shinkansen, underground, funicular,
                           monorail, maglev, doubledecker, toy)
   assets/
-    css/trains.css        3:2 picture slot, bigger and centred on the page
     js/backdrop.js        railway at dusk (viaduct train, rails, poles, signal)
     js/photocut.js        buildTrain(cfg): photo → layered cut-out SVG
     js/scenes.js          trains 1–7 (horse tram … diesel)

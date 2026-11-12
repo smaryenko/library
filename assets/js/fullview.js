@@ -6,15 +6,17 @@
 //   data-fullview="buildLineup" -> calls window.buildLineup() and shows the
 //                                  SVG markup it returns (a bigger scene)
 //   data-fullview-title="…"     -> optional heading (default: the spread title)
-//   data-fullview-zoom="touch"   -> two-finger pinch zoom on touch screens
-//                                  (off by default; never on mouse/trackpad)
+//   data-fullview-zoom="off"     -> no pinch zoom. By default every view
+//                                  pinch-zooms on touch screens (pinch.js);
+//                                  never on mouse / trackpad
 //   data-fullview-close="off"    -> no × button (a tap or Esc still closes)
-// Books can also open it directly: FullView.open({ svg, title }).
+// Books can also open it directly: FullView.open({ svg, title, zoom }), where
+// zoom defaults to true (touch screens only). Load assets/js/pinch.js with it.
 //
 // In the view:
 //   - the picture fits the screen (SVG "meet"); anything the SVG draws past
 //     its viewBox (e.g. sky / ground that runs on) fills the leftover space;
-//   - if the picture opts in (data-fullview-zoom="touch"), TWO-finger pinch
+//   - unless the picture opts out (data-fullview-zoom="off"), TWO-finger pinch
 //     zooms on touch screens (assets/js/pinch.js), and once zoomed one finger pans.
 //     There's no wheel / double-tap / keyboard zoom: on a computer it simply
 //     fits the window;
@@ -124,12 +126,12 @@
       <img class="fullview-img fullview-sharp" alt="" aria-hidden="true" draggable="false">
       ${opts.title ? `<div class="fullview-title">${opts.title}</div>` : ''}
       ${opts.close === false ? '' : `<button class="fullview-close" type="button" aria-label="Close">${CLOSE_ICON}</button>`}
-      ${touch && opts.zoom ? '<div class="fullview-hint">Pinch with two fingers to zoom</div>' : ''}`;
+      ${touch && opts.zoom !== false ? '<div class="fullview-hint">Pinch with two fingers to zoom</div>' : ''}`;
     document.body.appendChild(ov);
 
     const stage = ov.querySelector('.fullview-stage');
     view = { ov, stage, base: stage.querySelector('img'), sharp: ov.querySelector('.fullview-sharp'),
-      zoom: !!opts.zoom && touchScreen(), src: opts.svg, vb0: { x: n[0], y: n[1], w: n[2], h: n[3] }, s: 1, x: 0, y: 0, token: 0,
+      zoom: opts.zoom !== false && touchScreen(), src: opts.svg, vb0: { x: n[0], y: n[1], w: n[2], h: n[3] }, s: 1, x: 0, y: 0, token: 0,
       pts: new Map(), pinch: null, moved: false, start: null, onClose: opts.onClose };
     drawBase(view);
     wire(view);
@@ -227,7 +229,7 @@
     const title = src.getAttribute('data-fullview-title') ||
       (titleEl ? titleEl.textContent.replace(/\u00AD/g, '').trim() : '');
     open({ svg, title,
-      zoom: src.getAttribute('data-fullview-zoom') === 'touch',
+      zoom: src.getAttribute('data-fullview-zoom') !== 'off',
       close: src.getAttribute('data-fullview-close') !== 'off' });
   }
 

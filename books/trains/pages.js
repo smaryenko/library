@@ -2,9 +2,12 @@
 //
 // Intro clock, fourteen real trains (photo cut-outs, oldest to newest), and a
 // toy-train ending: 16 spreads. Builders live in assets/js/scenes*.js.
+// The next page's photo is prerendered by the shared engine (storybook.js),
+// opted in below so big photos are decoded before the turn.
 (function () {
   'use strict';
   const T = window.TRAINS;
+  window.BOOK_PRERENDER = true;
   window.BOOK_PAGES = [
     { title: "Time to Travel", body: "Tick, tock. Let’s ride through time and watch trains grow up.", build: T.clock },
     { title: "Horse Tram", body: "Long ago, before engines, a horse pulled the tram car along iron rails.", build: T.horse },
@@ -24,40 +27,4 @@
     { title: "The Next Train?", body: "Maybe you’ll build it. Let’s start with this wooden Brio train.", build: T.toy }
   ];
 
-  // Prerender the NEXT page only: whenever a page appears, the next page's
-  // picture is mounted for real in a hidden full-size warm-up stage behind
-  // the backdrop. The browser downloads, decodes and paints its photo there
-  // (clip + drop shadow, once per layer), so the turn doesn't stall on it.
-  // No engine edits: a MutationObserver spots the new picture and reads its
-  // data-train key to know which page is showing.
-  const keyOf = svg => (svg.match(/data-train="([^"]+)"/) || [])[1];
-  const keys = window.BOOK_PAGES.map(p => keyOf(p.build()));
-  const warm = document.createElement('div');
-  warm.setAttribute('aria-hidden', 'true');
-  warm.style.cssText = 'position:fixed;left:26vw;top:20vh;width:48vw;aspect-ratio:1560/1060;' +
-    'z-index:0;opacity:.01;pointer-events:none;';
-  let warmKey = null;
-  function warmUp(i) {
-    const page = window.BOOK_PAGES[i];
-    if (!page || keys[i] === warmKey || typeof window.mountObject !== 'function') return;
-    warmKey = keys[i];
-    if (!warm.isConnected) document.body.appendChild(warm);
-    warm.innerHTML = '';
-    const host = document.createElement('div');
-    host.className = 'obj-host';
-    host.style.cssText = 'position:absolute;inset:0;';
-    warm.appendChild(host);
-    window.mountObject(host, page.build());
-  }
-  let shownKey = null;
-  function onChange() {
-    const el = document.querySelector('.obj-host:not(#trainsWarm *) svg[data-train]');
-    const k = el && !warm.contains(el) ? el.getAttribute('data-train') : null;
-    if (!k || k === shownKey) return;
-    shownKey = k;
-    const i = keys.indexOf(k);
-    if (i >= 0) setTimeout(() => warmUp(i + 1), 300);   // after the flip settles
-  }
-  warm.id = 'trainsWarm';
-  new MutationObserver(onChange).observe(document.documentElement, { childList: true, subtree: true });
 })();

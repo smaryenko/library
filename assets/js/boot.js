@@ -102,13 +102,11 @@
     } catch (e) { /* non-fatal */ }
 
     // 2) backdrop (optional). The manifest names a global fn the book defines
-    // (e.g. mountWinter). Fall back to a global mountWinter if the named one
-    // isn't present, so the scene still shows if the manifest drifts.
+    // (e.g. mountWinter); a book without one just has no backdrop.
     try {
       var backdropFn =
         (entry && entry.backdrop && typeof window[entry.backdrop] === 'function')
-          ? window[entry.backdrop]
-          : (typeof window.mountWinter === 'function' ? window.mountWinter : null);
+          ? window[entry.backdrop] : null;
       if (backdropFn) backdropFn();
     } catch (e) { /* non-fatal */ }
 

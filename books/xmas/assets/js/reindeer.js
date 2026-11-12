@@ -24,14 +24,6 @@ function buildReindeer(cfg) {
   const noseColor = cfg.nose === 'red' ? '#E23B2E' : '#5A3A22';
   const hoof = '#3A2616';
 
-  // --- shading helpers: lighten/darken a hex colour by a percentage ---
-  function shade(hex, pct){
-    const h=hex.replace('#','');
-    const r=parseInt(h.slice(0,2),16), g=parseInt(h.slice(2,4),16), b=parseInt(h.slice(4,6),16);
-    const f=v=> Math.max(0, Math.min(255, Math.round(v + (pct<0 ? v*pct : (255-v)*pct))));
-    const to=v=>f(v).toString(16).padStart(2,'0');
-    return '#'+to(r)+to(g)+to(b);
-  }
   const furLight = shade(fur, 0.22);   // highlight
   const furMid   = fur;
   const furDeep  = shade(fur, -0.28);  // rim shadow

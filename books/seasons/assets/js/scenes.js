@@ -4,13 +4,15 @@
 // and hidden fx-* effects. One Nature.anim([...]) per scene, tracks target
 // role names. Placement always lives on no-data-part inner <g>s.
 //
-// The viewBox is padded (-20 -40 400 360) so the 360x300 design fits the
-// half-page image slot without spilling over the page top.
+// The viewBox is padded so animations have room to move into. data-fit
+// names the visible picture (the feathered plate, nature.js sceneDefs mask
+// rect 4 58 352 238): the engine's picture wrapper can't measure it, because
+// getBBox ignores the mask and sees the blurred over-draw instead.
 (function () {
   'use strict';
   const N = window.Nature;
   const F = window.FoxArt;
-  const VB = 'viewBox="-46 -88 452 377"';
+  const VB = 'viewBox="-46 -88 452 377" data-fit="4 58 352 238"';
   const f1 = n => n.toFixed(1);
   const uidOf = p => p + Math.random().toString(36).slice(2, 7);
   const px = a => `${f1(a[0])}px ${f1(a[1])}px`;

@@ -55,6 +55,18 @@
 
   window.Shelf = { mount: mountShelf };
 
+  // Web fonts, non-blocking: a stylesheet added from script doesn't hold up
+  // rendering, so the shelf paints at once in system fonts and swaps to
+  // Fredoka / Nunito when (if) Google Fonts answers.
+  const FONTS = 'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap';
+  if (!document.querySelector('link[data-webfonts]')) {
+    const l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = FONTS;
+    l.setAttribute('data-webfonts', '');
+    document.head.appendChild(l);
+  }
+
   function start() {
     const root = document.getElementById('shelf');
     if (root) mountShelf(root);
