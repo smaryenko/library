@@ -7,7 +7,7 @@ body { background: radial-gradient(ellipse at 50% 40%, #121a3d 0%, #060914 70%, 
 
 .obj-host .scene,
 .obj-host .layer { transform: none !important; }
-.obj-host.is-tappable { cursor: zoom-in; }
+.obj-host.is-tappable .obj-hit { cursor: zoom-in; }
 
 /* sphere holder: sized in px by solar.js to the SVG's rendered viewBox box */
 .solar-layer { position: absolute; pointer-events: none; }
@@ -80,7 +80,7 @@ body { background: radial-gradient(ellipse at 50% 40%, #121a3d 0%, #060914 70%, 
   color: #ffd36e;
   text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9);
   opacity: 0;
-  transition: opacity 400ms ease 500ms;   /* fades in as the picture lands */
+  transition: none;   /* shown at once when the zoom opens */
   pointer-events: none;
 }
 .solar-zoom.is-open .solar-zoom-name { opacity: 1; }

@@ -376,6 +376,32 @@
       width: `${w}px`, height: `${h}px`,
       aspectRatio: 'auto', transform: 'none'
     });
+    if (host) placeHitBox(host, c);
+  }
+
+  // Tap target: one box over the picture's area (its drawn content box, or
+  // the builder's own <svg data-hit="x y w h"> in viewBox units). Taps
+  // anywhere inside it play / zoom, gaps included; taps outside it turn the
+  // page. The picture itself lets taps through (book.css).
+  function placeHitBox(host, c) {
+    let hit = host.querySelector(':scope > .obj-hit');
+    if (!hit) {
+      hit = document.createElement('div');
+      hit.className = 'obj-hit';
+      hit.setAttribute('aria-hidden', 'true');
+      host.appendChild(hit);
+    }
+    let b = c;
+    const svg = host.querySelector('.layer svg');
+    const d = svg ? (svg.getAttribute('data-hit') || '').trim().split(/[\s,]+/).map(Number) : [];
+    const vb = svg ? (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number) : [];
+    if (d.length === 4 && d[2] > 0 && vb.length === 4 && vb[2] > 0) {
+      b = { x: (d[0] - vb[0]) / vb[2], y: (d[1] - vb[1]) / vb[3], w: d[2] / vb[2], h: d[3] / vb[3] };
+    }
+    Object.assign(hit.style, {
+      left: `${b.x * 100}%`, top: `${b.y * 100}%`,
+      width: `${b.w * 100}%`, height: `${b.h * 100}%`
+    });
   }
 
   function clearImageSlot(slot) {

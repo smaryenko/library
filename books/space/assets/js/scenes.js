@@ -80,7 +80,7 @@
       period: 260, phase: 200, lit: 'sun' });
 
     return `
-    <svg data-solar data-fit="2 112 396 176" data-zoom-fit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <svg data-solar data-fit="2 112 396 176" data-zoom-fit="2 112 396 176" data-hit="2 112 396 176" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
       <g>${orbits}</g>
       <g>${asteroids}</g>
       <g>${belt}</g>
@@ -95,10 +95,18 @@
     // content box for the engine's picture wrapper (the spheres are canvases
     // over invisible markers, so it can't be measured): the body, or the
     // body plus its orbit / moon when the page declares one
-    const cy = opts.cy || 150;
-    const fit = opts.fit || [150 - r, cy - r, 2 * r, 2 * r];
+    // Every body page uses the SAME frame (the whole 300×300 viewBox), so the
+    // radius `r` sets its size relative to the other pages: bodies keep their
+    // size order (Jupiter biggest, Mercury the smallest planet) instead of
+    // each one being blown up to fill the page.
+    const fit = opts.fit || [0, 0, 300, 300];
+    // the tap-to-zoom view still fills the screen with the body itself
+    // (half-width `zw`: the body, its rings or its moon's orbit)
+    const zw = opts.zoomHalf || (body === 'saturn' ? r * 2.4 : body === 'uranus' ? r * 2.1 : r);
+    const zh = Math.min(zw, opts.zoomHalfH || r);
+    const zoom = [150 - zw, 150 - zh, 2 * zw, 2 * zh].map(v => +v.toFixed(1));
     return `
-    <svg data-solar data-fit="${fit.join(' ')}" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+    <svg data-solar data-fit="${fit.join(' ')}" data-zoom-fit="${zoom.join(' ')}" data-hit="${zoom.join(' ')}" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
       ${opts.orbit || ''}
       ${marker({ body, id: body, cx: 150, cy: opts.cy || 150, r })}
       ${opts.extra || ''}
@@ -108,10 +116,10 @@
   function buildPluto() {
     // Pluto and its big moon Charon circle each other
     return buildBody('pluto', {
-      r: 70,
-      fit: [14, 80, 272, 140],          // Pluto + Charon's orbit
+      r: 46,                            // smaller than the Moon and Mercury
+      zoomHalf: 142,                    // zoom shows Charon's orbit too
       orbit: `<ellipse cx="150" cy="150" rx="118" ry="34" fill="none" stroke="${ORBIT}" stroke-width="0.8"/>`,
-      extra: marker({ body: 'charon', id: 'charon', cx: 268, cy: 150, r: 18, a: 118, b: 34,
+      extra: marker({ body: 'charon', id: 'charon', cx: 268, cy: 150, r: 22, a: 118, b: 34,
         period: 16, phase: 30, around: 'pluto' })
     });
   }
@@ -152,10 +160,10 @@
   // Sizes to true scale (the Moon is 0.27 × Earth's width); the distance is
   // squeezed to fit the page (really ~30 Earth-widths away).
   function buildEarth() {
-    const R = 66;
+    const R = 78;
     return buildBody('earth', {
       r: R,
-      fit: [4, 84, 292, 132],           // Earth + the Moon's orbit
+      zoomHalf: 150,                    // zoom shows the Moon's orbit too
       orbit: `<ellipse cx="150" cy="150" rx="128" ry="36" fill="none" stroke="rgba(70,80,110,0.35)" stroke-width="0.8"/>`,
       extra: marker({ body: 'moon', id: 'moon', cx: 278, cy: 150, r: (R * 0.273).toFixed(1),
         a: 128, b: 36, period: 24, phase: 20, around: 'earth' })

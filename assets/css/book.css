@@ -245,11 +245,13 @@ canvas.snow {
 /* The pop-up image is tappable: a tap plays the object's own animation (handled
    in storybook.js) instead of turning the page. The overlay stays
    pointer-events:none so taps anywhere ELSE still fall through to prev/next;
-   only the image opts back in. A subtle cursor hints it's interactive. */
-.obj-host.is-tappable {
-  pointer-events: auto;
-  cursor: pointer;
-}
+   only the image opts back in. A subtle cursor hints it's interactive.
+   Only the picture's own area (.obj-hit, placed by storybook.js over the
+   drawn content box) catches the tap, gaps inside it included; the empty
+   box around it lets taps through, so a tap beside the picture turns the page. */
+.obj-host.is-tappable { pointer-events: none; }
+.obj-host .obj-hit { position: absolute; z-index: 50; pointer-events: none; }
+.obj-host.is-tappable .obj-hit { pointer-events: auto; cursor: pointer; }
 .obj-host .scene {
   width: 100%;
   height: 100%;

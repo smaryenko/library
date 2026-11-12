@@ -900,7 +900,7 @@
     closing = null;
   }
   function closeZoom() {
-    if (!zoom || zoom.busy) return;
+    if (!zoom) return;
     const z = zoom;
     zoom = null;
     finishClose();
@@ -916,6 +916,8 @@
   // Capture-phase listeners run before the engine's window listeners, so a
   // tap on the picture (or anywhere while zoomed) never turns the page.
   // Swipes that start on the picture still reach the engine and turn it.
+  // Only the picture's tap box (.obj-hit, sized from the SVG's data-hit by
+  // the engine) catches taps; the rest of the picture lets them through.
   function solarHost(target) {
     const h = target && target.closest ? target.closest('.obj-host') : null;
     return h && h.querySelector('svg[data-solar]') ? h : null;
