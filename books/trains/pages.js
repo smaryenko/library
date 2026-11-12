@@ -21,7 +21,7 @@
     { title: "Monorail", body: "Some trains ride above the street on just one beam, like the Chongqing monorail.", build: T.monorail },
     { title: "Maglev", body: "High tracks got even cleverer: magnets lift the Shanghai Maglev so it floats and flies.", build: T.maglev },
     { title: "Double-Decker Train", body: "More riders? Add a floor! This Dutch NS train has seats upstairs and down.", build: T.doubledecker },
-    { title: "Toy Train", body: "And the next train? Maybe you’ll build it. Let’s start with this wooden Brio train.", build: T.toy }
+    { title: "The Next Train?", body: "Maybe you’ll build it. Let’s start with this wooden Brio train.", build: T.toy }
   ];
 
   // Prerender the NEXT page only: whenever a page appears, the next page's
