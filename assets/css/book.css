@@ -75,8 +75,11 @@ canvas.snow {
   perspective: 1900px;
   perspective-origin: 50% 42%;
   /* ~75% of screen width, taller so the open spread keeps real page depth */
-  width: 75vw;
-  height: min(84vh, 760px);
+  width: 78vw;
+  height: min(88vh, 800px);
+  /* sit a little above centre: the tilted book's far edge leaves empty space
+     at the top, the nav bar needs a bit at the bottom */
+  margin-top: -4vh;
   position: relative;
   z-index: 10;        /* above the winter backdrop + snow */
   cursor: pointer;
@@ -90,11 +93,11 @@ canvas.snow {
   position: absolute;
   inset: 0;
   transform-style: preserve-3d;
-  transform: rotateX(54deg);   /* less tilt: pages keep visible depth */
+  transform: rotateX(48deg);   /* less tilt: pages keep visible depth */
   transition: transform .12s ease-out;
 }
-.book.bump-r { transform: rotateX(54deg) translateX(10px); }
-.book.bump-l { transform: rotateX(54deg) translateX(-10px); }
+.book.bump-r { transform: rotateX(48deg) translateX(10px); }
+.book.bump-l { transform: rotateX(48deg) translateX(-10px); }
 
 /* Two-page spread: the flat open pages. The paper itself keeps its rounded
    corners, but we DON'T clip here so raised objects can overflow the frame. */
