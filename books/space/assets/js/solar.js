@@ -923,6 +923,14 @@
     return h && h.querySelector('svg[data-solar]') ? h : null;
   }
 
+  // Space / Enter on a page (storybook.js) = a tap on the picture
+  window.addEventListener('picture-activate', e => {
+    const host = solarHost(e.target);
+    if (zoom || !host) return;
+    e.preventDefault();
+    openZoom(host);
+  });
+
   let press = null;
   window.addEventListener('pointerdown', e => {
     if (zoom && zoom.pz) zoom.pz.feed(e);

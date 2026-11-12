@@ -233,6 +233,14 @@
       close: src.getAttribute('data-fullview-close') !== 'off' });
   }
 
+  // Space / Enter on a page (storybook.js) = a tap on the picture
+  window.addEventListener('picture-activate', e => {
+    const host = hostOf(e.target);
+    if (view || !host) return;
+    e.preventDefault();
+    openFromHost(host);
+  });
+
   let press = null;
   window.addEventListener('pointerdown', e => {
     if (view) return;

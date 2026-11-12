@@ -736,7 +736,12 @@
         if (t && t.closest && t.closest('button, a, input, textarea, select')) return;
         e.preventDefault();
         if (e.repeat) return;
+        // Same as a tap: a picture with its own tap action (full view, solar
+        // zoom) handles a cancelable 'picture-activate' event; otherwise the
+        // object's animation plays.
         overlayEl && overlayEl.querySelectorAll('.obj-slot .obj-host').forEach(h => {
+          const ev = new CustomEvent('picture-activate', { bubbles: true, cancelable: true });
+          if (!h.dispatchEvent(ev)) return;
           if (h.__obj && typeof h.__obj.play === 'function') h.__obj.play();
         });
         return;
