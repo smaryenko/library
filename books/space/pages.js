@@ -8,6 +8,8 @@
 
 (function () {
   'use strict';
+  // canvas spheres would keep spinning in a parked (prerendered) copy
+  window.BOOK_PRERENDER = false;
 
   window.BOOK_PAGES = [
     { title: 'Our Solar System',

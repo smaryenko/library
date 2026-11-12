@@ -108,8 +108,8 @@ The shared engine is content-agnostic; each book supplies its own content.
 - **Next-page prerender** — after a spread lands, the next page's picture is
   built and mounted in a hidden, slot-sized box (its `<style>`s parked with
   `media="not all"`), then moved into the slot on the turn instead of being
-  rebuilt. Opt-in per book with `window.BOOK_PRERENDER = true` in `pages.js`
-  (only photo books benefit; trains uses it).
+  rebuilt. On for every book; opt out with `window.BOOK_PRERENDER = false` in
+  `pages.js` (space does, for its live canvas spheres).
 - **Pseudo-3D** — `assets/js/pseudo3d-object.js` `mountObject(host, svgString,
   opts)` splits a `data-part` SVG into one layer per part, gives each a Z depth
   from the shared `OBJ_DEPTH` map, and parallaxes the stack on tilt. Its

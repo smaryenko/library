@@ -4,7 +4,7 @@
 shows up as a card on the landing shelf and opens into the shared page-turn
 engine.
 
-The engine (book stage, page-turn flip, navigation, pseudo-3D tilt, opt-in next-page
+The engine (book stage, page-turn flip, navigation, pseudo-3D tilt, next-page
 prerender, music button) is **shared and content-agnostic**. A book is just:
 its own folder, a manifest entry, per-book assets, and a page roster. You should
 not have to touch the engine to add a book.
@@ -21,7 +21,7 @@ stories/
     js/    stories.js         the manifest: list of available books
            boot.js            generic boot: reads manifest, mounts a book
            shelf.js           builds the shelf card grid
-           storybook.js       the page-turn engine (content-agnostic) + opt-in next-page prerender
+           storybook.js       the page-turn engine (content-agnostic) + next-page prerender
            pseudo3d-object.js the tilt / parallax rig (+ the shared OBJ_DEPTH map)
            anim.js            buildAnim(uid, {tracks}) → scoped click-animation <style>
            motion.js          optional Motion library (Motion.rig + move primitives)
@@ -241,12 +241,10 @@ carries the SAME `?v=N` in every book; when a shared file changes, bump that
 number in all seven `index.html` files together. Book-local files keep their
 own `?v=`, bumped when they change.
 
-## 4b. Next-page prerender (shared, opt-in)
+## 4b. Next-page prerender (shared, on by default)
 
-Off by default; a book turns it on with `window.BOOK_PRERENDER = true` in
-`pages.js`. Use it only for photo books (trains), where decoding big images
-stalls the turn; for SVG books the extra build cost more than it saved and
-made every book feel slower. When on, `storybook.js` builds the next page's picture in a hidden, slot-sized box once
+On for every book; a book opts out with `window.BOOK_PRERENDER = false` in
+`pages.js` (space does, see below). `storybook.js` builds the next page's picture in a hidden, slot-sized box once
 a spread settles, and moves that host into the slot on the turn. Builders need
 nothing special, but:
 
@@ -258,8 +256,8 @@ nothing special, but:
 - Code that scans the DOM for mounted pictures sees parked ones too: they sit
   in `.obj-prerender`, their host has no `is-tappable` class, and they move
   into `.obj-slot` when shown.
-- Don't turn it on for pictures that do live work once mounted (space's
-  canvas spheres would spin in the parked copy).
+- Opt out for pictures that do live work once mounted (space's canvas
+  spheres would spin in the parked copy).
 
 ## 4c. Full-screen view (shared, optional)
 

@@ -404,8 +404,8 @@
   // While parked, the picture's <style> blocks are switched off
   // (media="not all"): buildAnim's rules match by part name, so a parked
   // copy's keyframes would otherwise also hit the shown picture's parts.
-  // OPT-IN: only books that set `window.BOOK_PRERENDER = true` in pages.js
-  // (trains: big photos). For SVG books the extra build cost more than it saved.
+  // ON by default for every book; a book opts out with
+  // `window.BOOK_PRERENDER = false` in pages.js (space: live canvas spheres).
   let prerender = null;     // { page, host, obj }
   let prerenderTimer = null;
   let prerenderBox = null;
@@ -455,7 +455,7 @@
 
   function schedulePrerender(i, slot) {
     dropPrerender();
-    if (window.BOOK_PRERENDER !== true || i >= PAGES.length) return;
+    if (window.BOOK_PRERENDER === false || i >= PAGES.length) return;
     const page = PAGES[i];
     if (!page || page.textOnly || typeof page.build !== 'function') return;
     // wait for the current flip + pop to settle, then build only when the
@@ -517,7 +517,7 @@
     setTimeout(() => {
       spreadEl.classList.remove('pop', 'pop-run');
       overlayEl.classList.remove('pop', 'pop-run');
-    }, 520);
+    }, 380);
   }
 
   function dissolveOut() {
@@ -570,7 +570,7 @@
     flipTimers.push(setTimeout(() => {
       renderSpread(index, { animate: false });
       popIn();
-    }, DISSOLVE_MS + FLIP_MS * 0.5));
+    }, Math.max(DISSOLVE_MS, FLIP_MS * 0.45)));
 
     flipTimers.push(setTimeout(() => {
       leafEl.className = 'leaf';

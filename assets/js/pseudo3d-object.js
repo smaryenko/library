@@ -159,14 +159,18 @@ function mountObject(host, svgString, opts = {}) {
     layer.style.transform = 'translateZ(0px)';
     scene.appendChild(layer);
   } else {
+    // Parse once, then deep-clone the parsed root per layer and import it
+    // straight into the page (no re-parse / serialize / innerHTML round-trip
+    // per part, which was the main cost of a page turn on mobile).
+    const root = parsed.documentElement;
     partsInOrder.forEach(part => {
       const layer = document.createElement('div');
       layer.className = 'layer';
-      const doc = parser.parseFromString(svgString, 'image/svg+xml');
-      doc.querySelectorAll('[data-part]').forEach(n => {
+      const copy = document.importNode(root, true);
+      copy.querySelectorAll('[data-part]').forEach(n => {
         if (n.getAttribute('data-part') !== part) n.remove();
       });
-      layer.innerHTML = new XMLSerializer().serializeToString(doc.documentElement);
+      layer.appendChild(copy);
       const z = OBJ_DEPTH[part] ?? 0;
       layer.dataset.z = z;
       layer.dataset.part = part;

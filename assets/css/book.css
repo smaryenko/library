@@ -365,11 +365,11 @@ canvas.snow {
 }
 .obj-overlay.pop-run .obj-host {
   /* softer settle: a little overshoot, then an easy glide to rest */
-  animation: pop-obj 520ms cubic-bezier(.22, 1, .32, 1.1) both;
+  animation: pop-obj 380ms cubic-bezier(.22, 1, .32, 1.1) both;
   will-change: transform, opacity;
 }
 .obj-overlay.pop-run .text-block {
-  animation: pop-text 520ms cubic-bezier(.22, 1, .32, 1.1) both;
+  animation: pop-text 380ms cubic-bezier(.22, 1, .32, 1.1) both;
   /* promote to its own compositor layer and stop sub-pixel text re-rendering
      mid-animation — that re-rendering was the "blink" on mobile. */
   will-change: transform, opacity;

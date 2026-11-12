@@ -67,8 +67,7 @@ the page does in the book.
 ## Loading
 
 Photos are big, so the first paint of a page can stall a turn. The shared
-engine's next-page prerender (`book-authoring.md` §4b; opt in with
-`window.BOOK_PRERENDER = true` in `pages.js`) mounts the next
+engine's next-page prerender (`book-authoring.md` §4b; on by default) mounts the next
 picture in a hidden, slot-sized box, so its photo is downloaded, decoded and
 painted before the turn; no per-book warm-up code is needed (trains used to
 carry its own in `pages.js`).
