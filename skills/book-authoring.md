@@ -13,14 +13,14 @@ not have to touch the engine to add a book.
 
 ```
 stories/
-  index.html                 shelf landing page (the card grid)
+  index.html                 shelf landing page (the card carousel)
   assets/                     SHARED — the engine + global controls + chrome
     og.svg                    shelf's own social preview image
     favicon.svg               shelf favicon (a bookshelf; book-neutral)
     css/   shelf.css, book.css, fullview.css
     js/    stories.js         the manifest: list of available books
            boot.js            generic boot: reads manifest, mounts a book
-           shelf.js           builds the shelf card grid
+           shelf.js           builds the shelf card carousel
            storybook.js       the page-turn engine (content-agnostic) + next-page prerender
            pseudo3d-object.js the tilt / parallax rig (+ the shared OBJ_DEPTH map)
            anim.js            buildAnim(uid, {tracks}) → scoped click-animation <style>

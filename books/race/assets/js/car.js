@@ -207,7 +207,7 @@ function buildCar(cfg) {
     return '';
   }
 
-  return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+  return `<svg data-zoom="sm" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <!-- body volume: light top-left to dark lower-right -->
       <linearGradient id="carBody-${uid}" x1="0" y1="0" x2="0" y2="1">

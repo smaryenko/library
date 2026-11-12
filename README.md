@@ -1,7 +1,7 @@
 # stories — pop-up storybooks
 
 A small, dependency-free web toy: a **shelf of storybooks**. The landing page
-shows a grid of cards, one per book; open a book and it becomes an open
+shows a spinning carousel of cards, one per book; open a book and it becomes an open
 storybook lying flat in perspective. You page through it, and on each spread a
 picture pops off the page with a layered parallax "pseudo-3D" tilt. **Tap a
 picture and it plays its own little animation.** No WebGL, no build step, no
@@ -22,7 +22,7 @@ manifest in `assets/js/stories.js`.
 
 ```
 stories/
-  index.html                 shelf landing page (grid of story cards)
+  index.html                 shelf landing page (carousel of story cards)
   assets/                    SHARED, content-agnostic
     favicon.svg, og.svg      shelf icon + shelf social image
     css/  shelf.css, book.css, fullview.css
@@ -68,8 +68,9 @@ python3 -m http.server 8777
 ```
 
 - **Turn pages:** click the right/left half of the book, swipe/drag, use the
-  arrow keys / Space / PageUp / PageDown, or the on-screen nav bar
-  (jump-to-first · prev · next · jump-to-last) at the bottom.
+  arrow keys / PageUp / PageDown, or the on-screen nav bar
+  (jump-to-first · prev · next · jump-to-last) at the bottom. Space / Enter
+  play the picture's animation (same as tapping it). Esc returns to the library.
 - **Tilt:** hover the pointer over a picture — each part floats at a different
   depth, so it reads as a shallow 3D object. With no pointer it keeps a gentle
   idle sway.
@@ -88,7 +89,7 @@ image/text side alternates as you turn. Text-only spreads are optional.
 
 The shared engine is content-agnostic; each book supplies its own content.
 
-- **Shelf** — `index.html` is a responsive grid of story cards (cover art + a
+- **Shelf** — `index.html` is a round 3D carousel (random order) of story cards (cover art + a
   kid-friendly title and blurb). `assets/js/stories.js` is the manifest (one
   entry per book: title, blurb, category, cover, favicon, og, theme, backdrop
   fn, track, optional hint); `assets/js/shelf.js` renders the cards;

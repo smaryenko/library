@@ -529,7 +529,7 @@
   // Reverted to the standalone version: a big orange vertical loop (concentric
   // rings) rising off a grey launcher base, with a car near the top of the ring.
   function buildLoop() {
-    return `<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
+    return `<svg data-zoom="sm" viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg">
       ${sceneAnim([
         // the car charges in, then races TWO full laps around the loop —
         // accelerating up and over — before settling. It orbits the loop

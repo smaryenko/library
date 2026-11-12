@@ -716,12 +716,31 @@
   function wireInput(root) {
     // Keyboard — be generous with remote/presenter aliases.
     const NEXT_KEYS = new Set([
-      'ArrowRight', 'ArrowDown', ' ', 'Spacebar', 'Enter', 'PageDown'
+      'ArrowRight', 'ArrowDown', 'PageDown'
     ]);
     const PREV_KEYS = new Set([
       'ArrowLeft', 'ArrowUp', 'Backspace', 'PageUp'
     ]);
     window.addEventListener('keydown', e => {
+      // Esc: back to the library (an open full-view zoom eats Esc first, in
+      // fullview.js's capture handler, so Esc there just closes the zoom)
+      if (e.key === 'Escape' || e.key === 'Esc') {
+        const lib = document.querySelector('.library-btn');
+        if (lib && lib.href) { e.preventDefault(); location.href = lib.href; }
+        return;
+      }
+      // Space / Enter play the picture's animation (like a tap on it). A
+      // focused button (nav, music, library) keeps its own Space/Enter.
+      if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') {
+        const t = e.target;
+        if (t && t.closest && t.closest('button, a, input, textarea, select')) return;
+        e.preventDefault();
+        if (e.repeat) return;
+        overlayEl && overlayEl.querySelectorAll('.obj-slot .obj-host').forEach(h => {
+          if (h.__obj && typeof h.__obj.play === 'function') h.__obj.play();
+        });
+        return;
+      }
       if (NEXT_KEYS.has(e.key)) { e.preventDefault(); next(); }
       else if (PREV_KEYS.has(e.key)) { e.preventDefault(); prev(); }
     });

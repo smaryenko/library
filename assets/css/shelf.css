@@ -85,7 +85,7 @@ body {
 .shelf-header {
   flex: 0 0 auto;
   max-width: 1100px;
-  margin: 0 auto clamp(16px, 3vh, 36px);
+  margin: 0 auto clamp(12px, 2vh, 24px);
   text-align: center;
 }
 /* #shelf takes the remaining viewport height. The grid is anchored to the TOP
@@ -95,7 +95,7 @@ body {
   flex: 1 1 auto;
   min-height: 0;        /* allow the grid to shrink inside the flex column */
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   justify-content: center;
 }
 /* Pill badge: a quiet glass chip — thin border, faint translucent fill. */
@@ -148,24 +148,60 @@ body {
   .shelf-glow { animation: none; }
 }
 
-/* Card grid — sized to fit a full 4 x 2 set of books within the viewport, no
-   scrolling. Four equal columns, two equal rows that share whatever height
-   #shelf leaves below the header. Cards stretch to fill their cell, so 8 books
-   always fit on one screen. (With fewer than 8 books the rows/columns simply
-   hold fewer cards; the last row collapses to the content it has.) */
-.shelf-grid {
+/* ---- Round carousel --------------------------------------------------------
+   Cards stand on an arc; shelf.js seats each one from its offset to the front
+   (about five visible) and fades the far ones out. Glass look = translucent
+   gradient fill + hairline highlight border + a soft sheen, no backdrop-filter
+   (too costly on many 3D layers). The stage edges fade out with a mask, and
+   each card gets a faint floor reflection. The rAF loop only runs while moving. */
+.carousel {
+  --card-w: clamp(180px, min(21vw, 40vh), 380px);
+  --card-h: calc(var(--card-w) * 1.25);
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;     /* sit right under the title, no centring gap */
+  gap: clamp(8px, 1.5vh, 18px);
+}
+.carousel-stage {
+  position: relative;
+  width: 100vw;
+  margin: 0 calc(50% - 50vw);       /* full-bleed, past the body padding */
+  flex: 0 0 auto;
+  /* just the card plus room for its floor reflection */
+  height: calc(var(--card-h) + clamp(30px, 7vh, 76px) + clamp(30px, 6vh, 70px));
+  padding-top: clamp(30px, 7vh, 76px);
+  perspective: 1500px;
+  perspective-origin: 50% 35%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  /* Rows share the available height equally (so a full 4x2 fits), but a row is
-     capped so one or two cards don't balloon to fill the whole viewport — they
-     keep a normal card height and sit at the top-left. */
-  grid-auto-rows: minmax(0, clamp(220px, 40vh, 340px));
-  gap: clamp(14px, 2vw, 24px);
-  /* never taller than the space #shelf gives us */
-  max-height: 100%;
+  justify-items: center;
+  align-items: start;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* side cards dissolve into the background toward both screen edges */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+}
+.carousel-stage.is-dragging { cursor: grabbing; }
+.carousel-ring {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  transform-style: preserve-3d;
+}
+.carousel-ring .story-card {
+  position: absolute;
+  inset: 0;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* faint mirror on the "floor" under each card */
+  -webkit-box-reflect: below 14px linear-gradient(transparent 72%, rgba(255, 255, 255, 0.16));
 }
 
 .story-card {
@@ -173,93 +209,101 @@ body {
   flex-direction: column;
   text-decoration: none;
   color: #eef1f8;
-  min-height: 0;                    /* allow the card to shrink to its cell */
-  /* dark glass card: a faint translucent fill over the mesh background with a
-     hairline border, so the grid reads as modern frosted panels, not opaque
-     white boxes. */
-  background: rgba(255, 255, 255, 0.045);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 16px;
+  border-radius: 22px;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-  transition: transform 200ms ease, box-shadow 200ms ease,
-    border-color 200ms ease, background 200ms ease;
+  /* glass: a cool translucent wash, lighter at the top */
+  background:
+    linear-gradient(160deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.02) 100%),
+    rgba(22, 28, 54, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 24px 50px rgba(0, 0, 0, 0.45);
+  -webkit-user-drag: none;
+  transition: border-color 250ms ease, box-shadow 250ms ease;
 }
-.story-card:hover,
-.story-card:focus-visible {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: color-mix(in srgb, var(--accent, #ffffff) 45%, transparent);
-  box-shadow: 0 22px 44px rgba(0, 0, 0, 0.5);
-  outline: none;
+/* glossy sheen across the upper half */
+.story-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.04) 32%, rgba(255, 255, 255, 0) 50%);
+  pointer-events: none;
 }
-
-/* the preview fills the card above the meta strip, flexing with the row height
-   instead of forcing a fixed aspect ratio (which would overflow a short row). */
+.story-card img { -webkit-user-drag: none; pointer-events: none; }
+.story-card.is-front {
+  border-color: color-mix(in srgb, var(--accent, #ffffff) 45%, rgba(255, 255, 255, 0.2));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    0 0 0 1px color-mix(in srgb, var(--accent, #ffffff) 20%, transparent),
+    0 30px 70px rgba(0, 0, 0, 0.5),
+    0 0 60px color-mix(in srgb, var(--accent, #7c5cff) 28%, transparent);
+}
+.story-card:focus-visible { outline: 2px solid #ffd98a; outline-offset: 3px; }
 .story-card .cover {
   flex: 1 1 auto;
-  width: 100%;
+  width: calc(100% - 20px);
+  margin: 10px 10px 0;
   min-height: 0;
   object-fit: cover;
-  background: #1a2140;
+  border-radius: 14px;
+  background: rgba(26, 33, 64, 0.6);
   display: block;
 }
-
 .story-card .meta {
   flex: 0 0 auto;
-  padding: 12px 16px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 12px 18px 16px;
 }
 .story-card .meta .name {
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   font-family: 'Fredoka', 'Nunito', system-ui, sans-serif;
-  font-size: 1.2rem;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
   font-weight: 600;
-  /* each book's own accent (set by shelf.js from the manifest) */
   color: var(--accent, #f4f6ff);
 }
 .story-card .meta .blurb {
   margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: #a7aed0;
+  font-size: clamp(0.85rem, 1.1vw, 0.98rem);
+  line-height: 1.45;
+  color: #b3bad9;
 }
 
-/* ---- Responsive columns --------------------------------------------------
-   The 4x2 one-screen layout is for comfortable desktop/tablet widths. On
-   smaller screens, drop columns and let the shelf scroll normally so cards
-   never get too cramped to read or tap. */
-@media (max-width: 1024px) {
-  .shelf-grid { grid-template-columns: repeat(3, 1fr); }
+/* controls under the ring: two glass round buttons */
+.carousel-controls {
+  flex: 0 0 auto;
+  margin-top: auto;                         /* pinned to the bottom of the screen */
+  margin-bottom: clamp(12px, 3vh, 32px);   /* breathing room above the screen edge */
+  display: flex;
+  align-items: center;
+  gap: 18px;
 }
-@media (max-width: 760px) {
-  /* release the one-screen height lock — allow normal vertical scrolling */
-  html, body { height: auto; }
-  body { min-height: 100vh; display: block; }
-  #shelf { display: block; }
-  .shelf-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: auto;
-    max-height: none;
-  }
-  .story-card .cover { aspect-ratio: 4 / 3; flex: 0 0 auto; }
+.carousel-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 10px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #eef1f8;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 150ms ease, transform 150ms ease;
 }
-@media (max-width: 460px) {
-  .shelf-grid { grid-template-columns: 1fr; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .story-card { transition: none; }
-  .story-card:hover,
-  .story-card:focus-visible { transform: none; }
-}
+.carousel-btn:hover { background: linear-gradient(160deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08)); }
+.carousel-btn:active { transform: scale(0.93); }
+.carousel-btn:focus-visible { outline: 2px solid #ffd98a; outline-offset: 3px; }
 
 /* fiction / non-fiction label in the card's top-right corner */
 .story-card { position: relative; }
 .story-card .category {
   position: absolute;
+  z-index: 2;
   top: 10px;
   right: 10px;
   padding: 4px 10px;
@@ -275,3 +319,14 @@ body {
 }
 .story-card .category.fiction { background: rgba(150, 52, 120, 0.88); }
 .story-card .category.non-fiction { background: rgba(24, 110, 96, 0.88); }
+/* no blue tap flash / selection / focus ring on touch (keyboard focus ring kept) */
+.carousel-btn,
+.story-card,
+.carousel-stage {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.carousel-btn:focus:not(:focus-visible),
+.story-card:focus:not(:focus-visible) { outline: none; }
