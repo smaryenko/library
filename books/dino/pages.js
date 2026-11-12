@@ -32,7 +32,7 @@
       bodyHtml: 'had tall plates on its back and sharp spikes on its tail.',
       build: () => buildStegosaurus() },
     { title: 'Veloci\u00ADraptor',
-      bodyHtml: 'was only as big as a turkey, and it was covered in feathers.',
+      bodyHtml: 'was only as tall as a turkey, and it was covered in feathers.',
       build: () => mirror(buildVelociraptor()) },
     { title: 'Diplo\u00ADdocus',
       bodyHtml: 'was longer than a tennis court, with a tail it could crack like a whip.',
