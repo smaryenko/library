@@ -11,6 +11,11 @@
 // The engine splits each data-part onto its own Z layer and parallaxes them,
 // so no engine edits are needed. Polygons are in crop pixels (1500×1000).
 //
+// Animation rules are scoped to this picture's own class (uid): buildAnim's
+// selectors match by part name only, so two trains in the page at once (the
+// shown page + the prerendered next one) would otherwise run each other's
+// keyframes on their fx-tr parts.
+//
 // Placement never shares an element with an animated transform: the data-part
 // group is the animated element, the clip + image sit inside it untransformed.
 (function () {
@@ -41,7 +46,7 @@
     // parts: extra visible layers drawn over the photo (e.g. clock hands)
     const parts = Object.keys(cfg.parts || {}).map(n =>
       `<g data-part="${n}">${cfg.parts[n]}</g>`).join('');
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -30 ${W + 60} ${H + 60}" data-train="${cfg.img}">
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-30 -30 ${W + 60} ${H + 60}" data-train="${cfg.img}" class="${uid}">
 <defs>
   <clipPath id="${uid}-page"><rect x="0" y="0" width="${W}" height="${H}" rx="28"/></clipPath>
   <filter id="${uid}-lift" x="-10%" y="-10%" width="120%" height="125%">
@@ -52,7 +57,7 @@
   </filter>
   ${defs}
 </defs>
-${buildAnim(uid, { tracks: cfg.tracks || [] })}
+${buildAnim(uid, { tracks: cfg.tracks || [] }).replace(/svg\.is-playing /g, `svg.${uid}.is-playing `)}
 <g data-part="tr-photo"><g clip-path="url(#${uid}-page)">${image}<rect x="0" y="0" width="${W}" height="${H}" fill="#000" opacity=".12"/></g></g>
 ${cuts}
 ${parts}
