@@ -173,6 +173,7 @@
 
     renderSpread(index, { animate: false });
     wireInput(root);
+    wirePullToRefresh();
     startIdle();
     updateStatus();
   }
@@ -654,6 +655,61 @@
     if (navPrevBtn) navPrevBtn.classList.toggle('is-disabled', atFirst);
     if (navNextBtn) navNextBtn.classList.toggle('is-disabled', atLast);
     if (navLastBtn) navLastBtn.classList.toggle('is-disabled', atLast);
+  }
+
+  // --- pull to refresh (touch) -------------------------------------------
+  // The book page can't scroll (book.css: touch-action/overscroll none, so
+  // swipes turn pages), which also kills the browser's own pull-to-refresh.
+  // This brings it back: drag one finger DOWN from the top part of the screen
+  // past the threshold and let go to reload. Mostly-vertical drags only, so
+  // horizontal page-turn swipes are unaffected; off while a zoom is open.
+  function wirePullToRefresh() {
+    const START_MAX_Y = 0.4;   // must start in the top 40% of the screen
+    const PULL_PX = 80;        // indicator travel needed to reload
+    let start = null, ind = null, ready = false;
+    const zoomOpen = () => !!document.querySelector('.solar-zoom, .fullview');
+
+    function indicator() {
+      if (!ind) {
+        ind = document.createElement('div');
+        ind.className = 'pull-refresh';
+        ind.setAttribute('aria-hidden', 'true');
+        ind.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.34-5.66" ' +
+          'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>' +
+          '<path d="M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2.4" ' +
+          'stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        document.body.appendChild(ind);
+      }
+      return ind;
+    }
+    function reset() {
+      start = null; ready = false;
+      if (ind) { ind.style.transform = ''; ind.style.opacity = ''; ind.classList.remove('is-ready'); }
+    }
+
+    window.addEventListener('pointerdown', e => {
+      if (start) { reset(); return; }            // a second finger: a pinch, not a pull
+      if (e.pointerType !== 'touch' || zoomOpen() ||
+          e.clientY > window.innerHeight * START_MAX_Y) return;
+      start = { x: e.clientX, y: e.clientY, id: e.pointerId };
+    }, true);
+    window.addEventListener('pointermove', e => {
+      if (!start || e.pointerId !== start.id) return;
+      const dx = e.clientX - start.x, dy = e.clientY - start.y;
+      if (dy <= 0 || Math.abs(dx) > dy) { if (ind) ind.style.opacity = ''; ready = false; return; }
+      const pull = Math.min(dy * 0.5, PULL_PX * 1.25);
+      ready = pull >= PULL_PX;
+      const el = indicator();
+      el.style.opacity = String(Math.min(1, pull / 30));
+      el.style.transform = `translate(-50%, ${pull}px) rotate(${pull * 3}deg)`;
+      el.classList.toggle('is-ready', ready);
+    }, true);
+    window.addEventListener('pointerup', e => {
+      if (!start || e.pointerId !== start.id) return;
+      if (ready) { indicator().classList.add('is-loading'); location.reload(); return; }
+      reset();
+    }, true);
+    window.addEventListener('pointercancel', reset, true);
   }
 
   // --- input wiring: keys + unified pointer (mouse/touch/pen) -----------

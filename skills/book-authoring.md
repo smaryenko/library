@@ -194,6 +194,23 @@ when a character needs room to animate into (e.g. reef's
 animations (view-box pivots are measured from user-space 0,0). Look at the
 first and last pages and a phone-width layout when you can render.
 
+**Tap area.** Only the picture's own area catches a tap (play / zoom / full
+screen); taps anywhere else, including the empty slot around the picture,
+turn the page. The engine places one invisible box, `.obj-host > .obj-hit`,
+over the content box above (so gaps inside the picture count, and nothing
+outside it), and the picture itself has `pointer-events: none`. To use a
+different area, put `data-hit="x y w h"` (viewBox units) on the root `<svg>`;
+space does, so a planet page's tap box is the planet plus its rings or its
+moon's orbit rather than the whole frame. A full-bleed scene (sky rect over
+the viewBox) is tappable all over unless it declares `data-hit`. Book code
+that listens for taps should use `e.target.closest('.obj-host')` as before.
+
+**Pull to refresh.** The book page can't scroll (swipes turn pages), so the
+browser's own pull-to-refresh is gone; `storybook.js` adds its own: a
+one-finger, mostly vertical drag down that starts in the top 40% of the
+screen reloads the page. It's off while a zoom (`.solar-zoom`, `.fullview`)
+is open.
+
 Two CSS gotchas that bit the reef book (worth stating so nobody re-discovers
 them the hard way):
 

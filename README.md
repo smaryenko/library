@@ -105,6 +105,10 @@ The shared engine is content-agnostic; each book supplies its own content.
   `storybook.js` sizes from the picture's viewBox aspect ratio and places on
   its page half: page width minus a 4% margin each side, centred on the page,
   never taller than the page (or 78% of the stage). Books don't add slot CSS.
+  Only the picture's area (an `.obj-hit` box over its content, or the SVG's
+  `data-hit="x y w h"`) catches taps; everything else turns the page.
+- **Pull to refresh** — drag down from the top of a book page to reload (the
+  page can't scroll, so `storybook.js` provides this itself).
 - **Next-page prerender** — after a spread lands, the next page's picture is
   built and mounted in a hidden, slot-sized box (its `<style>`s parked with
   `media="not all"`), then moved into the slot on the turn instead of being
