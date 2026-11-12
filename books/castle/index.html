@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Pop-up Castle</title>
+  <!-- per-book favicon + social preview -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#2a1a10">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Pop-up Castle">
+  <meta property="og:description" content="Carry the banner across a medieval city to the castle, with a sleepy dragon on the way!">
+  <meta property="og:url" content="https://smaryenko.github.io/library/books/castle/">
+  <meta property="og:image" content="https://smaryenko.github.io/library/books/castle/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://smaryenko.github.io/library/books/castle/og.png">
+  <!-- shared engine styles (two levels up) -->
+  <link rel="stylesheet" href="../../assets/css/book.css?v=25">
+</head>
+<body>
+  <!-- library button, #stage and hint are added by the shared boot.js -->
+  <!-- SHARED: manifest + engine + controls (top-level assets/) -->
+  <script src="../../assets/js/stories.js?v=21"></script>
+  <script src="../../assets/js/pseudo3d-object.js?v=22"></script>
+  <script src="../../assets/js/anim.js?v=20"></script>
+  <script src="../../assets/js/music.js?v=20"></script>
+  <script src="../../assets/js/storybook.js?v=27"></script>
+  <!-- THIS book's content: backdrop, pop-up pieces, roster -->
+  <script src="assets/js/backdrop.js?v=1"></script>
+  <script src="assets/js/popup.js?v=1"></script>
+  <script src="pages.js?v=2"></script>
+  <!-- shared boot: mounts backdrop + roster, wires the music track -->
+  <script src="../../assets/js/boot.js?v=20"></script>
+</body>
+</html>

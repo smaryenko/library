@@ -116,5 +116,19 @@ window.STORIES = [
     theme: '#4a3a22',
     backdrop: 'mountSeasons', // books/seasons/assets/js/backdrop.js
     track: 'books/seasons/assets/audio/cello_concerto.mp3'
+  },
+  {
+    id: 'castle',
+    category: 'fiction',
+    title: 'Pop-up Castle',
+    blurb: 'Carry the banner across a medieval city to the castle, with a sleepy dragon on the way!',
+    cover: 'books/castle/cover.png',
+    favicon: 'books/castle/favicon.svg',
+    og: 'books/castle/og.png',
+    url: 'books/castle/',
+    accent: '#ffd27a',
+    theme: '#2a1a10',
+    hint: 'Tap the scene to bring it to life \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountCastle' // books/castle/assets/js/backdrop.js (no music track yet)
   }
 ];

@@ -115,6 +115,15 @@ const OBJ_DEPTH = {
   'tr-clock-hour': 10, 'tr-clock-min': 14, 'tr-clock-sec': 18, 'tr-clock-glass': 24,
   'tr-hand-hour': 34, 'tr-hand-min': 36, 'tr-hand-sec': 38,
   'tr-table': -30, 'tr-scenery': 14,
+  // castle — "Pop-up Castle" (books/castle/assets/js/{kit,scenes}.js). Each
+  // spread is one wide pop-up scene in cardboard depth cards: sky card at the
+  // back, far skyline, the main set piece, near props, front cut-outs.
+  'cs-sky': -60, 'cs-far': -42, 'cs-mid': -22, 'cs-main': -4, 'cs-act': 6,
+  'cs-near': 18, 'cs-hero': 26, 'cs-front': 34, 'cs-paper': 0,
+  'fx-cs-back': -14, 'fx-cs': 30, 'fx-cs-top': 44,
+  // castle pop-up photo cut-outs (books/castle/assets/js/popup.js), back → front
+  'pc-castle': -44, 'pc-oak-back': -30, 'pc-house-red': -24, 'pc-house-narrow': -22,
+  'pc-house-corner': -10, 'pc-house-hall': -4, 'pc-cog': 12, 'pc-oak': 22,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

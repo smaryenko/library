@@ -207,10 +207,11 @@
     objLeftSlot.innerHTML = '';
     objRightSlot.innerHTML = '';
     [objLeftSlot, objRightSlot].forEach(s => {
-      s.classList.remove('is-image', 'is-text');
+      s.classList.remove('is-image', 'is-text', 'is-spread', 'is-caption');
       clearImageSlot(s);
     });
     fitted = null;
+    spreadEl.querySelectorAll(':scope > .popup-ground').forEach(g => g.remove());
 
     const page = PAGES[((i % PAGES.length) + PAGES.length) % PAGES.length];
 
@@ -226,6 +227,8 @@
       if (animate !== false) popIn();
       return;
     }
+
+    if (isPopup(page)) { renderPopupSpread(i, page, animate); return; }
 
     const imgLeft = imageOnLeft(i);
 
@@ -258,6 +261,90 @@
     fitImageSlot(imgSlot, imgLeft ? leftPanelEl : rightPanelEl, aspectOf(host), page);
     if (animate !== false) popIn();
     schedulePrerender(i + 1, imgSlot);
+  }
+
+  // --- POP-UP layout: one scene over the whole spread, caption bottom-middle --
+  // Opt-in per book (`window.BOOK_LAYOUT = 'popup'` in pages.js) or per page
+  // (`layout: 'popup'`). The picture is ONE wide scene covering both pages
+  // (spine included), standing on the page's near edge like a pop-up; the text
+  // always sits at the bottom middle, over a gap the scene art leaves empty.
+  // The left slot holds the scene, the right slot the caption.
+  function isPopup(page) {
+    return page && (page.layout === 'popup' ||
+      (window.BOOK_LAYOUT === 'popup' && page.layout !== 'split'));
+  }
+
+  function renderPopupSpread(i, page, animate) {
+    let host, obj;
+    const pre = takePrerender(page);
+    if (pre) {
+      ({ host, obj } = pre);
+    } else {
+      host = document.createElement('div');
+      host.className = 'obj-host is-tappable';
+      obj = mountObject(host, page.build());
+    }
+    activeObjects.push(obj);
+    host.__obj = obj;
+    // Optional PRINTED ground: drawn on the paper itself (inside the tilted
+    // book, so it lies flat in perspective); the cut-outs stand on it.
+    if (typeof page.ground === 'function') {
+      const g = document.createElement('div');
+      g.className = 'popup-ground';
+      g.setAttribute('aria-hidden', 'true');
+      g.innerHTML = page.ground();
+      spreadEl.appendChild(g);
+    }
+    objLeftSlot.appendChild(host);
+    objRightSlot.appendChild(buildTextPanel(page));
+    objLeftSlot.classList.add('is-image', 'is-spread');
+    objRightSlot.classList.add('is-text', 'is-caption');
+    overlayEl.classList.add('img-left', 'img-right');
+    fitSpreadSlot(objLeftSlot, objRightSlot, aspectOf(host), page);
+    if (animate !== false) popIn();
+    schedulePrerender(i + 1, objLeftSlot);
+  }
+
+  const SPREAD_MAX_H = 0.96;   // scene height cap, fraction of the stage
+  // Two fits:
+  //  - default: the scene's viewBox spans the spread width, standing on the
+  //    page's near edge;
+  //  - `<svg data-floor="Y">` (pop-up with a printed ground): viewBox rows
+  //    Y..bottom map onto the page as SEEN, far edge to near edge, so a
+  //    cut-out whose base sits at row y stands on that depth of the page.
+  function fitSpreadSlot(slot, capSlot, ar, page) {
+    fitted = { slot, capSlot, ar, page, spread: true };
+    const o = overlayEl.getBoundingClientRect();
+    const a = pageBox(leftPanelEl), b = pageBox(rightPanelEl);
+    if (!(a.width > 0) || !(b.width > 0) || !o.width) return;
+    const left = a.left, right = b.left + b.width;
+    const top = Math.min(a.top, b.top);
+    const bottom = Math.max(a.top + a.height, b.top + b.height);
+    const svg = slot.querySelector('.layer svg');
+    const vb = svg ? (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number) : [];
+    const floor = svg ? parseFloat(svg.getAttribute('data-floor')) : NaN;
+    let w, h;
+    if (floor > 0 && vb.length === 4 && floor < vb[3]) {
+      h = (bottom - top) * vb[3] / (vb[3] - floor);
+      w = h * ar;
+    } else {
+      w = right - left; h = w / ar;
+    }
+    const maxH = Math.min(o.height * SPREAD_MAX_H * 1.6, bottom - o.top + o.height * 0.3);
+    if (h > maxH) { h = maxH; w = h * ar; }
+    const cx = (left + right) / 2 - o.left;
+    const by = bottom - o.top;
+    Object.assign(slot.style, {
+      left: `${cx - w / 2}px`, top: `${by - h}px`,
+      width: `${w}px`, height: `${h}px`, aspectRatio: 'auto', transform: 'none'
+    });
+    const host = slot.querySelector('.obj-host');
+    if (host) placeHitBox(host, { x: 0, y: 0, w: 1, h: 1 });
+    // caption: bottom-middle of the spread
+    if (capSlot) Object.assign(capSlot.style, {
+      left: `${cx}px`, top: `${by - (bottom - top) * 0.04}px`,
+      width: `${Math.max(220, (right - left) * 0.36)}px`, transform: 'translate(-50%, -100%)'
+    });
   }
 
   // --- the generic picture wrapper: place + scale every image the same way --
@@ -414,7 +501,9 @@
   window.addEventListener('resize', () => {
     clearTimeout(refitTimer);
     refitTimer = setTimeout(() => {
-      if (fitted && fitted.slot.classList.contains('is-image')) {
+      if (fitted && fitted.spread) {
+        fitSpreadSlot(fitted.slot, fitted.capSlot, fitted.ar, fitted.page);
+      } else if (fitted && fitted.slot.classList.contains('is-image')) {
         fitImageSlot(fitted.slot, fitted.panel, fitted.ar);
       }
     }, 120);

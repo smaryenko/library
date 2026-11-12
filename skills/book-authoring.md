@@ -255,7 +255,7 @@ tags (shared engine, this book's builders, `pages.js`, shared `boot.js` last).
 Load optional shared modules (`motion.js`, `color.js`, `fullview.*`,
 `pinch.js`) only if the book uses them. Every shared `../../assets/` reference
 carries the SAME `?v=N` in every book; when a shared file changes, bump that
-number in all seven `index.html` files together. Book-local files keep their
+number in all eight `index.html` files together. Book-local files keep their
 own `?v=`, bumped when they change.
 
 ## 4b. Next-page prerender (shared, on by default)
@@ -289,6 +289,28 @@ fits the window), and `data-fullview-zoom="off"` turns that off;
 `data-fullview-close="off"` hides the × button. A tap or Esc closes it. Draw the scene's sky / ground
 past its viewBox so it fills any spare space. The space book's own planet zoom
 uses the same `pinch.js` on every zoomed view.
+
+## 4d. Pop-up layout (shared, opt-in)
+
+Set `window.BOOK_LAYOUT = 'popup'` in `pages.js`, or `layout: 'popup'` on one
+page (`layout: 'split'` opts a single page back out). `storybook.js`
+(`renderPopupSpread` / `fitSpreadSlot`) then shows one scene over the whole
+spread, spine included. The caption (`title` + `body`) always sits at the
+bottom middle on a soft paper label (`.obj-slot.is-caption`).
+
+Build it like a real pop-up, not as a rectangle picture:
+- `page.ground()` returns the printed ground SVG. It goes inside the tilted
+  book (`.spread > .popup-ground`, stretched over both pages), so it lies
+  flat in perspective.
+- `page.build()` returns the standing pieces only, with no background. Each
+  piece is its own `data-part` (its own depth layer). Give the root
+  `<svg data-floor="Y">` and the engine maps scene rows Y..bottom onto the
+  page as seen, far edge to near edge. A piece whose base sits at row y
+  stands at that depth.
+- On arrival every piece folds up about its own base (`popup-fold`).
+- Keep the bottom-middle band clear for the caption.
+- Reference: `books/castle/assets/js/popup.js` (photo cut-outs with a paper
+  rim, a contact shadow and a cast shadow).
 
 ## 5. Checklist for a new book
 
