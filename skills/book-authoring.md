@@ -162,6 +162,24 @@ natural margins (as xmas/race do) or pad the viewBox, e.g. the reef book's
 nudged down. Padding is safe for animations (view-box pivots are measured
 from user-space 0,0).
 
+**Placement rule for every picture (all books):**
+
+- **Fill the page width.** Each image or scene should span its page half,
+  edge to edge minus a small even side margin, not float small in the
+  middle with empty paper left and right.
+- **Centre it vertically on the page.** The space above the picture and below
+  it should be equal. Don't leave the default "lifted above centre" offset
+  if it leaves more paper at the bottom than the top.
+- **Size by the picture's real aspect ratio.** A square slot only suits
+  square art. For wide art (e.g. 3:2 photos), override `.obj-slot.is-image`
+  in a per-book CSS file with the real `aspect-ratio` and a width that fills
+  the page, then set the vertical translate so the top and bottom margins
+  match (the trains book's `assets/css/trains.css` is the example: about 48%
+  of the spread wide, `translate(-50%, -44%)`).
+- **Check the extremes.** The page is drawn in perspective, so "centred"
+  is judged on the page as seen, not on the slot box. Look at the first and
+  last pages and a phone-width layout as well.
+
 Two CSS gotchas that bit the reef book (worth stating so nobody re-discovers
 them the hard way):
 

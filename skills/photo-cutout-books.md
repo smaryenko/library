@@ -55,6 +55,8 @@ changes. The cost is hard edges, so trace carefully.
 
 Photos are 3:2, not square: a per-book CSS file (`trains.css`) sizes
 `.obj-slot.is-image` to `aspect-ratio: 1560 / 1060` and centres it on the page.
+Follow the placement rule in `book-authoring.md`: the photo fills the page
+width, with equal margins above and below it.
 
 ## Previews
 
