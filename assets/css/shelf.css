@@ -159,6 +159,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .shelf-glow { animation: none; }
 }
+/* touch devices (phones, iPad): the drifting 40px-blurred glow layer and the
+   per-card box-reflect are the heaviest things Safari composites while the
+   carousel spins, so the glow holds still and the reflections are dropped */
+@media (hover: none) {
+  .shelf-glow { animation: none; }
+  .carousel-ring .story-card { -webkit-box-reflect: none; }
+}
 
 /* ---- Round carousel --------------------------------------------------------
    Cards stand on an arc; shelf.js seats each one from its offset to the front
@@ -200,18 +207,23 @@ body {
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  /* side cards dissolve into the background toward both screen edges */
-  /* ...and the reflection dissolves softly toward the bottom (the mask also
-     clips at the stage box, so the vertical fade must reach 0 before it) */
-  -webkit-mask-image:
-    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(180deg, #000 0%, #000 calc(100% - var(--card-h) * 0.34 - 20px), transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(180deg, #000 0%, #000 calc(100% - var(--card-h) * 0.34 - 20px), transparent 100%);
-  mask-composite: intersect;
+  /* No mask-image here: on Safari (iPad especially) a mask over the 3D ring
+     re-rasterizes the whole stage every frame, which made the carousel crawl.
+     The side dissolve is two static gradient overlays instead (below), and
+     the reflection fades on its own via its box-reflect gradient. */
 }
+.carousel-stage::before,
+.carousel-stage::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 16%;
+  z-index: 200;                 /* above every card (cards use z-index ≤ 100) */
+  pointer-events: none;
+}
+.carousel-stage::before { left: 0;  background: linear-gradient(90deg, #0e1222 0%, rgba(14, 18, 34, 0) 100%); }
+.carousel-stage::after  { right: 0; background: linear-gradient(270deg, #0e1222 0%, rgba(14, 18, 34, 0) 100%); }
 /* phones: a bigger front card (width-driven; the height cap keeps room for
    the title and the buttons) */
 @media (max-width: 600px) {
