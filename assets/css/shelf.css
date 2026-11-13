@@ -174,7 +174,7 @@ body {
    (too costly on many 3D layers). The stage edges fade out with a mask, and
    each card gets a faint floor reflection. The rAF loop only runs while moving. */
 .carousel {
-  --card-w: clamp(180px, min(21vw, 40vh), 380px);
+  --card-w: clamp(140px, min(21vw, calc(36dvh - 60px)), 380px);   /* height cap: card + reflection + title + buttons fit one screen, no bottom crop */
   --card-h: calc(var(--card-w) * 1.25);
   width: 100%;
   height: 100%;
@@ -210,27 +210,16 @@ body {
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
-  /* No mask-image here: on Safari (iPad especially) a mask over the 3D ring
-     re-rasterizes the whole stage every frame, which made the carousel crawl.
-     The side dissolve is two static gradient overlays instead (below), and
-     the reflection fades on its own via its box-reflect gradient. */
+  /* No mask-image and no edge overlays here: a mask over the 3D ring made
+     Safari/iPad crawl, and solid-colour edge strips painted over the coloured
+     glow (hard bands at the stage's top edge). The side cards already fade
+     out by distance (opacity set in shelf.js), and the reflection fades via
+     its own box-reflect gradient. */
 }
-.carousel-stage::before,
-.carousel-stage::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 16%;
-  z-index: 200;                 /* above every card (cards use z-index ≤ 100) */
-  pointer-events: none;
-}
-.carousel-stage::before { left: 0;  background: linear-gradient(90deg, #0e1222 0%, rgba(14, 18, 34, 0) 100%); }
-.carousel-stage::after  { right: 0; background: linear-gradient(270deg, #0e1222 0%, rgba(14, 18, 34, 0) 100%); }
 /* phones: a bigger front card (width-driven; the height cap keeps room for
    the title and the buttons) */
 @media (max-width: 600px) {
-  .carousel { --card-w: clamp(200px, min(64vw, 44vh), 320px); }
+  .carousel { --card-w: clamp(160px, min(64vw, calc(40dvh - 50px)), 320px); }
 }
 .carousel-stage.is-dragging { cursor: grabbing; }
 .carousel-ring {
@@ -286,7 +275,10 @@ body {
     0 0 60px color-mix(in srgb, var(--accent, #7c5cff) 28%, transparent);
 }
 .story-card .cover {
-  flex: 1 1 auto;
+  /* fixed share of the card: the picture used to take only what the text
+     left over, so on small cards it shrank to nothing. Now the TEXT gives way
+     (it's clipped / clamped below) and the picture always shows. */
+  flex: 0 0 50%;
   width: calc(100% - 20px);
   margin: 10px 10px 0;
   min-height: 0;
@@ -296,8 +288,21 @@ body {
   display: block;
 }
 .story-card .meta {
-  flex: 0 0 auto;
-  padding: 12px 18px 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 10px 16px 12px;
+}
+/* sizes follow the card (not the viewport), so small cards get small text */
+.story-card .meta .name {
+  font-size: clamp(0.85rem, calc(var(--card-w) * 0.075), 1.4rem) !important;
+  line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.story-card .meta .blurb {
+  font-size: clamp(0.72rem, calc(var(--card-w) * 0.055), 0.98rem) !important;
+  line-height: 1.35;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .story-card .meta .name {
   margin: 0 0 4px;
@@ -374,3 +379,46 @@ body {
 }
 .carousel-btn:focus,
 .story-card:focus { outline: none; }
+/* Short screens (small laptop windows, phone landscape): a compact header so
+   the cards get the height. The badge goes, the title and tagline shrink, and
+   the gap above the ring is trimmed. */
+@media (max-height: 600px) {
+  body { padding-top: 10px; }
+  .shelf-badge { display: none; }
+  .shelf-header { margin-bottom: 4px; }
+  .shelf-header h1 { font-size: clamp(22px, 6vh, 34px); margin-bottom: 2px; }
+  .shelf-header p { font-size: 13px; line-height: 1.3; }
+  .carousel-stage { padding-top: 14px; }
+  .carousel { --card-w: clamp(140px, min(21vw, calc(46dvh - 50px)), 380px); }
+}
+/* short screens: cards show just the picture and the title (no blurb); the
+   picture takes all the room the title leaves */
+@media (max-height: 600px) {
+  .story-card .meta .blurb { display: none; }
+  .story-card .cover { flex: 1 1 auto; }
+  .story-card .meta { flex: 0 0 auto; padding: 8px 14px 10px; }
+  .story-card .meta .name { margin: 0; }
+}
+/* short screens, part 2: bigger tiles. Less room is kept for the floor
+   reflection (only its top part shows), so the card itself can grow into
+   the space that used to sit empty above the buttons. */
+@media (max-height: 600px) {
+  .carousel { --card-w: clamp(150px, min(24vw, calc(52dvh - 40px)), 380px); }
+  .carousel-stage { height: calc(var(--card-h) * 1.15 + 40px); }
+}
+/* Never clip the top of the shelf: with the trimmed gap above the ring, the
+   front card's glow reached past #shelf's top edge and was cut in a hard
+   line. Page scroll is already impossible (html/body overflow: hidden). */
+#shelf { overflow: visible; }
+/* Tablets (touch, at least 700px both ways; portrait and landscape): much
+   bigger tiles. The desktop rule capped them at 21vw, which left an iPad
+   mostly empty. Touch devices draw no floor reflection (see the hover:none
+   rule above), so the stage only needs a little room below the card. */
+@media (hover: none) and (min-width: 700px) and (min-height: 700px) {
+  .carousel { --card-w: clamp(240px, min(42vw, calc(46dvh - 60px)), 520px); }
+  .carousel-stage { height: calc(var(--card-h) * 1.08 + clamp(30px, 7vh, 76px) + 24px); }
+  .story-card { border-radius: 28px; }
+  .story-card .cover { border-radius: 18px; width: calc(100% - 24px); margin: 12px 12px 0; }
+  .story-card .category { font-size: 14px; padding: 5px 12px; top: 14px; right: 14px; }
+  .carousel-btn { width: 64px; height: 64px; font-size: 30px; }
+}

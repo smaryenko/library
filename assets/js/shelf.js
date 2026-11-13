@@ -153,12 +153,15 @@
 
     // ---- drag / swipe (window listeners, no pointer capture, so a plain tap
     // still lands as a normal click on the card link) ----
-    let dragging = false, downX = 0, startP = 0, moved = false;
+    let dragging = false, downX = 0, downY = 0, startP = 0, moved = false;
+    let downType = 'mouse';
     let samples = [];
     stage.addEventListener('pointerdown', e => {
       if (e.button !== 0) return;
+      if (dragging) return;              // a second finger: ignore it
       dragging = true; moved = false;
-      downX = e.clientX; startP = p;
+      downType = e.pointerType || 'mouse';
+      downX = e.clientX; downY = e.clientY; startP = p;
       samples = [{ x: e.clientX, t: e.timeStamp }];
       kick();
     });
@@ -186,38 +189,63 @@
         // fling carries on a bit, capped so it never races off
         const fling = Math.max(-4, Math.min(4, v * 260));
         target = Math.round(p + fling);
-      } else {
-        target = Math.round(p);
-        // Touch tap: Safari's hit-testing on 3D-transformed links is flaky
-        // (taps land on nothing or on a hidden back card), so pick the card
-        // from its on-screen box ourselves. Front card first; it opens.
-        if (e.type === 'pointerup' && e.pointerType !== 'mouse') {
-          const inside = c => {
-            const r = c.getBoundingClientRect();
-            return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-          };
-          const order = cards.map((c, i) => i)
-            .filter(i => cards[i].style.visibility !== 'hidden')
-            .sort((a, b) => Math.abs(offset(a)) - Math.abs(offset(b)));
-          const hit = order.find(i => inside(cards[i]));
-          if (hit != null) {
-            touchTapAt = performance.now();
-            if (hit === front) { location.href = cards[hit].href; return; }
-            goTo(hit); return;
-          }
+      } else if (downType !== 'mouse') {
+        // TOUCH / PEN TAP: decided entirely here, from what is on screen at
+        // this moment. Native clicks on cards are ignored for touch (below):
+        // Safari's hit-testing on 3D-transformed links is flaky, and a tap
+        // during the glide after a swipe used to be judged against a card
+        // that wasn't visually in front yet, so it only spun.
+        // pointercancel carries no reliable position: use where it went down.
+        const x = e.type === 'pointercancel' ? downX : e.clientX;
+        const y = e.type === 'pointercancel' ? downY : e.clientY;
+        const hit = cardAt(x, y);
+        if (hit == null) { target = Math.round(target); kick(); return; }
+        // the card nearest the centre right now is the front one, even mid-glide
+        const visualFront = mod(Math.round(p), n);
+        if (hit === visualFront || hit === mod(Math.round(target), n) && Math.abs(offset(hit)) < 0.75) {
+          target = Math.round(p + offset(hit)); p = target; render();   // stop the glide
+          location.href = cards[hit].href;
+          return;
         }
+        goTo(hit);
+        return;
+      } else {
+        target = Math.round(target);
       }
       kick();
     }
-    let touchTapAt = 0;
+    // which visible card is under (x, y): nearest-to-centre cards win where
+    // the on-screen boxes overlap (side cards' boxes overlap the front one)
+    function cardAt(x, y) {
+      const order = cards.map((c, i) => i)
+        .filter(i => cards[i].style.visibility !== 'hidden' && Number(cards[i].style.opacity || 1) > 0.05)
+        .sort((a, b) => Math.abs(offset(a)) - Math.abs(offset(b)));
+      const direct = order.find(i => {
+        const r = cards[i].getBoundingClientRect();
+        return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+      });
+      if (direct != null) return direct;
+      // a tap in a gap between cards (or just above / below them, within the
+      // stage) goes to the card whose middle is horizontally nearest
+      const s = stage.getBoundingClientRect();
+      if (y < s.top || y > s.bottom || !order.length) return undefined;
+      let best, bestD = Infinity;
+      order.forEach(i => {
+        const r = cards[i].getBoundingClientRect();
+        const d = Math.abs(x - (r.left + r.right) / 2);
+        if (d < bestD) { bestD = d; best = i; }
+      });
+      return best;
+    }
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
 
     // clicks: a drag never opens a book; a side card spins to the front first
     cards.forEach((c, i) => c.addEventListener('click', e => {
+      // touch taps are handled on pointerup (above); the browser's own click
+      // for them is ignored. (e.detail 0 = keyboard Enter: let it through.)
+      if (downType !== 'mouse' && e.detail !== 0) { e.preventDefault(); return; }
       if (moved) { e.preventDefault(); moved = false; return; }
-      // the touch tap was already handled on pointerup: don't act twice
-      if (performance.now() - touchTapAt < 700) { e.preventDefault(); return; }
       if (i !== front) { e.preventDefault(); goTo(i); }
     }));
 
