@@ -187,7 +187,9 @@ body {
   flex: 0 1 auto;
   min-height: 0;
   /* just the card plus room for its floor reflection */
-  height: calc(var(--card-h) + clamp(30px, 7vh, 76px) + clamp(30px, 6vh, 70px));
+  /* bottom room = the whole visible part of the floor reflection (14px gap +
+     the last ~30% of the card), so the mask below never slices it */
+  height: calc(var(--card-h) * 1.34 + clamp(30px, 7vh, 76px) + 24px);
   padding-top: clamp(30px, 7vh, 76px);
   perspective: 1500px;
   perspective-origin: 50% 35%;
@@ -199,8 +201,21 @@ body {
   user-select: none;
   -webkit-user-select: none;
   /* side cards dissolve into the background toward both screen edges */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
-  mask-image: linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%);
+  /* ...and the reflection dissolves softly toward the bottom (the mask also
+     clips at the stage box, so the vertical fade must reach 0 before it) */
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(180deg, #000 0%, #000 calc(100% - var(--card-h) * 0.34 - 20px), transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent 0%, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(180deg, #000 0%, #000 calc(100% - var(--card-h) * 0.34 - 20px), transparent 100%);
+  mask-composite: intersect;
+}
+/* phones: a bigger front card (width-driven; the height cap keeps room for
+   the title and the buttons) */
+@media (max-width: 600px) {
+  .carousel { --card-w: clamp(200px, min(64vw, 44vh), 320px); }
 }
 .carousel-stage.is-dragging { cursor: grabbing; }
 .carousel-ring {
