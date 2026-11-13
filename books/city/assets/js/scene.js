@@ -25,6 +25,7 @@ const cur = { t: new V3(0, 0, 0), d: 58, yaw: 0, pitch: 0.7 };
 let flight = null;            // { from, to, u, dur, lift, pitchLift, resetStop }
 let anim = null;              // { stop, t, waiting }
 let tiltX = 0, tiltY = 0;
+const noTilt = window.matchMedia && window.matchMedia('(hover: none)').matches;
 let nightNow = 0, nightTarget = 0;
 let followW = 0;
 const followT = new V3();
@@ -159,7 +160,9 @@ function loop(now) {
   placeCamera(dt);
   renderer.render(scene, camera);
 
-  if (!ready) { ready = true; host.classList.add('is-ready'); }
+  // reveal only once the whole city is built (it used to fade in on the
+  // first frame and visibly assemble / sway while the chunks came in)
+  if (!ready && built) { ready = true; host.classList.add('is-ready'); }
 
   // drop resolution a notch if frames run slow for a while
   slow = dt > 0.03 ? slow + dt : Math.max(0, slow - dt * 0.5);
@@ -274,6 +277,13 @@ window.BOOK_SCENE = {
   mount,
   show,
   play,
-  tilt(x, y) { tiltX = x; tiltY = y; }
+  // The engine's idle sway swings the camera non-stop. On touch devices that
+  // is a full-scene re-render every frame for nothing (and at low fps while
+  // loading it looked like the city spinning), so the camera holds still
+  // there; on desktop it follows the pointer only after the city is built.
+  tilt(x, y) {
+    if (noTilt || !built) { tiltX = tiltY = 0; return; }
+    tiltX = x; tiltY = y;
+  }
 };
 })();

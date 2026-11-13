@@ -719,3 +719,44 @@ canvas.snow {
 @media (prefers-reduced-motion: reduce) {
   .obj-slot.is-caption.is-scene .text-block.cap-in { animation: none; }
 }
+
+/* ---- Phone landscape (short, wide screens) -------------------------------
+   The 72-88vh book plus a bottom nav bar didn't fit ~400px of height: the
+   caption ran into the buttons. Here the book uses the full height, the page
+   controls stand in a vertical column on the left, and text is smaller. */
+@media (orientation: landscape) and (max-height: 520px) {
+  .book-stage {
+    width: calc(100vw - 150px);
+    height: 100vh;
+    height: 100dvh;
+    margin: 0 0 0 64px;          /* room for the control column on the left */
+  }
+  .page-nav {
+    left: max(12px, env(safe-area-inset-left, 0px));
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    flex-direction: column;
+    gap: 6px;
+  }
+  .page-btn { width: 36px; height: 36px; }
+  .page-btn svg { width: 18px; height: 18px; }
+  .page-status { font-size: 12px; letter-spacing: 0; padding: 4px 6px; min-width: 0; }
+  .library-btn {
+    left: max(12px, env(safe-area-inset-left, 0px)); top: 10px;
+    height: 36px; width: 36px; padding: 0; justify-content: center; gap: 0;
+  }
+  .library-btn .label { display: none; }
+  .music-btn { top: 10px; right: max(12px, env(safe-area-inset-right, 0px)); width: 36px; height: 36px; }
+  .hint { display: none; }
+
+  /* page text (regular books) */
+  .title-line { font-size: clamp(18px, 7vh, 30px); }
+  .body-line  { font-size: clamp(12px, 4vh, 17px); line-height: 1.25; }
+
+  /* captions (pop-up and live 3D scene books, e.g. city) */
+  .obj-slot.is-caption .title-line { font-size: clamp(13px, 4.4vh, 18px); }
+  .obj-slot.is-caption .body-line  { font-size: clamp(11px, 3.4vh, 13px); line-height: 1.25; }
+  .obj-slot.is-caption .text-block { padding: .3em .9em .4em; }
+  .obj-slot.is-caption.is-scene { width: min(520px, 56vw) !important; bottom: 10px; }
+}
