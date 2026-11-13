@@ -165,7 +165,9 @@
     window.addEventListener('pointermove', e => {
       if (!dragging) return;
       const dx = e.clientX - downX;
-      if (!moved && Math.abs(dx) > 6) { moved = true; stage.classList.add('is-dragging'); }
+      // a finger wobbles more than a mouse: a bigger threshold before a tap
+      // turns into a drag (a drag never opens a book)
+      if (!moved && Math.abs(dx) > (e.pointerType === 'mouse' ? 6 : 14)) { moved = true; stage.classList.add('is-dragging'); }
       if (!moved) return;
       // one card width of drag = one card of travel
       p = startP - dx / (ring.offsetWidth * 1.05);
@@ -184,15 +186,38 @@
         // fling carries on a bit, capped so it never races off
         const fling = Math.max(-4, Math.min(4, v * 260));
         target = Math.round(p + fling);
-      } else target = Math.round(p);
+      } else {
+        target = Math.round(p);
+        // Touch tap: Safari's hit-testing on 3D-transformed links is flaky
+        // (taps land on nothing or on a hidden back card), so pick the card
+        // from its on-screen box ourselves. Front card first; it opens.
+        if (e.type === 'pointerup' && e.pointerType !== 'mouse') {
+          const inside = c => {
+            const r = c.getBoundingClientRect();
+            return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+          };
+          const order = cards.map((c, i) => i)
+            .filter(i => cards[i].style.visibility !== 'hidden')
+            .sort((a, b) => Math.abs(offset(a)) - Math.abs(offset(b)));
+          const hit = order.find(i => inside(cards[i]));
+          if (hit != null) {
+            touchTapAt = performance.now();
+            if (hit === front) { location.href = cards[hit].href; return; }
+            goTo(hit); return;
+          }
+        }
+      }
       kick();
     }
+    let touchTapAt = 0;
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
 
     // clicks: a drag never opens a book; a side card spins to the front first
     cards.forEach((c, i) => c.addEventListener('click', e => {
       if (moved) { e.preventDefault(); moved = false; return; }
+      // the touch tap was already handled on pointerup: don't act twice
+      if (performance.now() - touchTapAt < 700) { e.preventDefault(); return; }
       if (i !== front) { e.preventDefault(); goTo(i); }
     }));
 

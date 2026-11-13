@@ -203,7 +203,10 @@ body {
   display: grid;
   justify-items: center;
   align-items: start;
-  touch-action: pan-y;
+  /* the page never scrolls, so let the carousel own every gesture: with
+     pan-y a slightly diagonal tap became a browser pan (pointercancel) and
+     the tap was lost */
+  touch-action: none;
   cursor: grab;
   user-select: none;
   -webkit-user-select: none;
