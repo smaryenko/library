@@ -276,6 +276,23 @@ nothing special, but:
 - Opt out for pictures that do live work once mounted (space's canvas
   spheres would spin in the parked copy).
 
+## 4b-2. Pop-up layout and live 3D scene books (shared, optional)
+
+- **Pop-up layout:** `window.BOOK_LAYOUT = 'popup'` in `pages.js` (or
+  `layout: 'popup'` per page). One scene spans both pages, standing on the near
+  edge; the caption sits bottom-middle on a paper label (`.is-caption`).
+- **Live scene:** a book can set `window.BOOK_SCENE = { mount(host),
+  show(i, { instant }), play(i), tilt(x, y) }` instead of per-page `build()`.
+  The engine mounts it once, hides the CSS book (the scene draws its own),
+  never flips the leaf, and calls `show(i)` on every turn; only the caption
+  fades. Tap / Space / Enter call `play(i)`. The outer side strips still turn.
+- three.js is vendored as `assets/vendor/three/three.global.min.js` (0.170.0,
+  MIT; one plain script that sets `window.THREE`, with `mergeGeometries`,
+  `RoundedBoxGeometry` and `RoomEnvironment` attached). Use plain `<script>`
+  tags, not ES modules or import maps: Chrome blocks modules on `file://`, and
+  never load it from a CDN. Reference:
+  `books/city/` (`assets/js/scene.js` drives it, `world.js` holds the stops).
+
 ## 4c. Full-screen view (shared, optional)
 
 Any picture can open full screen on tap: add `assets/css/fullview.css`,

@@ -4,8 +4,11 @@ A small, dependency-free web toy: a **shelf of storybooks**. The landing page
 shows a spinning carousel of cards, one per book; open a book and it becomes an open
 storybook lying flat in perspective. You page through it, and on each spread a
 picture pops off the page with a layered parallax "pseudo-3D" tilt. **Tap a
-picture and it plays its own little animation.** No WebGL, no build step, no
-libraries.
+picture and it plays its own little animation.** No build step. Books are
+SVG/canvas with no libraries, except `books/city/`, a live three.js pop-up
+city; three.js is vendored in `assets/vendor/three/` (MIT) so it works offline.
+A book can also use the **pop-up layout**: one wide scene over the whole spread
+with the caption at the bottom middle.
 
 > **Art direction:** pictures are **detailed & believable but kid-friendly** —
 > warm and a touch stylised, yet richly drawn with real volume, materials, and

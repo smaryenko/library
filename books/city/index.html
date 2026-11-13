@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Harbor City</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <meta name="theme-color" content="#2f6f8c">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Harbor City">
+  <meta property="og:description" content="A 3D pop-up city: ships, cranes, diggers, fire trucks, race cars and planes. Tap to make them move!">
+  <meta property="og:url" content="https://smaryenko.github.io/library/books/city/">
+  <meta property="og:image" content="https://smaryenko.github.io/library/books/city/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://smaryenko.github.io/library/books/city/og.png">
+  <link rel="stylesheet" href="../../assets/css/book.css?v=26">
+</head>
+<body>
+  <!-- library button, #stage and hint are added by the shared boot.js -->
+  <!-- SHARED engine -->
+  <script src="../../assets/js/stories.js?v=21"></script>
+  <script src="../../assets/js/pseudo3d-object.js?v=21"></script>
+  <script src="../../assets/js/music.js?v=20"></script>
+  <script src="../../assets/js/storybook.js?v=27"></script>
+  <!-- three.js, vendored (assets/vendor/three, MIT): one plain script that
+       sets window.THREE, so the book works offline and from file:// -->
+  <script src="../../assets/vendor/three/three.global.min.js?v=1"></script>
+  <!-- THIS book: backdrop, roster, then the 3D kit → vehicles → print →
+       world → scene (scene.js sets window.BOOK_SCENE before boot.js) -->
+  <script src="assets/js/backdrop.js?v=2"></script>
+  <script src="pages.js?v=2"></script>
+  <script src="assets/js/kit.js?v=4"></script>
+  <script src="assets/js/vehicles.js?v=10"></script>
+  <script src="assets/js/print.js?v=4"></script>
+  <script src="assets/js/world.js?v=9"></script>
+  <script src="assets/js/scene.js?v=5"></script>
+  <script src="../../assets/js/boot.js?v=20"></script>
+</body>
+</html>

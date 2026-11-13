@@ -44,9 +44,18 @@
 
   let overlayEl, objLeftSlot, objRightSlot;
 
+  // --- live 3D scene books (window.BOOK_SCENE, e.g. books/city) ------------
+  // A book can supply ONE persistent scene instead of a picture per page:
+  //   window.BOOK_SCENE = { mount(host), show(i, { instant }), play(i), tilt(x, y) }
+  // It is mounted once and covers the whole spread (pop-up layout, caption at
+  // the bottom middle). Turning a page does not flip the leaf: the engine
+  // calls show(i) and the scene moves its camera; only the caption swaps.
+  let SCENE = null, sceneHost = null;
+
   // ---------------------------------------------------------------------
   function init(root) {
     PAGES = window.BOOK_PAGES || [];
+    SCENE = window.BOOK_SCENE || null;
     bookEl = document.createElement('div');
     bookEl.className = 'book';
     bookEl.innerHTML = `
@@ -171,6 +180,17 @@
     rightPanelEl = bookEl.querySelector('.page-panel.right');
     leafEl = bookEl.querySelector('.leaf');
 
+    if (SCENE) {
+      document.body.classList.add('book-scene3d');
+      sceneHost = document.createElement('div');
+      sceneHost.className = 'obj-host is-tappable scene3d-host';
+      SCENE.mount(sceneHost);
+      sceneHost.__obj = {
+        play: () => SCENE.play(index),
+        apply: (x, y) => { if (typeof SCENE.tilt === 'function') SCENE.tilt(x, y); }
+      };
+    }
+
     renderSpread(index, { animate: false });
     wireInput(root);
     wirePullToRefresh();
@@ -202,17 +222,20 @@
   // overlay slot over that page's centre, so it stands standalone.
   function renderSpread(i, { animate } = {}) {
     activeObjects.length = 0;
+    if (sceneHost) sceneHost.remove();   // keep the live scene; never destroy it
     leftPanelEl.innerHTML = '';
     rightPanelEl.innerHTML = '';
     objLeftSlot.innerHTML = '';
     objRightSlot.innerHTML = '';
     [objLeftSlot, objRightSlot].forEach(s => {
-      s.classList.remove('is-image', 'is-text');
+      s.classList.remove('is-image', 'is-text', 'is-spread', 'is-caption', 'is-scene');
       clearImageSlot(s);
     });
     fitted = null;
 
     const page = PAGES[((i % PAGES.length) + PAGES.length) % PAGES.length];
+
+    if (SCENE) { renderSceneSpread(i, page, animate); return; }
 
     if (page.textOnly) {
       // Text-on-BOTH-sides page (no pseudo-3D object): a short narrative split
@@ -226,6 +249,8 @@
       if (animate !== false) popIn();
       return;
     }
+
+    if (isPopup(page)) { renderPopupSpread(i, page, animate); return; }
 
     const imgLeft = imageOnLeft(i);
 
@@ -258,6 +283,117 @@
     fitImageSlot(imgSlot, imgLeft ? leftPanelEl : rightPanelEl, aspectOf(host), page);
     if (animate !== false) popIn();
     schedulePrerender(i + 1, imgSlot);
+  }
+
+  // --- POP-UP layout: one scene over the whole spread, caption bottom-middle --
+  // (ported from the wip/popup-castle branch.) Opt-in per book
+  // (`window.BOOK_LAYOUT = 'popup'` in pages.js) or per page (`layout: 'popup'`).
+  // The picture is ONE wide scene covering both pages (spine included),
+  // standing on the page's near edge like a pop-up; the text always sits at
+  // the bottom middle. The left slot holds the scene, the right the caption.
+  function isPopup(page) {
+    return page && (page.layout === 'popup' ||
+      (window.BOOK_LAYOUT === 'popup' && page.layout !== 'split'));
+  }
+
+  function renderPopupSpread(i, page, animate) {
+    let host, obj;
+    const pre = takePrerender(page);
+    if (pre) {
+      ({ host, obj } = pre);
+    } else {
+      host = document.createElement('div');
+      host.className = 'obj-host is-tappable';
+      obj = mountObject(host, page.build());
+    }
+    activeObjects.push(obj);
+    host.__obj = obj;
+    objLeftSlot.appendChild(host);
+    objRightSlot.appendChild(buildTextPanel(page));
+    objLeftSlot.classList.add('is-image', 'is-spread');
+    objRightSlot.classList.add('is-text', 'is-caption');
+    overlayEl.classList.add('img-left', 'img-right');
+    fitSpreadSlot(objLeftSlot, objRightSlot, aspectOf(host), page);
+    if (animate !== false) popIn();
+    schedulePrerender(i + 1, objLeftSlot);
+  }
+
+  const SPREAD_MAX_H = 0.96;   // scene height cap, fraction of the stage
+  // Two fits:
+  //  - default: the scene's viewBox spans the spread width, standing on the
+  //    page's near edge;
+  //  - `<svg data-floor="Y">`: viewBox rows Y..bottom map onto the page as
+  //    SEEN, far edge to near edge, so a piece whose base sits at row y
+  //    stands on that depth of the page.
+  function fitSpreadSlot(slot, capSlot, ar, page) {
+    fitted = { slot, capSlot, ar, page, spread: true };
+    const o = overlayEl.getBoundingClientRect();
+    const a = pageBox(leftPanelEl), b = pageBox(rightPanelEl);
+    if (!(a.width > 0) || !(b.width > 0) || !o.width) return;
+    const left = a.left, right = b.left + b.width;
+    const top = Math.min(a.top, b.top);
+    const bottom = Math.max(a.top + a.height, b.top + b.height);
+    const svg = slot.querySelector('.layer svg');
+    const vb = svg ? (svg.getAttribute('viewBox') || '').trim().split(/[\s,]+/).map(Number) : [];
+    const floor = svg ? parseFloat(svg.getAttribute('data-floor')) : NaN;
+    let w, h;
+    if (floor > 0 && vb.length === 4 && floor < vb[3]) {
+      h = (bottom - top) * vb[3] / (vb[3] - floor);
+      w = h * ar;
+    } else {
+      w = right - left; h = w / ar;
+    }
+    const maxH = Math.min(o.height * SPREAD_MAX_H * 1.6, bottom - o.top + o.height * 0.3);
+    if (h > maxH) { h = maxH; w = h * ar; }
+    const cx = (left + right) / 2 - o.left;
+    const by = bottom - o.top;
+    Object.assign(slot.style, {
+      left: `${cx - w / 2}px`, top: `${by - h}px`,
+      width: `${w}px`, height: `${h}px`, aspectRatio: 'auto', transform: 'none'
+    });
+    const host = slot.querySelector('.obj-host');
+    if (host) placeHitBox(host, { x: 0, y: 0, w: 1, h: 1 });
+    // caption: bottom-middle of the spread
+    if (capSlot) Object.assign(capSlot.style, {
+      left: `${cx}px`, top: `${by - (bottom - top) * 0.04}px`,
+      width: `${Math.max(220, (right - left) * 0.36)}px`, transform: 'translate(-50%, -100%)'
+    });
+  }
+
+  // --- live 3D scene spread ------------------------------------------------
+  // The scene canvas fills the whole stage (the 3D book is drawn by the
+  // scene itself, so the CSS book is hidden, see book.css .book-scene3d).
+  // Caption: bottom-middle (CSS). Tap box: everything except the outer side
+  // strips (those still turn the page) and the bottom nav band.
+  let sceneShown = false;
+  function renderSceneSpread(i, page, animate) {
+    objLeftSlot.appendChild(sceneHost);
+    objRightSlot.appendChild(buildTextPanel(page));
+    objLeftSlot.classList.add('is-image', 'is-spread', 'is-scene');
+    objRightSlot.classList.add('is-text', 'is-caption', 'is-scene');
+    overlayEl.classList.add('img-left', 'img-right');
+    activeObjects.push(sceneHost.__obj);
+    placeHitBox(sceneHost, { x: 0.12, y: 0.06, w: 0.76, h: 0.8 });
+    SCENE.show(i, { instant: !sceneShown });
+    sceneShown = true;
+  }
+
+  // Page "turn" for a scene book: no leaf flip. The camera flies (the scene
+  // retargets smoothly if pressed again mid-flight) and the caption fades.
+  function sceneTurnTo(target) {
+    clearFlipTimers();
+    index = target;
+    updateStatus();
+    SCENE.show(index, { instant: false });
+    const old = objRightSlot.querySelector('.text-block');
+    if (old) old.classList.add('cap-out');
+    flipTimers.push(setTimeout(() => {
+      objRightSlot.innerHTML = '';
+      const tb = buildTextPanel(PAGES[index]);
+      tb.classList.add('cap-in');
+      objRightSlot.appendChild(tb);
+    }, 240));
+    busy = false;
   }
 
   // --- the generic picture wrapper: place + scale every image the same way --
@@ -414,7 +550,9 @@
   window.addEventListener('resize', () => {
     clearTimeout(refitTimer);
     refitTimer = setTimeout(() => {
-      if (fitted && fitted.slot.classList.contains('is-image')) {
+      if (fitted && fitted.spread) {
+        fitSpreadSlot(fitted.slot, fitted.capSlot, fitted.ar, fitted.page);
+      } else if (fitted && fitted.slot.classList.contains('is-image')) {
         fitImageSlot(fitted.slot, fitted.panel, fitted.ar);
       }
     }, 120);
@@ -572,6 +710,7 @@
   // out so go() and goTo() share one path. Does NOT gate on `busy`: callers
   // decide whether to interrupt a running flip.
   function runFlipTo(target, dir) {
+    if (SCENE) { sceneTurnTo(target); return; }
     clearFlipTimers();
     busy = true;
 

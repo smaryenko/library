@@ -26,8 +26,6 @@ books/trains/
     js/scenes.js          trains 1–7 (horse tram … diesel)
     js/scenes2.js         trains 8–14, the station clock, the toy train
     audio/train.mp3       looping train sound
-  preview/                early experiments, kept as backups:
-                          photo.html (canvas cut-outs), three.html (three.js)
 ```
 
 ## Page order

@@ -116,5 +116,18 @@ window.STORIES = [
     theme: '#4a3a22',
     backdrop: 'mountSeasons', // books/seasons/assets/js/backdrop.js
     track: 'books/seasons/assets/audio/cello_concerto.mp3'
+  },
+  {
+    id: 'city',
+    category: 'non-fiction',
+    title: 'Harbor City',
+    blurb: 'A 3D pop-up city: ships, cranes, diggers, fire trucks, race cars and planes. Tap to make them move!',
+    cover: 'books/city/cover.svg',
+    favicon: 'books/city/favicon.svg',
+    url: 'books/city/',
+    accent: '#ffd27a',
+    theme: '#2f6f8c',
+    hint: 'Tap the city to make it move \u00b7 tap the edges or swipe to turn \u00b7 Space/Enter to play',
+    backdrop: 'mountCity' // books/city/assets/js/backdrop.js (three.js scene, no music yet)
   }
 ];
