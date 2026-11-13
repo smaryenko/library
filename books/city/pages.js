@@ -35,6 +35,6 @@
     { stop: 'cargo', title: 'The cargo plane',
       body: 'opens its nose wide to swallow the boxes. The airport fire truck gives it a water salute.' },
     { stop: 'evening', title: 'Good night, Harbor City',
-      body: 'The lights come on, the work is done, and fireworks light up the sky.' }
+      body: 'The lights come on, the work is done, and the whole city sparkles in the dark.' }
   ];
 })();
