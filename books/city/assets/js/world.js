@@ -1361,6 +1361,90 @@ function buildWorld(scene) {
     }
   });
 
+  // =========================================================================
+  // SKIPPER: the story's seagull hero. One bird that flies to every stop and
+  // hovers just off-centre in front of the camera. Recognizable on every page:
+  // bright orange beak and legs, a navy captain's cap and a red neckerchief
+  // (the ambient gulls are plain white/grey). Size scales with the stop's
+  // camera distance so he reads the same on close-ups and the overview.
+  chunks.push(() => {
+    const white = paint(0xfbfbf7, { roughness: 0.6 }), grey = paint(0x8f98a4, { roughness: 0.7 });
+    const tip = paint(0x24272c), orange = paint(0xff7a12, { roughness: 0.45 });
+    const navy = paint(0x1d2f6b, { roughness: 0.6 }), gold = paint(0xf2c230, { roughness: 0.4 });
+    const red = paint(0xe0262b, { roughness: 0.6 }), eye = paint(0x111111, { roughness: 0.2 });
+    const bird = new THREE.Group();          // world position / heading
+    const body = new THREE.Group();          // bob + tilt
+    bird.add(body);
+    // body: plump, nose along +x
+    mesh(sphere(0.5, 16, 12).scale(1.5, 0.95, 1), white, 0, 0, 0, body);
+    mesh(box(0.7, 0.08, 0.5).translate(-0.85, 0.05, 0), grey, 0, 0, 0, body);   // tail
+    mesh(box(0.22, 0.06, 0.5), tip, -1.25, 0.05, 0, body);
+    // head
+    const head = new THREE.Group(); head.position.set(0.72, 0.42, 0); body.add(head);
+    mesh(sphere(0.36, 16, 12), white, 0, 0, 0, head);
+    mesh(cylX(0.1, 0.42, 10, 0.03).translate(0.46, -0.04, 0), orange, 0, 0, 0, head);   // beak
+    mesh(sphere(0.05, 8, 6), red, 0.62, -0.1, 0, head);                                // red beak spot
+    mesh(sphere(0.06, 8, 6), eye, 0.22, 0.1, 0.3, head);
+    mesh(sphere(0.06, 8, 6), eye, 0.22, 0.1, -0.3, head);
+    // captain's cap: navy crown, black peak, gold band
+    mesh(cylY(0.3, 0.2, 16, 0.34), navy, -0.02, 0.36, 0, head);
+    mesh(cylY(0.31, 0.05, 16), gold, -0.02, 0.27, 0, head);
+    mesh(box(0.22, 0.03, 0.36), tip, 0.32, 0.27, 0, head);
+    // red neckerchief
+    mesh(cylY(0.36, 0.12, 16, 0.38), red, 0.55, 0.12, 0, body);
+    mesh(box(0.05, 0.3, 0.2).rotateZ(0.3), red, 0.35, -0.05, 0, body);
+    // orange legs, tucked back while flying
+    [0.16, -0.16].forEach(z => mesh(cylX(0.04, 0.4).translate(-0.45, -0.42, z), orange, 0, 0, 0, body));
+    // wings: hinge at the shoulder, grey on top with black tips
+    const wing = side => {
+      const w = new THREE.Group(); w.position.set(0.05, 0.25, 0.42 * side); body.add(w);
+      mesh(box(0.7, 0.07, 1.1).translate(0, 0, 0.55 * side), grey, 0, 0, 0, w);
+      mesh(box(0.5, 0.06, 0.45).translate(-0.05, 0, 1.3 * side), tip, 0, 0, 0, w);
+      return w;
+    };
+    const wl = wing(1), wr = wing(-1);
+    root.add(bird);
+
+    // where he hovers for a stop: in front of the camera, to its right, a bit up
+    const perch = (key, out) => {
+      const c = (stops[key] || stops.overview).cam;
+      const cp = Math.cos(c.pitch);
+      const fwd = [Math.sin(c.yaw) * cp, Math.sin(c.pitch), Math.cos(c.yaw) * cp];
+      const right = [Math.cos(c.yaw), 0, -Math.sin(c.yaw)];
+      const d = c.d;
+      out.set(
+        c.t[0] + fwd[0] * d * 0.3 + right[0] * d * 0.17,
+        c.t[1] + fwd[1] * d * 0.3 + d * 0.05,
+        c.t[2] + fwd[2] * d * 0.3 + right[2] * d * 0.17);
+      return { s: d * 0.022, yaw: c.yaw };
+    };
+    const goal = new V3(), prev = new V3();
+    let size = 0, heading = 0, placed = false;
+    updaters.push((dt, t, active) => {
+      const p = perch(active || 'overview', goal);
+      if (!placed) { bird.position.copy(goal); size = p.s; heading = p.yaw; placed = true; }
+      prev.copy(bird.position);
+      const k = Math.min(1, dt * 1.6);
+      bird.position.lerp(goal, k);
+      size = lerp(size, p.s, k);
+      // side-on to the camera (profile shows the beak, cap and scarf), facing
+      // the way he's flying; turns smoothly
+      const vx = bird.position.x - prev.x, vz = bird.position.z - prev.z;
+      const moving = Math.hypot(vx, vz) > size * 0.004;
+      const want = moving ? Math.atan2(-vz, vx) : p.yaw + Math.PI;   // nose toward screen-left, toward the scene
+      let dh = want - heading; dh = Math.atan2(Math.sin(dh), Math.cos(dh));
+      heading += dh * Math.min(1, dt * 3);
+      bird.rotation.set(0, heading, 0);
+      bird.scale.setScalar(size);
+      // flap faster while travelling, lazy glide-flap while hovering
+      const f = Math.sin(t * (moving ? 14 : 7)) * (moving ? 0.7 : 0.45);
+      wl.rotation.x = -f; wr.rotation.x = f;
+      body.position.y = Math.sin(t * 2.2) * 0.25;
+      body.rotation.z = Math.sin(t * 1.3) * 0.08;
+      head.rotation.y = Math.sin(t * 0.9) * 0.35;
+    });
+  });
+
   return {
     root, chunks, stops, night, W,
     update(dt, t, active) { updaters.forEach(u => u(dt, t, active)); }

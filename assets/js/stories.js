@@ -119,9 +119,9 @@ window.STORIES = [
   },
   {
     id: 'city',
-    category: 'non-fiction',
-    title: 'Harbor City',
-    blurb: 'A 3D pop-up city: ships, cranes, diggers, fire trucks, race cars and planes. Tap to make them move!',
+    category: 'fiction',
+    title: 'Up, Up Over Harbor City',
+    blurb: 'Skipper the seagull flies round a busy 3D city looking for a job of his own.',
     cover: 'books/city/cover.svg',
     favicon: 'books/city/favicon.svg',
     url: 'books/city/',
