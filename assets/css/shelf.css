@@ -10,6 +10,10 @@
 html, body {
   margin: 0;
   min-height: 100%;
+  /* the shelf is a single fixed screen: never scroll either way. Content that
+     doesn't fit is clipped rather than rescaled. */
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -24,8 +28,11 @@ body {
   /* Fit the whole shelf (header + grid) within one viewport so a full 4x2 set
      of books is visible without scrolling. The page is a vertical flex column:
      header takes its natural height, the grid takes the rest. */
-  min-height: 100vh;
+  /* 100dvh = the visible viewport on mobile (100vh includes the area under
+     the browser toolbars, which caused a vertical scroll) */
+  min-height: 0;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   padding: clamp(18px, 3.5vh, 44px) clamp(20px, 5vw, 64px);
@@ -94,6 +101,11 @@ body {
 #shelf {
   flex: 1 1 auto;
   min-height: 0;        /* allow the grid to shrink inside the flex column */
+  /* clip only vertically: the carousel stage is full-bleed past the body
+     padding, so clipping sideways cut the side cards with a hard edge.
+     (Sideways overflow is already contained by html/body overflow: hidden.) */
+  overflow-x: visible;
+  overflow-y: clip;
   display: flex;
   align-items: stretch;
   justify-content: center;
@@ -170,7 +182,10 @@ body {
   position: relative;
   width: 100vw;
   margin: 0 calc(50% - 50vw);       /* full-bleed, past the body padding */
-  flex: 0 0 auto;
+  /* may shrink (cards get clipped, not rescaled) so the buttons below always
+     stay on screen */
+  flex: 0 1 auto;
+  min-height: 0;
   /* just the card plus room for its floor reflection */
   height: calc(var(--card-h) + clamp(30px, 7vh, 76px) + clamp(30px, 6vh, 70px));
   padding-top: clamp(30px, 7vh, 76px);
@@ -240,7 +255,6 @@ body {
     0 30px 70px rgba(0, 0, 0, 0.5),
     0 0 60px color-mix(in srgb, var(--accent, #7c5cff) 28%, transparent);
 }
-.story-card:focus-visible { outline: 2px solid #ffd98a; outline-offset: 3px; }
 .story-card .cover {
   flex: 1 1 auto;
   width: calc(100% - 20px);
@@ -273,7 +287,8 @@ body {
 .carousel-controls {
   flex: 0 0 auto;
   margin-top: auto;                         /* pinned to the bottom of the screen */
-  margin-bottom: clamp(12px, 3vh, 32px);   /* breathing room above the screen edge */
+  /* breathing room above the screen edge (plus the iPhone home-indicator area) */
+  margin-bottom: calc(clamp(8px, 2vh, 24px) + env(safe-area-inset-bottom, 0px));
   display: flex;
   align-items: center;
   gap: 18px;
@@ -297,7 +312,6 @@ body {
 }
 .carousel-btn:hover { background: linear-gradient(160deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08)); }
 .carousel-btn:active { transform: scale(0.93); }
-.carousel-btn:focus-visible { outline: 2px solid #ffd98a; outline-offset: 3px; }
 
 /* fiction / non-fiction label in the card's top-right corner */
 .story-card { position: relative; }
@@ -319,7 +333,7 @@ body {
 }
 .story-card .category.fiction { background: rgba(150, 52, 120, 0.88); }
 .story-card .category.non-fiction { background: rgba(24, 110, 96, 0.88); }
-/* no blue tap flash / selection / focus ring on touch (keyboard focus ring kept) */
+/* no blue tap flash / selection / focus ring on touch (no focus ring at all) */
 .carousel-btn,
 .story-card,
 .carousel-stage {
@@ -328,5 +342,5 @@ body {
   user-select: none;
   -webkit-touch-callout: none;
 }
-.carousel-btn:focus:not(:focus-visible),
-.story-card:focus:not(:focus-visible) { outline: none; }
+.carousel-btn:focus,
+.story-card:focus { outline: none; }
