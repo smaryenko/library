@@ -131,6 +131,7 @@ let last = performance.now(), time = 0, slow = 0;
 const col = new THREE.Color(), cA = new THREE.Color(), cB = new THREE.Color();
 
 function loop(now) {
+  if (destroyed) return;             // torn down on the way to the library
   requestAnimationFrame(loop);
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
@@ -230,7 +231,46 @@ function applyNight(dt) {
   }
 }
 
+// --- teardown -------------------------------------------------------------------
+// Leaving for the library: the browser alone frees the WebGL scene slowly (or
+// keeps it alive in the back/forward cache), so the shelf page started out
+// starved of GPU memory, especially on phones/tablets. Stop the loop, free
+// every geometry/material/texture and drop the GL context ourselves, as early
+// as possible (the Library button press, before the navigation even starts).
+let destroyed = false;
+function destroy() {
+  if (destroyed || !renderer) return;
+  destroyed = true;
+  try {
+    const seen = new Set();
+    const free = x => { if (x && !seen.has(x) && x.dispose) { seen.add(x); x.dispose(); } };
+    scene.traverse(o => {
+      free(o.geometry);
+      (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => {
+        if (!m) return;
+        Object.values(m).forEach(v => { if (v && v.isTexture) free(v); });
+        free(m);
+      });
+      if (o.shadow && o.shadow.map) free(o.shadow.map);
+    });
+    if (scene.environment) free(scene.environment);
+    renderer.renderLists && renderer.renderLists.dispose();
+    renderer.dispose();
+    renderer.forceContextLoss();
+    renderer.domElement.remove();
+  } catch (e) { /* best effort: we're leaving anyway */ }
+  scene = world = null;
+}
+window.addEventListener('pagehide', destroy);
+document.addEventListener('pointerdown', e => {
+  if (e.target.closest && e.target.closest('.library-btn')) destroy();
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' || e.key === 'Esc') destroy(); }, true);
+// coming back via the back/forward cache: the GL context is gone, rebuild
+window.addEventListener('pageshow', e => { if (e.persisted && destroyed) location.reload(); });
+
 window.BOOK_SCENE = {
+  destroy,
   mount,
   show,
   play,
