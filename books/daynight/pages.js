@@ -29,11 +29,11 @@
   const clue = (u, v, k) => ({ a: 'feather', u, v, k: k || 1 });
   window.BOOK_PAGES = [
     P(0, 'burrow',
-      'Shh! Tomorrow is Bunny\u2019s birthday. Owl has a secret plan.',
+      'Shh! Tomorrow is Bunny\u2019s birthday. Owl leaves the first feather.',
       'It\u2019s Bunny\u2019s birthday! A feather by his door. Is it a clue?',
       { bunny: { u: 1130, v: 540 },
         dayCast: [clue(670, 520)],
-        nightCast: [], owl: { ground: true, u: 660, v: 540, k: 0.55 } }),
+        nightCast: [clue(670, 520)], owl: { ground: true, u: 470, v: 540, k: 0.55 } }),
     P(1, 'carrots',
       'Hedgehog digs up the sweetest carrots for the birthday cake.',
       'A feather by the carrots! Squirrel chatters: that way!',
