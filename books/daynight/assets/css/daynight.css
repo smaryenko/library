@@ -1,0 +1,176 @@
+/* Bunny Day, Owl Night: the day | night slider (assets/js/slider.js).
+   Each slider page is one pop-up scene over the whole spread. The day scene
+   is the full picture underneath; the night parts are clipped to the left of
+   the seam (--dn-seam, set inline on the host by slider.js). */
+
+/* No drop-shadow filter on slider pages: the clip changes every drag frame,
+   and a filter over the whole scene would be re-rendered each time (slow on
+   school boards / old tablets). */
+.dn-host { filter: none !important; }
+
+/* night pieces (dn-n-*) show left of the seam, day pieces (dn-d-*) right of
+   it. Each layer gets its own --dn-cx from slider.js: where the seam line on
+   the paper passes under that layer's pieces, so the cut follows the book's
+   perspective. The ground clips at --dn-seam in its own tilted space. */
+/* (the clips themselves are set inline by slider.js) */
+.dn-host .layer[data-part^="dn-n-"], .dn-ground .dn-g-night { clip-path: inset(0 50% 0 0); }
+.dn-host .layer[data-part^="dn-d-"], .dn-ground .dn-g-day { clip-path: inset(0 0 0 50%); }
+.dn-host .layer[data-part="dn-n-fx"] { opacity: var(--dn-nfx, 0); }
+.dn-host .layer[data-part="dn-d-fx"] { opacity: var(--dn-dfx, 0); }
+
+/* the printed ground: flat on the paper inside the tilted book, under both
+   pages (spine included). On a turn the new one fades in over the old one
+   instead of swapping hard on the page the leaf isn't covering. */
+.spread > .popup-ground {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateZ(1px);
+  transition: opacity 280ms ease-out;
+}
+.spread > .popup-ground.is-in { animation: dn-ground-in 300ms ease-out both; }
+/* the old ground stays fully opaque under the incoming one until it is
+   removed, so the paper never shows through a half-faded meadow */
+.spread > .popup-ground.is-out { opacity: 1; }
+@keyframes dn-ground-in { from { opacity: 0; } to { opacity: 1; } }
+.dn-ground .dn-g { position: absolute; inset: 0; }
+.dn-ground svg { width: 100%; height: 100%; display: block; }
+.dn-corner { position: absolute; width: 0; height: 0; }
+.dn-tl { left: 0; top: 0; } .dn-tr { right: 0; top: 0; }
+.dn-bl { left: 0; bottom: 0; } .dn-br { right: 0; bottom: 0; }
+
+/* slider pages show their own two texts; the engine's caption stays empty */
+body.dn-slider-on .obj-slot.is-caption { display: none !important; }
+
+/* ---- the divider: a line drawn along the paper (far -> near edge) and a
+   moon | sun grip on it. Flat over the scene; only the line's wide grab
+   stroke and the grip take pointers. */
+.dn-handle {
+  position: absolute;
+  inset: 0;
+  z-index: 53;
+  pointer-events: none;
+  touch-action: none;
+  cursor: ew-resize;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+}
+.dn-vline {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 64px;                 /* wide invisible grab strip, full height */
+  margin-left: -32px;
+  pointer-events: auto;
+  touch-action: none;
+}
+.dn-vline::before {
+  content: "";
+  position: absolute;
+  top: 2%; bottom: 0; left: 50%;
+  width: 4px; margin-left: -2px;
+  border-radius: 2px;
+  background: #fffaf0;
+  box-shadow: 0 0 0 1px rgba(20, 26, 48, .35), 0 0 12px rgba(255, 240, 200, .55);
+}
+.dn-grip {
+  position: absolute;
+  left: 50%; top: 50%;
+  pointer-events: auto;
+  touch-action: none;
+  width: 104px; height: 56px;
+  margin: -28px 0 0 -52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-radius: 28px;
+  background: linear-gradient(90deg, #1c2a52 0 50%, #fff4d6 50% 100%);
+  box-shadow: 0 0 0 2px #fffaf0, 0 4px 12px rgba(0, 0, 0, .35);
+}
+/* the short grip bar in the middle, like an editor's panel divider */
+.dn-grip::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 12px; bottom: 12px;
+  width: 6px; margin-left: -3px;
+  border-radius: 3px;
+  background: #f0a63a;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .8);
+}
+.dn-grip svg { width: 30px; height: 30px; display: block; }
+.dn-handle:focus-visible .dn-grip { box-shadow: 0 0 0 3px #fffaf0, 0 0 0 6px #2c6aa0; }
+.dn-handle.is-dragging .dn-grip { transform: scale(1.06); }
+
+/* ---- the two story lines: BELOW the book (under the host's bottom edge,
+   which is the book's near edge), night under the left page, day under the
+   right one, so they never cover the characters */
+.dn-texts {
+  position: absolute;
+  left: 50%;             /* slider.js centres it on the screen, just under the book */
+  top: 100%;
+  width: 0;
+  height: 0;
+  z-index: 52;
+  pointer-events: none;
+}
+.dn-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60vw;
+  box-sizing: border-box;
+  padding: .35em .9em .45em;
+  border-radius: 12px;
+  text-align: center;
+  font-size: clamp(14px, 1.8vw, 26px);
+  font-weight: 700;
+  line-height: 1.25;
+  opacity: 0;
+  transform: translate(-50%, -6px);
+  transition: opacity 260ms ease-out, transform 260ms ease-out;
+}
+.dn-text-night {
+  color: #f6eed4;
+  background: rgba(14, 22, 52, .9);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, .35);
+}
+.dn-text-day {
+  color: #3e2c1a;
+  background: rgba(255, 250, 236, .95);
+  box-shadow: 0 2px 12px rgba(40, 24, 8, .25);
+}
+.dn-text.is-on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (max-aspect-ratio: 3 / 4), (max-width: 800px) {
+  .dn-text { font-size: clamp(13px, 3.8vw, 18px); }
+  .dn-grip { width: 92px; height: 50px; margin: -25px 0 0 -46px; }
+  .dn-grip svg { width: 26px; height: 26px; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .dn-text { font-size: clamp(11px, 3.6vh, 15px); padding: .25em .7em .35em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dn-text { transition: none; }
+}
+
+/* the printed ground copied onto the turning leaf (slider.js paintLeaf) */
+.dn-leaf-ground {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.dn-leaf-ground .dn-g { position: absolute; inset: 0; }
+.dn-leaf-ground svg { width: 100%; height: 100%; display: block; }
+
+/* finale caption (moved under the book by slider.js): wide and short, so it
+   fits between the book and the page buttons */
+body:not(.dn-slider-on) .obj-slot.is-caption .text-block { padding: .3em 1.2em .4em; }
+body:not(.dn-slider-on) .obj-slot.is-caption .title-line { font-size: clamp(16px, 1.9vw, 26px); }
+body:not(.dn-slider-on) .obj-slot.is-caption .body-line { font-size: clamp(12px, 1.25vw, 17px); margin-top: .1em; }

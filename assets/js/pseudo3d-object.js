@@ -115,6 +115,20 @@ const OBJ_DEPTH = {
   'tr-clock-hour': 10, 'tr-clock-min': 14, 'tr-clock-sec': 18, 'tr-clock-glass': 24,
   'tr-hand-hour': 34, 'tr-hand-min': 36, 'tr-hand-sec': 38,
   'tr-table': -30, 'tr-scenery': 14,
+  // daynight — "Bunny Day, Owl Night" (books/daynight/assets/js/scene.js).
+  // Pop-up cut-outs; each day piece (dn-d-*) has a night twin (dn-n-*) at the
+  // SAME depth, so the slider's seam stays put on both halves as it tilts.
+  // dn-k-* = the dusk finale (no slider).
+  // (day pieces are clipped to the right of the seam and night ones to the
+  // left, so twins never overlap.)
+  // Spread wide (the scene spans the whole book) so the parallax reads.
+  'dn-d-sky': -90, 'dn-n-sky': -90, 'dn-k-sky': -90,
+  'dn-d-hill': -60, 'dn-n-hill': -60, 'dn-k-hill': -60,
+  'dn-d-treeb': -32, 'dn-n-treeb': -32, 'dn-k-treeb': -32,
+  'dn-d-tree': -16, 'dn-n-tree': -16, 'dn-k-tree': -16, 'dn-n-owl': -6, 'dn-k-deco': -10,
+  'dn-d-decor': 8, 'dn-n-decor': 8, 'dn-k-decor': 8, 'dn-d-prop': 12, 'dn-n-prop': 12, 'dn-d-cast': 26, 'dn-n-cast': 26, 'dn-k-cast': 26,
+  'dn-d-fx': 34, 'dn-n-fx': 34, 'dn-k-fx': 34,
+  'dn-d-bunny': 40, 'dn-k-pair': 40, 'dn-d-front': 70, 'dn-n-front': 70, 'dn-k-front': 70,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

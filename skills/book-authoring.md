@@ -255,7 +255,7 @@ tags (shared engine, this book's builders, `pages.js`, shared `boot.js` last).
 Load optional shared modules (`motion.js`, `color.js`, `fullview.*`,
 `pinch.js`) only if the book uses them. Every shared `../../assets/` reference
 carries the SAME `?v=N` in every book; when a shared file changes, bump that
-number in all seven `index.html` files together. Book-local files keep their
+number in every book's `index.html` (nine books now) together. Book-local files keep their
 own `?v=`, bumped when they change.
 
 ## 4b. Next-page prerender (shared, on by default)

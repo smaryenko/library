@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Bunny Day, Owl Night: night | day split on the big oak's trunk -->
+  <defs>
+    <clipPath id="c"><rect width="64" height="64" rx="14"/></clipPath>
+    <clipPath id="L"><rect width="32" height="64"/></clipPath>
+    <clipPath id="R"><rect x="32" width="32" height="64"/></clipPath>
+    <linearGradient id="n" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a1232"/><stop offset="1" stop-color="#2c3b6c"/></linearGradient>
+    <linearGradient id="d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f9fdc"/><stop offset="1" stop-color="#bfe2f4"/></linearGradient>
+  </defs>
+  <g clip-path="url(#c)">
+    <g clip-path="url(#L)">
+      <rect width="64" height="64" fill="url(#n)"/>
+      <circle cx="9" cy="10" r="1" fill="#fff8e0"/><circle cx="21" cy="6" r=".8" fill="#fff8e0"/>
+      <path d="M13 5a7 7 0 1 0 4.5 12.3A5.6 5.6 0 0 1 13 5z" fill="#ffe7a3"/>
+      <rect y="46" width="64" height="18" fill="#16302f"/>
+      <path d="M28 48 L29 34 L32 34 L32 48Z" fill="#2c2a3c"/>
+      <ellipse cx="32" cy="28" rx="20" ry="12" fill="#173230"/>
+      <ellipse cx="27" cy="25" rx="9" ry="6" fill="#24443f"/>
+      <!-- Owl's eyes in the crown -->
+      <circle cx="20" cy="31" r="2.6" fill="#f0a21e"/><circle cx="25" cy="31" r="2.6" fill="#f0a21e"/>
+      <circle cx="20" cy="31" r="1.2" fill="#120a04"/><circle cx="25" cy="31" r="1.2" fill="#120a04"/>
+    </g>
+    <g clip-path="url(#R)">
+      <rect width="64" height="64" fill="url(#d)"/>
+      <circle cx="53" cy="11" r="5.5" fill="#ffd24a"/>
+      <rect y="46" width="64" height="18" fill="#6fa63a"/>
+      <path d="M32 48 L32 34 L35 34 L36 48Z" fill="#6e4c30"/>
+      <ellipse cx="32" cy="28" rx="20" ry="12" fill="#4f8f2f"/>
+      <ellipse cx="38" cy="24" rx="9" ry="6" fill="#86c04e"/>
+      <!-- Bunny's ears in the grass -->
+      <path d="M44 48 C42 40 43 36 45 36 C47 36 47 41 46 48Z M49 48 C49 40 51 37 53 38 C54 40 52 44 50.5 48Z" fill="#a97f58"/>
+    </g>
+    <rect x="31" width="2" height="64" fill="#fffaf0"/>
+  </g>
+</svg>

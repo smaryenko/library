@@ -129,5 +129,19 @@ window.STORIES = [
     theme: '#2f6f8c',
     hint: 'Tap the city to make it move \u00b7 tap the edges or swipe to turn \u00b7 Space/Enter to play',
     backdrop: 'mountCity' // books/city/assets/js/backdrop.js (three.js scene, no music yet)
+  },
+  {
+    id: 'daynight',
+    category: 'fiction',
+    title: 'Bunny Day, Owl Night',
+    blurb: 'Two stories in one: Owl gets a birthday surprise ready by night, Bunny follows the clues by day!',
+    cover: 'books/daynight/cover.png',
+    og: 'books/daynight/og.png',
+    favicon: 'books/daynight/favicon.svg',
+    url: 'books/daynight/',
+    accent: '#ffd98a',
+    theme: '#1c2a4a',
+    hint: 'Drag the line to the moon or the sun \u00b7 tap the edges or swipe to turn',
+    backdrop: 'mountDayNight' // books/daynight/assets/js/backdrop.js (no music yet)
   }
 ];
