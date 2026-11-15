@@ -11,6 +11,10 @@
 //      day twin (dn-d-*) and a night twin (dn-n-*), drawn from one seeded
 //      layout so they line up; slider.js clips day pieces to the right of
 //      the seam and night pieces to the left. At 50% the seam is the trunk.
+//      Pieces are grouped into a few depth layers per side (back: sky +
+//      hills; tree: oak + Owl on his branch; cast: props + animals + Bunny;
+//      fx; front grass): every data-part becomes a full-size GPU layer, so
+//      fewer parts keep page turns and the slider light on phones.
 // Scene SVG: viewBox 1600x1000 with data-floor=520, so rows 520..1000 map
 // onto the page as seen (far edge .. near edge). toScene(u, v) turns a ground
 // point (u 0..1600 across, v 0 far .. 800 near) into the scene point where a
@@ -1230,17 +1234,13 @@
         <linearGradient id="${u}trail" x1="1" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fffbe0"/><stop offset="100%" stop-color="#fffbe0" stop-opacity="0"/></linearGradient>
       </defs>
       ${style(u)}
-      ${twin('sky', m => skyCard(u, m, m === 'day' ? dSky : nSky, L))}
-      ${twin('hill', m => hillStrip(u, m, kind))}
-      ${twin('treeb', m => oakBack(u, m, L))}
-      ${twin('tree', m => oakFront(u, m, L, cfg.garland))}
-      ${owlOnBranch ? `<g data-part="dn-n-owl">${owl(u, Object.assign({ x: 600, y: 630, k: 0.85 }, owlCfg), 'moon')}</g>` : ''}
-      ${twin('prop', m => props(u, m, kind))}
-      <g data-part="dn-d-cast">${castSVG(u, S.day, 'day')}</g>
-      <g data-part="dn-n-cast">${castSVG(u, nightCast, 'night')}</g>
+      ${twin('hill', m => skyCard(u, m, m === 'day' ? dSky : nSky, L) + hillStrip(u, m, kind))}
+      ${twin('tree', m => oakBack(u, m, L) + oakFront(u, m, L, cfg.garland) +
+        (m === 'night' && owlOnBranch ? owl(u, Object.assign({ x: 600, y: 630, k: 0.85 }, owlCfg), 'moon') : ''))}
+      <g data-part="dn-d-cast">${props(u, 'day', kind)}${castSVG(u, S.day, 'day')}${bunny(u, bunnyAt(S.bunny))}</g>
+      <g data-part="dn-n-cast">${props(u, 'night', kind)}${castSVG(u, nightCast, 'night')}</g>
       <g data-part="dn-d-fx">${dayFx(u, kind)}</g>
       <g data-part="dn-n-fx">${nightFx(u, kind)}</g>
-      <g data-part="dn-d-bunny">${bunny(u, bunnyAt(S.bunny))}</g>
       ${twin('front', m => grassStrip(m, L))}
     </svg>`;
   }
@@ -1295,16 +1295,14 @@
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" data-floor="${FLOOR}" data-dn-page="10" data-dn-still="" data-hit="${HIT}">
       <defs>${sharedDefs(u)}${popDefs(u)}${window.dnAnimalDefs ? window.dnAnimalDefs(u) : ''}${defs(u, 'dusk', 'dusk')}</defs>
       ${style(u)}
-      <g data-part="dn-k-sky">${skyCard(u, 'dusk', 'dusk', L)}</g>
-      <g data-part="dn-k-hill">${hillStrip(u, 'dusk', 'meadow')}</g>
-      <g data-part="dn-k-treeb">${oakBack(u, 'dusk', L)}</g>
-      <g data-part="dn-k-tree">${oakFront(u, 'dusk', L, 'lit')}</g>
+      <g data-part="dn-k-hill">${skyCard(u, 'dusk', 'dusk', L)}${hillStrip(u, 'dusk', 'meadow')}</g>
+      <g data-part="dn-k-tree">${oakBack(u, 'dusk', L)}${oakFront(u, 'dusk', L, 'lit')}</g>
       <g data-part="dn-k-cast">
         <g transform="translate(${n(sx)} ${n(sy)}) scale(${n(k)})">${cut(stumpSil, stumpArt, [0, 0, 80])}
           <g filter="url(#${u}rim)" transform="translate(0 -48)">${window.DN_ANIMALS ? window.DN_ANIMALS.cake(u, { lit: true }) : ''}</g></g>
         ${castSVG(u, cast, 'dusk')}
+        ${bunny(u, b)}
       </g>
-      <g data-part="dn-k-pair">${bunny(u, b)}</g>
       <g data-part="dn-k-fx">${fireflies(u, 99, 16, [170, 560, 1260, 360])}${twinkles(u, 8)}${butterfly(u, 1000, 640, 0.9, '#f4a024', 0)}${butterfly(u, 560, 660, 0.8, '#5a8ae8', 0.15)}</g>
       <g data-part="dn-k-front">${grassStrip('dusk', L)}</g>
     </svg>`;

@@ -244,13 +244,22 @@
       shared = s;
       if (!raf) raf = requestAnimationFrame(render);
     }
+    // promote the halves to GPU layers only while the divider moves
+    let liveT = 0;
+    const live = on => {
+      clearTimeout(liveT);
+      if (on) document.body.classList.add('dn-live');
+      else liveT = setTimeout(() => document.body.classList.remove('dn-live'), 400);
+    };
     function animateTo(target) {
       cancelAnimationFrame(tween);
+      live(true);
       const from = s, t0 = performance.now(), dur = 280;
       const step = now => {
         const k = Math.min(1, (now - t0) / dur);
         set(from + (target - from) * (1 - Math.pow(1 - k, 3)));
         if (k < 1) tween = requestAnimationFrame(step);
+        else if (!drag) live(false);
       };
       tween = requestAnimationFrame(step);
     }
@@ -273,7 +282,7 @@
       drag = { id: e.pointerId, x: e.clientX, moved: false, onGrip: !!e.target.closest('.dn-grip') };
       try { handle.setPointerCapture(e.pointerId); } catch (err) { /* old browsers */ }
       handle.classList.add('is-dragging');
-      dragging = true; if (!raf) raf = requestAnimationFrame(render);
+      dragging = true; live(true); if (!raf) raf = requestAnimationFrame(render);
     });
     handle.addEventListener('pointermove', e => {
       stop(e);
@@ -290,7 +299,7 @@
       handle.classList.remove('is-dragging');
       dragging = false; if (!raf) raf = requestAnimationFrame(render);
       if (d.moved || e.type === 'pointercancel') { snap(); return; }
-      if (!d.onGrip) return;
+      if (!d.onGrip) { live(false); return; }
       const r = grip.getBoundingClientRect();
       const goal = e.clientX < r.left + r.width / 2 ? 1 : 0;
       animateTo(Math.abs(s - goal) < 0.01 ? START : goal);
@@ -396,6 +405,16 @@
     return document.querySelector(`.book .leaf .leaf-face.${side}`);
   }
   // paint one face of the leaf with one half ('left' | 'right') of a ground
+  // On phones a full copy of the meadow (two big SVGs) on the leaf cost a
+  // layout + paint right as the flip starts and again at its middle, inside
+  // a rotating 3D layer. There the leaf gets plain day / night colour bands
+  // of the meadow instead, split at the divider.
+  const LITE = window.matchMedia && matchMedia('(pointer: coarse), (max-width: 800px), (max-aspect-ratio: 3 / 4)').matches;
+  const FLAT = {
+    day: 'linear-gradient(#8cc04c, #6fa63a 45%, #4f8a2a)',
+    night: 'linear-gradient(#1e3a3c, #16302f 45%, #0e2222)',
+    dusk: 'linear-gradient(#8a8a3c, #6c7030 45%, #4a5226)'
+  };
   function paintLeaf(side, ground, half) {
     const face = leafFace(side);
     if (!face) return;
@@ -403,6 +422,22 @@
     if (!ground) return;
     const wrap = document.createElement('div');
     wrap.className = 'dn-leaf-ground';
+    if (LITE) {
+      const still = !ground.querySelector('.dn-g-night');
+      // night share of this half: the seam is at `shared` across the spread
+      const nf = still ? 0 : clamp01(half === 'right' ? (shared - 0.5) * 2 : shared * 2);
+      const band = (bg, l, w) => {
+        if (w <= 0) return;
+        const b = document.createElement('div');
+        b.className = 'dn-leaf-flat';
+        b.style.cssText = `left:${(l * 100).toFixed(2)}%;width:${(w * 100).toFixed(2)}%;background:${bg};`;
+        wrap.appendChild(b);
+      };
+      band(FLAT.night, 0, nf);
+      band(still ? FLAT.dusk : FLAT.day, nf, 1 - nf);
+      face.appendChild(wrap);
+      return;
+    }
     const copy = ground.cloneNode(true);
     copy.classList.remove('is-in', 'is-out', 'popup-ground', 'dn-ground');
     copy.classList.add('dn-ground');
