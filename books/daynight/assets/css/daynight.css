@@ -14,13 +14,20 @@
    perspective. The ground clips at --dn-seam in its own tilted space. */
 /* Both halves stay painted: slider.js slides each box (overflow: hidden)
    and slides its picture back by the same amount (CSS translate), so a drag
-   only moves composited layers, nothing is repainted. */
-.dn-host .layer[data-part^="dn-n-"], .dn-host .layer[data-part^="dn-d-"],
+   only moves composited layers, nothing is repainted.
+   The same rules apply to the engine's parked next picture (.obj-prerender),
+   so it is rasterised exactly as it will be shown and moves in ready. */
+.obj-host .layer[data-part^="dn-n-"], .obj-host .layer[data-part^="dn-d-"],
 .spread > .dn-ground .dn-g-night, .spread > .dn-ground .dn-g-day { overflow: hidden; }
-.dn-host .layer[data-part^="dn-n-"] > svg, .dn-host .layer[data-part^="dn-d-"] > svg,
+.obj-host .layer[data-part^="dn-n-"] > svg, .obj-host .layer[data-part^="dn-d-"] > svg,
 .spread > .dn-ground .dn-g-night, .spread > .dn-ground .dn-g-day,
 .spread > .dn-ground .dn-g > svg { will-change: transform; }
-.dn-host .layer[data-part="dn-n-fx"], .dn-host .layer[data-part="dn-d-fx"] { opacity: 0; }
+.obj-host .layer[data-part="dn-n-fx"], .obj-host .layer[data-part="dn-d-fx"] { opacity: 0; }
+/* The engine hides its parked next picture after two paints, which drops
+   its rasterised tiles, so a turn had to paint the whole scene again. Keep
+   it visible (its box is fixed at opacity .01, taps pass through) so it
+   stays painted and the turn just moves it into place. */
+.obj-prerender > .obj-host { visibility: visible !important; }
 
 /* the printed ground: flat on the paper inside the tilted book, under both
    pages (spine included). On a turn the new one fades in over the old one

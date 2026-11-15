@@ -61,13 +61,42 @@
       setTimeout(() => old.remove(), 320);
     });
     if (!page || typeof page.ground !== 'function') return null;
+    const g = groundCache.get(page) || makeGround(page);
+    groundCache.delete(page);
+    g.classList.add('is-in');
+    spread.appendChild(g);
+    return g;
+  }
+  // The printed grounds of the pages either side are built ahead (when the
+  // browser is idle), like the engine's prerendered next picture, so a turn
+  // only moves ready elements in instead of parsing two full-spread SVGs.
+  const groundCache = new Map();
+  function makeGround(page) {
     const g = document.createElement('div');
-    g.className = 'popup-ground dn-ground is-in';
+    g.className = 'popup-ground dn-ground';
     g.setAttribute('aria-hidden', 'true');
     g.innerHTML = page.ground() +
       ['tl', 'tr', 'bl', 'br'].map(c => `<i class="dn-corner dn-${c}"></i>`).join('');
-    spread.appendChild(g);
     return g;
+  }
+  let groundIdle = 0;
+  function prepareGrounds(i) {
+    const pages = window.BOOK_PAGES || [];
+    const want = [pages[i + 1], pages[i - 1]].filter(p => p && typeof p.ground === 'function');
+    Array.from(groundCache.keys()).forEach(p => { if (want.indexOf(p) < 0) groundCache.delete(p); });
+    const todo = want.filter(p => !groundCache.has(p));
+    const idle = window.requestIdleCallback || (fn => setTimeout(fn, 200));
+    const cancel = window.cancelIdleCallback || clearTimeout;
+    if (groundIdle) cancel(groundIdle);
+    const next = () => {
+      groundIdle = 0;
+      const p = todo.shift();
+      if (!p) return;
+      if (!groundCache.has(p)) groundCache.set(p, makeGround(p));
+      if (todo.length) groundIdle = idle(next, { timeout: 2500 });
+    };
+    // after the turn and the engine's own prerender have settled
+    setTimeout(() => { groundIdle = idle(next, { timeout: 2500 }); }, 1200);
   }
   function corners(ground) {
     const p = c => { const r = ground.querySelector('.dn-' + c).getBoundingClientRect(); return { x: r.left, y: r.top }; };
@@ -91,6 +120,7 @@
     const svg = host.querySelector('.layer svg[data-dn-page]');
     const page = svg && (window.BOOK_PAGES || [])[Number(svg.getAttribute('data-dn-page'))];
     const ground = placeGround(page);
+    if (svg) prepareGrounds(Number(svg.getAttribute('data-dn-page')));
     // clip the new ground right away (before the leaf copies it), so the
     // turning page never shows the other half's meadow
     if (ground) { const gw = ground.offsetWidth; reveal(ground.querySelector('.dn-g-night'), 'n', shared, gw); reveal(ground.querySelector('.dn-g-day'), 'd', shared, gw); }
