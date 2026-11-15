@@ -129,6 +129,7 @@
     // pieces near the sides (the squirrel) stay on screen
     fitToBook(host, ground);
     if (!svg || svg.hasAttribute('data-dn-still')) {
+      document.body.classList.remove('dn-live');
       if (!host.__dnFit) {
         host.__dnFit = true;
         const refit = () => [260, 700].forEach(ms => setTimeout(() => { if (host.isConnected) fitToBook(host, ground); }, ms));
@@ -142,6 +143,7 @@
     const scene = host.querySelector('.scene');
     if (!page || !scene) return;
     host.__dn = true;
+    if (!isTurning()) setLive(true);
     host.classList.add('dn-host');
     document.body.classList.add('dn-slider-on');
 
@@ -244,13 +246,10 @@
       shared = s;
       if (!raf) raf = requestAnimationFrame(render);
     }
-    // promote the halves to GPU layers only while the divider moves
-    let liveT = 0;
-    const live = on => {
-      clearTimeout(liveT);
-      if (on) document.body.classList.add('dn-live');
-      else liveT = setTimeout(() => document.body.classList.remove('dn-live'), 400);
-    };
+    // the halves stay on their own GPU layers while the page is shown (see
+    // setLive): switching that on at each drag start made a frame where the
+    // new layers weren't painted yet, so the grass / meadow blinked
+    const live = () => {};
     function animateTo(target) {
       cancelAnimationFrame(tween);
       live(true);
@@ -399,6 +398,18 @@
   // front face gets a copy of the outgoing ground's half it lifts and, once
   // the new page is in, its back face gets the incoming ground's half it lays
   // down. Cleared when the flip ends.
+  // GPU layers for the two halves: on while a slider page is shown, off while
+  // a leaf turns (they made every frame of the flip and pop-in costly). The
+  // switch happens while the content is dissolved / popping, so it can't
+  // show as a blink under the finger.
+  let liveT = 0;
+  function setLive(on) {
+    clearTimeout(liveT);
+    if (!on) { document.body.classList.remove('dn-live'); return; }
+    liveT = setTimeout(() => {
+      if (document.body.classList.contains('dn-slider-on') && !isTurning()) document.body.classList.add('dn-live');
+    }, 120);
+  }
   const leafEl = () => document.querySelector('.book .leaf');
   const isTurning = () => { const l = leafEl(); return !!(l && l.classList.contains('flipping')); };
   function leafFace(side) {
@@ -471,8 +482,8 @@
     let was = false;
     new MutationObserver(() => {
       const now = leaf.classList.contains('flipping');
-      if (now && !was) leafLifts();
-      if (!now) { paintLeaf('front', null); paintLeaf('back', null); }
+      if (now && !was) { setLive(false); leafLifts(); }
+      if (!now) { paintLeaf('front', null); paintLeaf('back', null); if (was) setLive(true); }
       was = now;
     }).observe(leaf, { attributes: true, attributeFilter: ['class'] });
   }

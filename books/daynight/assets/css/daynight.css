@@ -13,11 +13,10 @@
    the paper passes under that layer's pieces, so the cut follows the book's
    perspective. The ground clips at --dn-seam in its own tilted space. */
 /* Each half sits in a box (overflow: hidden); slider.js slides the box and
-   slides its picture back by the same amount (CSS translate). Only WHILE
-   the divider moves (body.dn-live) are the pictures promoted to their own
-   GPU layers, so a drag is compositing only. At rest (and during a page
-   turn) they are not: ~40 extra full-scene layers made every frame of the
-   turn and the pop-in costly on phones. */
+   slides its picture back by the same amount (CSS translate). While a
+   slider page is shown (body.dn-live) the pictures have their own GPU
+   layers, so a drag is compositing only; during a page turn they don't
+   (extra full-scene layers made every frame of the flip costly on phones). */
 .obj-host .layer[data-part^="dn-n-"], .obj-host .layer[data-part^="dn-d-"],
 .spread > .dn-ground .dn-g-night, .spread > .dn-ground .dn-g-day { overflow: hidden; }
 body.dn-live .dn-host .layer[data-part^="dn-n-"] > svg, body.dn-live .dn-host .layer[data-part^="dn-d-"] > svg,
