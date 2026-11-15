@@ -570,7 +570,7 @@
         }
         art += `<path d="M${x - 8} ${y} L${x} ${y + 8} L${x + 8} ${y}Z" fill="${night ? '#6a3e22' : '#f07a1e'}"/>`;
       }
-      s += standing(1290, 590, 1.1, sil, art, 150);
+      s += standing(330, 590, 1.1, sil, art, 150);   // left page: Bunny's feather is by them
     } else if (kind === 'pond') {
       const reed = (i) => {
         const sil = `<path d="M0 0 q${i ? 6 : -6} -60 ${i ? 2 : -2} -110" stroke-width="7"/><rect x="-4" y="-122" width="8" height="26" rx="4"/>`;
@@ -683,8 +683,8 @@
         ? `<ellipse cx="1090" cy="636" rx="32" ry="12" fill="#fff6d8" opacity=".85"/><ellipse cx="450" cy="656" rx="24" ry="9" fill="#fff6d8" opacity=".75"/>`
         : `<ellipse cx="1150" cy="632" rx="30" ry="8" fill="#fffbe0" opacity=".9"/>`;
     } else if (kind === 'carrots') {
-      s += `<ellipse cx="1290" cy="596" rx="190" ry="44" fill="${night ? '#2a2420' : '#7a5232'}"/>
-        ${[...Array(5)].map((_, i) => `<path d="M${1130 + i * 10} ${578 + i * 9} H${1450 - i * 10}" stroke="${night ? '#3a3028' : '#9a6a42'}" stroke-width="3" opacity=".7"/>`).join('')}`;
+      s += `<ellipse cx="330" cy="596" rx="190" ry="44" fill="${night ? '#2a2420' : '#7a5232'}"/>
+        ${[...Array(5)].map((_, i) => `<path d="M${170 + i * 10} ${578 + i * 9} H${490 - i * 10}" stroke="${night ? '#3a3028' : '#9a6a42'}" stroke-width="3" opacity=".7"/>`).join('')}`;
     } else if (kind === 'burrow') {
       // dug soil spread in front of the hole, and a little path worn into it
       s += `<ellipse cx="1000" cy="488" rx="150" ry="36" fill="${night ? '#2a2420' : '#8a6a44'}" opacity=".75"/>
@@ -1094,11 +1094,11 @@
   const SIZE = { bunny: [180, 230], owl: [150, 195], hedgehog: [190, 75], squirrel: [160, 175], robin: [95, 65],
     snail: [105, 62], badger: [210, 90], mouse: [100, 72], duck: [115, 58], frog: [75, 38], feather: [40, 104],
     cake: [125, 135], gift: [85, 85] };
-  const SWIMS = { duck: 1, frog: 1 };
+  const SWIMS = { duck: 1, frog: 1, feather: 1 };   // the feather may float on the pond
   function scenery(kind) {
     const o = [{ u: 800, v: 450, w: 240, h: 230, s: 1 }];            // the trunk and roots
     const add = (u, v, w, h, k) => o.push({ u, v, w, h, s: k || 1 });
-    if (kind === 'carrots') add(1290, 590, 330, 70, 1.1);
+    if (kind === 'carrots') add(330, 590, 330, 70, 1.1);
     if (kind === 'bushes') { add(330, 560, 250, 140, 1.15); add(1290, 560, 250, 140, 1.2); }
     if (kind === 'burrow') add(1000, 470, 270, 110);
     if (kind === 'pond') { add(470, 630, 40, 130); add(1140, 630, 40, 130); o.push({ pond: true }); }
