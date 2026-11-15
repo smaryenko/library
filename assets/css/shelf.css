@@ -221,7 +221,9 @@ body {
 @media (max-width: 600px) {
   .carousel { --card-w: clamp(160px, min(64vw, calc(40dvh - 50px)), 320px); }
 }
-.carousel-stage.is-dragging { cursor: grabbing; }
+.carousel-stage.is-dragging { cursor: grabbing !important; }
+/* the stage sets the cursor (shelf.js updateCursor), cards just inherit it */
+.carousel-ring .story-card { cursor: inherit; }
 .carousel-ring {
   position: relative;
   width: var(--card-w);

@@ -141,8 +141,26 @@
       }
       render();
       if (dragging || p !== target) raf = requestAnimationFrame(tick);
-      else { raf = 0; last = 0; }
+      else { raf = 0; last = 0; updateCursor(); }
     }
+
+    // Mouse cursor: the browser only re-checks what's under a still mouse when
+    // it moves, so after a spin settled the cursor stayed "grab" over the new
+    // front card until the mouse was nudged. The stage owns the cursor instead
+    // (cards inherit it) and we set it ourselves from the card boxes.
+    let mouseX = null, mouseY = null;
+    function updateCursor() {
+      if (mouseX == null) return;
+      const c = dragging && moved ? 'grabbing'
+        : cardAt(mouseX, mouseY, true) != null ? 'pointer' : 'grab';
+      if (stage.style.cursor !== c) stage.style.cursor = c;
+    }
+    stage.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      mouseX = e.clientX; mouseY = e.clientY;
+      if (!raf) updateCursor();
+    });
+    stage.addEventListener('pointerleave', () => { mouseX = mouseY = null; stage.style.cursor = ''; });
     function kick() { if (!raf) raf = requestAnimationFrame(tick); }
 
     function by(k) { target = Math.round(target) + k; kick(); }
@@ -216,7 +234,7 @@
     }
     // which visible card is under (x, y): nearest-to-centre cards win where
     // the on-screen boxes overlap (side cards' boxes overlap the front one)
-    function cardAt(x, y) {
+    function cardAt(x, y, strict) {
       const order = cards.map((c, i) => i)
         .filter(i => cards[i].style.visibility !== 'hidden' && Number(cards[i].style.opacity || 1) > 0.05)
         .sort((a, b) => Math.abs(offset(a)) - Math.abs(offset(b)));
@@ -224,7 +242,7 @@
         const r = cards[i].getBoundingClientRect();
         return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
       });
-      if (direct != null) return direct;
+      if (direct != null || strict) return direct;
       // a tap in a gap between cards (or just above / below them, within the
       // stage) goes to the card whose middle is horizontally nearest
       const s = stage.getBoundingClientRect();
