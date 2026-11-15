@@ -93,9 +93,18 @@
     const ground = placeGround(page);
     // clip the new ground right away (before the leaf copies it), so the
     // turning page never shows the other half's meadow
-    if (ground) { clip(ground.querySelector('.dn-g-night'), 'n', shared); clip(ground.querySelector('.dn-g-day'), 'd', shared); }
+    if (ground) { const gw = ground.offsetWidth; reveal(ground.querySelector('.dn-g-night'), 'n', shared, gw); reveal(ground.querySelector('.dn-g-day'), 'd', shared, gw); }
     leafLands(ground);
+    // phones (portrait): size the standing scene to the book's near edge, so
+    // pieces near the sides (the squirrel) stay on screen
+    fitToBook(host, ground);
     if (!svg || svg.hasAttribute('data-dn-still')) {
+      if (!host.__dnFit) {
+        host.__dnFit = true;
+        const refit = () => [260, 700].forEach(ms => setTimeout(() => { if (host.isConnected) fitToBook(host, ground); }, ms));
+        window.addEventListener('resize', refit);
+        window.addEventListener('orientationchange', refit);
+      }
       document.body.classList.remove('dn-slider-on');
       captionUnderBook();
       return;
@@ -136,11 +145,27 @@
 
     const gNight = ground && ground.querySelector('.dn-g-night');
     const gDay = ground && ground.querySelector('.dn-g-day');
-    let s = shared, raf = 0, tween = 0;
+    const fxN = layers.filter(L => L.el.dataset.part === 'dn-n-fx').map(L => L.el);
+    const fxD = layers.filter(L => L.el.dataset.part === 'dn-d-fx').map(L => L.el);
+    let s = shared, raf = 0, tween = 0, dragging = false;
     function measure() {
       if (!host.isConnected) return;
       geo = { hr: host.getBoundingClientRect(), C: ground ? corners(ground) : null,
-              book: (document.querySelector('.book') || host).getBoundingClientRect() };
+              book: (document.querySelector('.book') || host).getBoundingClientRect(),
+              lw: host.clientWidth, gw: ground ? ground.offsetWidth : 0 };
+      placeTexts();
+    }
+    // the texts don't move with the divider: placed once per measure (not
+    // every drag frame, which forced a layout each time)
+    function placeTexts() {
+      const hr = geo.hr;
+      // one centred text box (night or day, whichever is revealed), centred
+      // on the SCREEN and never wider than it
+      const vw = document.documentElement.clientWidth || window.innerWidth;
+      const tw = Math.min(vw * 0.92, Math.max(260, geo.book.width * 0.7));
+      texts.style.left = `${(vw / 2 - hr.left).toFixed(1)}px`;
+      nightText.style.width = dayText.style.width = `${tw.toFixed(0)}px`;
+      texts.style.top = `${(textTop(geo.book.bottom + 10, Math.max(nightText.offsetHeight, dayText.offsetHeight), tw) - hr.top).toFixed(1)}px`;
     }
     function render() {
       raf = 0;
@@ -148,38 +173,34 @@
       const hr = geo.hr;
       const C = ground ? geo.C : null;
       const end = s >= 0.999 ? 1 : s <= 0.001 ? 0 : null;
-      // clips are set inline (not through inherited custom properties, which
-      // some browsers don't re-apply to clip-path inside the tilted book)
+      // Both scenes stay painted: each half is moved behind a sliding window
+      // (translate only), so a drag frame is pure compositing, no repaint
       if (ground) {
-        clip(gNight, 'n', s); clip(gDay, 'd', s);
+        reveal(gNight, 'n', s, geo.gw); reveal(gDay, 'd', s, geo.gw);
       }
       layers.forEach(L => {
         let f = s;
         if (end != null) f = end;
         else if (C && hr.width) f = (seamAt(C, s, L.t).x - hr.left) / hr.width;
-        clip(L.el, L.side, f);
+        reveal(L.el, L.side, f, geo.lw);
       });
-      // the texts: just under the book's near edge
-      // one centred text box (night or day, whichever is revealed), centred
-      // on the SCREEN and never wider than it: on phones the picture is
-      // wider than the screen, so the page halves can be off-screen
-      const vw = document.documentElement.clientWidth || window.innerWidth;
-      const tw = Math.min(vw * 0.92, Math.max(260, geo.book.width * 0.7));
-      texts.style.left = `${(vw / 2 - hr.left).toFixed(1)}px`;
-      nightText.style.width = dayText.style.width = `${tw.toFixed(0)}px`;
-      texts.style.top = `${(textTop(geo.book.bottom + 10, Math.max(nightText.offsetHeight, dayText.offsetHeight), tw) - hr.top).toFixed(1)}px`;
       // the divider stays a plain vertical line on screen; it crosses the
       // ground's seam at the grip's depth (the reveal itself follows the
       // perspective, above)
+      // moved with transforms (no layout per frame)
+      let gx, gy;
       if (C && hr.width) {
         const g = seamAt(C, s, GRIP_T);
-        vline.style.left = grip.style.left = `${(g.x - hr.left).toFixed(1)}px`;
-        grip.style.top = `${(g.y - hr.top).toFixed(1)}px`;
-      } else {
-        vline.style.left = grip.style.left = `${(s * 100).toFixed(2)}%`;
-      }
-      host.style.setProperty('--dn-nfx', clamp01((s - FX_FROM) / (1 - FX_FROM)).toFixed(3));
-      host.style.setProperty('--dn-dfx', clamp01((1 - s - FX_FROM) / (1 - FX_FROM)).toFixed(3));
+        gx = g.x - hr.left; gy = g.y - hr.top;
+      } else { gx = s * geo.lw; gy = host.clientHeight / 2; }
+      vline.style.transform = `translate3d(${gx.toFixed(1)}px,0,0)`;
+      grip.style.transform = `translate3d(${gx.toFixed(1)}px,${gy.toFixed(1)}px,0)${dragging ? ' scale(1.06)' : ''}`;
+      // fx opacity set on the layers themselves (an inherited custom property
+      // on the host restyled every node of every layer each frame)
+      const nfx = clamp01((s - FX_FROM) / (1 - FX_FROM)).toFixed(3);
+      const dfx = clamp01((1 - s - FX_FROM) / (1 - FX_FROM)).toFixed(3);
+      fxN.forEach(el => { el.style.opacity = nfx; });
+      fxD.forEach(el => { el.style.opacity = dfx; });
       const night = s >= TEXT_AT, day = s <= 1 - TEXT_AT;
       nightText.classList.toggle('is-on', night);
       dayText.classList.toggle('is-on', day);
@@ -222,6 +243,7 @@
       drag = { id: e.pointerId, x: e.clientX, moved: false, onGrip: !!e.target.closest('.dn-grip') };
       try { handle.setPointerCapture(e.pointerId); } catch (err) { /* old browsers */ }
       handle.classList.add('is-dragging');
+      dragging = true; if (!raf) raf = requestAnimationFrame(render);
     });
     handle.addEventListener('pointermove', e => {
       stop(e);
@@ -236,6 +258,7 @@
       const d = drag;
       drag = null;
       handle.classList.remove('is-dragging');
+      dragging = false; if (!raf) raf = requestAnimationFrame(render);
       if (d.moved || e.type === 'pointercancel') { snap(); return; }
       if (!d.onGrip) return;
       const r = grip.getBoundingClientRect();
@@ -277,7 +300,7 @@
       rz.forEach(clearTimeout);
       rz = [260, 700].map(ms => setTimeout(() => {
         if (!host.isConnected) return;
-        geo = null; measure(); render();
+        geo = null; fitToBook(host, ground); measure(); render();
       }, ms));
     };
     window.addEventListener('resize', remeasure);
@@ -285,6 +308,43 @@
     if (window.visualViewport) window.visualViewport.addEventListener('resize', remeasure);
   }
 
+  // Show the part of a half left (night) or right (day) of fraction f
+  // without clip-path (changing a clip repaints the whole layer, very slow on
+  // phones). The box (overflow: hidden) slides away and its picture slides
+  // back the same amount, so only the window moves: both pictures stay
+  // rasterised and a drag is compositing only.
+  const CAN_TRANSLATE = !!(window.CSS && CSS.supports && CSS.supports('translate', '1px 0'));
+  function reveal(el, side, f, W) {
+    if (!el) return;
+    if (!CAN_TRANSLATE || !(W > 0)) { clip(el, side, f); return; }
+    f = clamp01(f);
+    const d = side === 'n' ? -(1 - f) * W : f * W;
+    el.style.translate = `${d.toFixed(1)}px 0`;
+    const inner = el.firstElementChild;
+    if (inner) inner.style.translate = `${(-d).toFixed(1)}px 0`;
+  }
+  // The engine sizes a pop-up scene from the page's height; on a portrait
+  // phone the tilted page is short and wide, so the scene came out about
+  // twice the screen's width and pieces near the sides were off-screen.
+  // Scene x 0..1600 is the book's near edge (scene.js toScene), so when the
+  // scene is clearly wider than that edge, shrink it to the edge (keeping its
+  // aspect and its bottom on the near edge). Desktop is left as it is.
+  function fitToBook(host, ground) {
+    const slot = host.parentElement;
+    if (!ground || !slot || !slot.classList.contains('obj-slot')) return;
+    const C = corners(ground);
+    const near = C.br.x - C.bl.x;
+    const w = slot.offsetWidth, h = slot.offsetHeight;
+    if (!(near > 0) || !(w > 0) || w <= near * 1.05) return;
+    const left = parseFloat(slot.style.left) || 0, top = parseFloat(slot.style.top) || 0;
+    const ox = slot.getBoundingClientRect().left - left;
+    const nw = near, nh = h * near / w;
+    const cx = (C.bl.x + C.br.x) / 2 - ox;
+    Object.assign(slot.style, {
+      left: `${(cx - nw / 2).toFixed(1)}px`, top: `${(top + h - nh).toFixed(1)}px`,
+      width: `${nw.toFixed(1)}px`, height: `${nh.toFixed(1)}px`
+    });
+  }
   function clip(el, side, f) {
     if (!el) return;
     const p = (Math.max(0, Math.min(1, f)) * 100).toFixed(2);
@@ -317,6 +377,7 @@
     copy.classList.remove('is-in', 'is-out', 'popup-ground', 'dn-ground');
     copy.classList.add('dn-ground');
     copy.querySelectorAll('.dn-corner').forEach(c => c.remove());
+    copy.querySelectorAll('.dn-g, .dn-g > svg').forEach(e => { e.style.translate = ''; });
     clip(copy.querySelector('.dn-g-night'), 'n', shared);
     clip(copy.querySelector('.dn-g-day'), 'd', shared);
     copy.style.cssText = `position:absolute;top:0;bottom:0;width:200%;left:${half === 'right' ? '-100%' : '0'};`;

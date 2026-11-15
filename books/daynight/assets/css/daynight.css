@@ -12,11 +12,15 @@
    it. Each layer gets its own --dn-cx from slider.js: where the seam line on
    the paper passes under that layer's pieces, so the cut follows the book's
    perspective. The ground clips at --dn-seam in its own tilted space. */
-/* (the clips themselves are set inline by slider.js) */
-.dn-host .layer[data-part^="dn-n-"], .dn-ground .dn-g-night { clip-path: inset(0 50% 0 0); }
-.dn-host .layer[data-part^="dn-d-"], .dn-ground .dn-g-day { clip-path: inset(0 0 0 50%); }
-.dn-host .layer[data-part="dn-n-fx"] { opacity: var(--dn-nfx, 0); }
-.dn-host .layer[data-part="dn-d-fx"] { opacity: var(--dn-dfx, 0); }
+/* Both halves stay painted: slider.js slides each box (overflow: hidden)
+   and slides its picture back by the same amount (CSS translate), so a drag
+   only moves composited layers, nothing is repainted. */
+.dn-host .layer[data-part^="dn-n-"], .dn-host .layer[data-part^="dn-d-"],
+.spread > .dn-ground .dn-g-night, .spread > .dn-ground .dn-g-day { overflow: hidden; }
+.dn-host .layer[data-part^="dn-n-"] > svg, .dn-host .layer[data-part^="dn-d-"] > svg,
+.spread > .dn-ground .dn-g-night, .spread > .dn-ground .dn-g-day,
+.spread > .dn-ground .dn-g > svg { will-change: transform; }
+.dn-host .layer[data-part="dn-n-fx"], .dn-host .layer[data-part="dn-d-fx"] { opacity: 0; }
 
 /* the printed ground: flat on the paper inside the tilted book, under both
    pages (spine included). On a turn the new one fades in over the old one
@@ -62,6 +66,8 @@ body.dn-slider-on .obj-slot.is-caption { display: none !important; }
 .dn-vline {
   position: absolute;
   top: 0; bottom: 0;
+  left: 0;
+  will-change: transform;
   width: 64px;                 /* wide invisible grab strip, full height */
   margin-left: -32px;
   pointer-events: auto;
@@ -78,7 +84,8 @@ body.dn-slider-on .obj-slot.is-caption { display: none !important; }
 }
 .dn-grip {
   position: absolute;
-  left: 50%; top: 50%;
+  left: 0; top: 0;              /* placed by slider.js with a transform */
+  will-change: transform;
   pointer-events: auto;
   touch-action: none;
   width: 104px; height: 56px;
@@ -104,7 +111,6 @@ body.dn-slider-on .obj-slot.is-caption { display: none !important; }
 }
 .dn-grip svg { width: 30px; height: 30px; display: block; }
 .dn-handle:focus-visible .dn-grip { box-shadow: 0 0 0 3px #fffaf0, 0 0 0 6px #2c6aa0; }
-.dn-handle.is-dragging .dn-grip { transform: scale(1.06); }
 
 /* ---- the two story lines: BELOW the book (under the host's bottom edge,
    which is the book's near edge), night under the left page, day under the
