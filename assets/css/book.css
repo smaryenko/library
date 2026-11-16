@@ -352,7 +352,7 @@ canvas.snow {
 .page-curl {
   position: absolute;
   bottom: 0;
-  width: clamp(44px, 7%, 84px);
+  width: clamp(28px, 4.5%, 54px);
   aspect-ratio: 1;
   transform: translateZ(2px);
   z-index: 4;                 /* above the spread, below the flipping leaf */
@@ -394,7 +394,7 @@ canvas.snow {
 .page-curl.right::after { clip-path: polygon(100% 0, 100% 100%, 0 100%); border-radius: 0 0 14px 0; }
 .page-curl.left::after  { clip-path: polygon(0 0, 0 100%, 100% 100%);   border-radius: 0 0 0 14px; }
 /* hover lifts the corner a little more, as if a finger caught it */
-.page-curl:hover { width: clamp(54px, 8.5%, 100px); }
+.page-curl:hover { width: clamp(36px, 5.5%, 66px); }
 .book.at-first .page-curl.left,
 .book.at-last  .page-curl.right { opacity: 0; pointer-events: none; }
 
@@ -440,6 +440,36 @@ canvas.snow {
   border-radius: inherit;
   pointer-events: none;
 }
+/* The turning page carries its own bent corner, drawn exactly like the
+   static .page-curl it covers, so the corner travels with the page instead
+   of vanishing under it and popping back when the leaf lands. Width is the
+   .page-curl width doubled (the leaf face is half the book wide). */
+.leaf-face::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: clamp(28px, 9%, 54px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  z-index: 3;
+}
+.leaf-face.front::before {
+  right: 0;
+  border-radius: 0 0 14px 0;
+  background:
+    linear-gradient(to bottom right, #e9dfc8 0%, #f6efdd 38%, #fffaf0 49%, transparent 50%),
+    linear-gradient(to top left, #efe5cf 50%, transparent 50%);
+}
+.leaf-face.back::before {
+  left: 0;
+  border-radius: 0 0 0 14px;
+  background:
+    linear-gradient(to bottom left, #e9dfc8 0%, #f6efdd 38%, #fffaf0 49%, transparent 50%),
+    linear-gradient(to top right, #efe5cf 50%, transparent 50%);
+}
+/* no corner where there is no page to turn to */
+.book.at-last  .leaf-face.front::before,
+.book.at-first .leaf-face.back::before { display: none; }
 .leaf-face.front::after { background: linear-gradient(to right, var(--page-bow)); }
 .leaf-face.back::after  { background: linear-gradient(to left,  var(--page-bow)); }
 
