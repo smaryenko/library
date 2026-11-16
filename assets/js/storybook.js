@@ -77,6 +77,8 @@
         <div class="page-panel right" data-side="right"></div>
       </div>
       <div class="spine"></div>
+      <div class="page-curl left"  data-dir="-1" aria-hidden="true"></div>
+      <div class="page-curl right" data-dir="1"  aria-hidden="true"></div>
       <div class="leaf" aria-hidden="true">
         <div class="leaf-face front"></div>
         <div class="leaf-face back"></div>
@@ -794,6 +796,9 @@
     if (navPrevBtn) navPrevBtn.classList.toggle('is-disabled', atFirst);
     if (navNextBtn) navNextBtn.classList.toggle('is-disabled', atLast);
     if (navLastBtn) navLastBtn.classList.toggle('is-disabled', atLast);
+    // bent page corners: hide the one that has nowhere to turn to
+    bookEl.classList.toggle('at-first', atFirst);
+    bookEl.classList.toggle('at-last', atLast);
   }
 
   // --- pull to refresh (touch) -------------------------------------------
@@ -961,6 +966,13 @@
         if (down.objHost && upHost === down.objHost && upHost.__obj &&
             typeof upHost.__obj.play === 'function') {
           upHost.__obj.play();
+          down = null;
+          return;
+        }
+        // a bent page corner: turn in that corner's direction
+        const curl = e.target && e.target.closest && e.target.closest('.page-curl');
+        if (curl) {
+          if (curl.dataset.dir === '1') next(); else prev();
           down = null;
           return;
         }

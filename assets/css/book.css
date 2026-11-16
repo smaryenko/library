@@ -98,6 +98,16 @@ canvas.snow {
   transform: rotateX(48deg);   /* less tilt: pages keep visible depth */
   transition: transform .12s ease-out;
 }
+/* Page "bow": how light falls across one page from the spine (0%) to its
+   outer edge (100%). Pages dip into a soft shadow at the gutter, catch a
+   highlight where they curve up, then roll off slightly at the outer edge.
+   Shared by the spread overlay and both leaf faces so a turn lands cleanly. */
+.book {
+  --page-bow:
+    rgba(70,45,15,.30) 0%, rgba(70,45,15,.12) 3%, rgba(70,45,15,.03) 9%,
+    rgba(255,255,255,0) 14%, rgba(255,255,255,.22) 30%,
+    rgba(255,255,255,0) 55%, rgba(70,45,15,0) 85%, rgba(70,45,15,.10) 100%;
+}
 .book.bump-r { transform: rotateX(48deg) translateX(10px); }
 .book.bump-l { transform: rotateX(48deg) translateX(-10px); }
 
@@ -119,9 +129,29 @@ canvas.snow {
   inset: 0;
   border-radius: 14px;
   background: #fffdf6;
-  box-shadow: 0 40px 70px rgba(0,0,0,.55);
+  /* page-block edge: stacked paper rims under the near edge, rounded with the
+     page corners (replaces the flat edge faces that left square corners) */
+  box-shadow:
+    0 2px 0 #efe6d1, 0 4px 0 #e4d8bd, 0 6px 0 #efe6d1, 0 8px 0 #dccfb1,
+    0 10px 0 #e8dec6, 0 12px 0 #d8caab, 0 14px 0 #e6dbc2, 0 16px 0 #d4c5a5,
+    0 18px 0 #e2d6bb, 0 20px 0 #cfbf9d, 0 22px 0 #ddd0b3, 0 24px 0 #c9b894,
+    0 40px 70px rgba(0,0,0,.55);
   transform: translateZ(0);
 }
+/* Curvature shading over both pages (above content, below the turning leaf
+   and corners): gutter dip + highlight + outer roll-off, mirrored per half. */
+.spread::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(to left,  var(--page-bow)) left  / 50% 100% no-repeat,
+    linear-gradient(to right, var(--page-bow)) right / 50% 100% no-repeat;
+}
+
 
 /* ---- Book thickness: a stack of page-edge slabs under each half, stepped in
    -Z so the tilt shows them as page edges. Each half's stack leans OUTWARD so
@@ -153,25 +183,30 @@ canvas.snow {
 
 /* Step each slab a little deeper + down + outward. translateX sign differs per
    half so the thickness grows toward the outer edge, staying thin at the spine. */
-.book-stack .half.left  .s1 { transform: translate3d(-1px, 2px,  -4px); background:#faf3e2; }
-.book-stack .half.left  .s2 { transform: translate3d(-2px, 4px,  -8px); background:#f5edda; }
-.book-stack .half.left  .s3 { transform: translate3d(-3px, 6px, -12px); background:#efe5cf; }
-.book-stack .half.left  .s4 { transform: translate3d(-4px, 8px, -16px); background:#e9dcc2; }
-.book-stack .half.left  .s5 { transform: translate3d(-5px,10px, -20px); background:#e2d2b3; }
-.book-stack .half.right .s1 { transform: translate3d( 1px, 2px,  -4px); background:#faf3e2; }
-.book-stack .half.right .s2 { transform: translate3d( 2px, 4px,  -8px); background:#f5edda; }
-.book-stack .half.right .s3 { transform: translate3d( 3px, 6px, -12px); background:#efe5cf; }
-.book-stack .half.right .s4 { transform: translate3d( 4px, 8px, -16px); background:#e9dcc2; }
-.book-stack .half.right .s5 { transform: translate3d( 5px,10px, -20px); background:#e2d2b3; }
+.book-stack .half.left  .s1 { transform: translate3d(0px, 0px,  -4px); background:#faf3e2; }
+.book-stack .half.left  .s2 { transform: translate3d(0px, 0px,  -8px); background:#f5edda; }
+.book-stack .half.left  .s3 { transform: translate3d(0px, 0px, -12px); background:#efe5cf; }
+.book-stack .half.left  .s4 { transform: translate3d(0px, 0px, -16px); background:#e9dcc2; }
+.book-stack .half.left  .s5 { transform: translate3d(0px, 0px, -20px); background:#e2d2b3; }
+.book-stack .half.right .s1 { transform: translate3d(0px, 0px,  -4px); background:#faf3e2; }
+.book-stack .half.right .s2 { transform: translate3d(0px, 0px,  -8px); background:#f5edda; }
+.book-stack .half.right .s3 { transform: translate3d(0px, 0px, -12px); background:#efe5cf; }
+.book-stack .half.right .s4 { transform: translate3d(0px, 0px, -16px); background:#e9dcc2; }
+.book-stack .half.right .s5 { transform: translate3d(0px, 0px, -20px); background:#e2d2b3; }
 
 /* hard cover beneath everything: deepest, slightly larger, darker slab */
 .book-stack .cover {
   position: absolute;
-  inset: -6px -9px -10px -9px;         /* small overhang past the pages */
+  inset: -8px -26px -12px -26px;       /* board shows past the pages, like a real hardcover */
   border-radius: 16px;
-  background: linear-gradient(180deg, #7a2d26 0%, #5e211b 100%);
-  box-shadow: 0 46px 80px rgba(0,0,0,.6);
+  /* plain brown hardcover board (gold corner caps removed: they showed as
+     square blocks poking out under the page edge) */
+  background: linear-gradient(180deg, #8a4a2c 0%, #6e3820 100%);
+  /* board thickness as solid offset rims: they follow the rounded corners,
+     so the near corners curve round instead of ending in square blocks */
+  box-shadow: 0 3px 0 #5a2c17, 0 6px 0 #42200f, 0 46px 80px rgba(0,0,0,.6);
   transform: translateZ(-24px);
+  transform-style: preserve-3d;
 }
 
 /* A single page face: warm paper with a soft inner gutter shadow. Not clipped,
@@ -309,6 +344,67 @@ canvas.snow {
   z-index: 3;
 }
 
+/* ---- Bent page corners (bottom-outer, nearest the reader) -------------
+   Each corner is a small square: the lower-outer triangle is "cut away" to show
+   the darker page beneath, and the
+   other triangle is the folded-back paper with a curl gradient and a cast
+   shadow. Tapping one turns the page that way (storybook.js .page-curl). */
+.page-curl {
+  position: absolute;
+  bottom: 0;
+  width: clamp(44px, 7%, 84px);
+  aspect-ratio: 1;
+  transform: translateZ(2px);
+  z-index: 4;                 /* above the spread, below the flipping leaf */
+  cursor: pointer;
+  pointer-events: auto;
+  transition: width .2s ease-out;   /* no opacity fade: corners show instantly */
+  /* the folded flap */
+  filter: drop-shadow(-3px -3px 4px rgba(60,40,10,.28));
+}
+.page-curl.right { right: 0; }
+.page-curl.left  { left: 0; filter: drop-shadow(3px -3px 4px rgba(60,40,10,.28)); }
+/* the folded flap: the triangle on the page side of the diagonal, shaded
+   like paper curling up toward the light (lighter at the fold crease) */
+.page-curl::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+.page-curl.right::before {
+  clip-path: polygon(0 100%, 100% 0, 0 0);
+  background: linear-gradient(135deg,
+    #e9dfc8 0%, #f6efdd 38%, #fffaf0 49%, #d9ccae 51%, #d9ccae 100%);
+  border-radius: 0 0 0 6px;
+}
+.page-curl.left::before {
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  background: linear-gradient(225deg,
+    #e9dfc8 0%, #f6efdd 38%, #fffaf0 49%, #d9ccae 51%, #d9ccae 100%);
+  border-radius: 0 0 6px 0;
+}
+/* the uncovered corner: a sliver of the page beneath, slightly darker */
+.page-curl::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: #efe5cf;
+  z-index: -1;
+}
+.page-curl.right::after { clip-path: polygon(100% 0, 100% 100%, 0 100%); border-radius: 0 0 14px 0; }
+.page-curl.left::after  { clip-path: polygon(0 0, 0 100%, 100% 100%);   border-radius: 0 0 0 14px; }
+/* hover lifts the corner a little more, as if a finger caught it */
+.page-curl:hover { width: clamp(54px, 8.5%, 100px); }
+.book.at-first .page-curl.left,
+.book.at-last  .page-curl.right { opacity: 0; pointer-events: none; }
+
+/* Page edges: fine paper striations on each stack slab so the book's side
+   reads as many thin sheets rather than five flat bands. */
+.book-stack .half .sheet {
+  background-image: repeating-linear-gradient(0deg,
+    rgba(120,90,40,.10) 0 1px, transparent 1px 3px);
+}
+
 /* The turning leaf: a half-page that rotates about the centre fold. */
 .leaf {
   position: absolute;
@@ -335,6 +431,17 @@ canvas.snow {
   transform: rotateY(180deg);
   border-radius: 14px 0 0 14px;
 }
+/* The leaf carries the SAME curvature shading as the page it lands on (see
+   .spread::after), drawn above its content, so landing never swaps shading. */
+.leaf-face::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.leaf-face.front::after { background: linear-gradient(to right, var(--page-bow)); }
+.leaf-face.back::after  { background: linear-gradient(to left,  var(--page-bow)); }
 
 /* Forward flip: right leaf swings left over the spine (0 -> -180). */
 .leaf.flipping { opacity: 1; will-change: transform; }
