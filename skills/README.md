@@ -29,6 +29,12 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `photo-cutout-books.md` — books whose pictures are real colour photos turned
   into layered pop-up cut-outs (clip-path polygons, painted-out moving parts);
   the `trains` book is the reference.
+- `slider-books.md` — books where each spread is one pop-up scene in two
+  versions (day | night) revealed by a draggable divider in perspective;
+  the `daynight` book is the reference.
+- `one-world-books.md` — books built as ONE live 3D world on the open book,
+  each page a camera stop with its own tap animation (`window.BOOK_SCENE`);
+  the `city` book is the reference.
 
 ## Project-wide preferences (apply to all visual work)
 
