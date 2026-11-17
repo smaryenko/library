@@ -143,5 +143,33 @@ window.STORIES = [
     theme: '#1c2a4a',
     hint: 'Drag the line to the moon or the sun \u00b7 tap the edges or swipe to turn',
     backdrop: 'mountDayNight' // books/daynight/assets/js/backdrop.js (no music yet)
+  },
+  {
+    id: 'upwego',
+    category: 'non-fiction',
+    title: 'Up We Go',
+    blurb: 'Rockets, astronauts, the Moon and Mars, all stitched in thread. Tap to make them move!',
+    cover: 'books/upwego/cover.svg',
+    favicon: 'books/upwego/favicon.svg',
+    og: 'books/upwego/og.svg',
+    url: 'books/upwego/',
+    accent: '#f4e3a6',
+    theme: '#1b2440',
+    hint: 'Tap the hoop to make it move \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountUpWeGo' // books/upwego/assets/js/backdrop.js (no music yet)
+  },
+  {
+    id: 'athome',
+    category: 'non-fiction',
+    title: 'How Things Work at Home',
+    blurb: 'A lump of clay becomes a kettle, a toaster, a fridge... and shows how each one works!',
+    cover: 'books/athome/cover.svg',
+    favicon: 'books/athome/favicon.svg',
+    og: 'books/athome/og.svg',
+    url: 'books/athome/',
+    accent: '#ffb38a',
+    theme: '#efe6d6',
+    hint: 'Tap the clay to make it work \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountAtHome' // books/athome/assets/js/backdrop.js (no music yet)
   }
 ];

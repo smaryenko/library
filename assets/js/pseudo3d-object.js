@@ -129,6 +129,16 @@ const OBJ_DEPTH = {
   'dn-d-decor': 8, 'dn-n-decor': 8, 'dn-k-decor': 8, 'dn-d-prop': 12, 'dn-n-prop': 12, 'dn-d-cast': 26, 'dn-n-cast': 26, 'dn-k-cast': 26,
   'dn-d-fx': 34, 'dn-n-fx': 34, 'dn-k-fx': 34,
   'dn-d-bunny': 40, 'dn-k-pair': 40, 'dn-d-front': 70, 'dn-n-front': 70, 'dn-k-front': 70,
+  // preview — embroidery hoop (books/preview/assets/js/embroidery.js).
+  // Page shadow under the hoop, the linen, the stitched elements a little
+  // above it (figures highest), the wooden ring and clamp on top.
+  'em-shadow': -36, 'em-cloth': -14, 'em-moon': -6, 'em-stars': -4, 'em-orbit': -2,
+  'em-earth': 2, 'em-flag': 6, 'em-lander': 10, 'em-csm': 8, 'em-astro': 14,
+  'em-ringshadow': 16, 'em-ring': 24, 'em-clamp': 30,
+  // upwego — embroidery book (books/upwego/assets/js/stitch.js): generic
+  // stitch layers by role, between the linen (-14) and the ring (24)
+  'em-sky': -8, 'em-ground': -5, 'em-path': -2, 'em-far': 2,
+  'em-detail': 7, 'em-main': 10, 'em-mover': 12, 'em-front': 14,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

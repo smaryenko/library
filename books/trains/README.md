@@ -39,19 +39,22 @@ books/trains/
 
 ## Page order
 
-Clock → Horse Tram → The Rocket → Jupiter → Mail Car → Logging Engine →
-Rotary Snowplow → Mallard → Diesel → Freight (CN) → Container (UP) →
-Car Carrier → Tank Car → Electric → Shinkansen → Underground → Tram (Prague) →
-Light Rail (LA) →
-Tram-Train (Kassel) → Funicular → Rack Railway (Pilatus) → Monorail →
-Maglev → Double-Decker → Work Train → Track Layer → Railway Crane → Rail Grinder →
-Fire Train → The Next Train
-(wooden toy train).
+Three parts, then the toy-train ending:
 
-New trains sit next to their relatives rather than at the end: the snowplow
-with the other steam-era working engines, freight after the first diesel,
-street trains after the Underground, the rack railway after the funicular,
-and the helper trains just before the ending.
+1. History, horse to magnets: Clock → Horse Tram → The Rocket → Jupiter →
+   Mail Car → Logging Engine → Rotary Snowplow → Mallard → Diesel →
+   Electric → Shinkansen → Maglev.
+2. What trains carry, and the helpers that look after the track:
+   Freight (CN) → Container (UP) → Car Carrier → Tank Car → Work Train →
+   Track Layer → Railway Crane → Rail Grinder → Fire Train.
+3. City and passenger trains: Double-Decker → Underground → Tram (Prague) →
+   Light Rail (LA) → Tram-Train (Kassel) → Monorail → Funicular →
+   Rack Railway (Pilatus).
+
+Then The Next Train (wooden toy train). Each part's first page says what
+the part is about. Steam, smoke and snow use the billowing `plume()`
+helper in `photocut.js`; the snowplow's rotor is drawn (scoops, hub)
+over the photo so it reads clearly while it spins.
 
 ## Notes
 

@@ -159,7 +159,7 @@
     handle.setAttribute('aria-label', 'Night and day. Move right for night, left for day.');
     handle.setAttribute('aria-valuemin', '0');
     handle.setAttribute('aria-valuemax', '100');
-    handle.innerHTML = `<span class="dn-vline" aria-hidden="true"></span><span class="dn-grip">${MOON}${SUN}</span>`;
+    handle.innerHTML = `<span class="dn-vline" aria-hidden="true"><span class="dn-grab"></span></span><span class="dn-grip">${MOON}${SUN}</span>`;
     // the two story lines sit BELOW the book, so they never cover the
     // characters: a strip under the host's bottom edge (the book's near edge)
     const texts = document.createElement('div');

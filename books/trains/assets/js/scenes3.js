@@ -22,26 +22,31 @@
     `<circle cx="${x}" cy="${y}" r="${Math.round(r * .4)}"/>`).join('')}</g>`;
 
   // C&S rotary snowplow: the big red fan spins and throws a cloud of snow
+  // rotary snowplow: the photo's own red rotor is cut out as a circle
+  // (as large as the rotor's width allows) and spins. Snow sprays out of
+  // the chute and flakes fall back.
+  const ellipse = (cx, cy, rx, ry, n = 48) => Array.from({ length: n }, (_, i) => {
+    const a = i * 2 * Math.PI / n; return [Math.round(cx + rx * Math.cos(a)), Math.round(cy + ry * Math.sin(a))];
+  });
+  const ROTOR = { cx: 255, cy: 598, r: 155 };   // a circle touching the rotor's left and right edges in the photo
   T.plow = () => buildTrain({
     img: 'plow',
     cuts: {
       'tr-body': [[48,385],[60,370],[215,350],[245,300],[255,265],[320,230],[350,215],[480,215],[600,245],[610,275],[650,335],[760,365],[850,395],[990,445],[1000,470],[990,485],[1100,505],[1180,540],[1195,560],[1200,700],[1195,740],[1000,760],[800,790],[560,800],[500,815],[410,810],[400,795],[50,790]],
       'tr-front': [[48,385],[60,370],[215,350],[400,350],[410,450],[415,800],[50,790]],
-      'tr-top': ring(245, 580, 150)
+      'tr-top': ellipse(ROTOR.cx, ROTOR.cy, ROTOR.r, ROTOR.r, 72)
     },
     fx: {
-      'fx-tr': `<g fill="#fff">${[[230,330,60],[150,300,48],[300,290,44],[90,350,40],[200,240,52],[110,250,36]].map(p =>
-          `<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" opacity=".9"/>`).join('')}</g>`,
-      'fx-tr-2': `<g fill="#fff" opacity=".95">${[[120,120],[260,60],[380,140],[60,200],[330,20],[180,170],[440,60]].map(([x, y]) =>
-          `<circle cx="${x}" cy="${y}" r="9"/>`).join('')}</g>`
+      'fx-tr': plume({ x: 235, y: 300, dx: -260, dy: -330, n: 14, r: 34, grow: 3.4, life: 1.6, every: 0.11, color: '#ffffff', shade: '#d6e0ea', billow: 30, seed: 4 }),
+      'fx-tr-2': spray({ x: 235, y: 300, n: 34, vx: [-420, -120], vy: [-620, -320], g: 1100, life: 1.25, every: 0.05, size: [5, 13], color: ['#ffffff', '#eef4fa', '#dbe6f0'], seed: 9 })
     },
     tracks: [
-      { parts: 'tr-top', origin: '245px 580px', timing: '2.4s cubic-bezier(.5,0,.3,1)',
-        keyframes: '0%{transform:rotate(0)}100%{transform:rotate(-720deg)}' },
-      { parts: 'fx-tr', box: 'fill-box', origin: '70% 100%', timing: '1.8s .4s ease-out both',
-        keyframes: '0%{opacity:0;transform:translate(0,40px) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(-140px,-190px) scale(1.7)}' },
-      { parts: 'fx-tr-2', timing: '2.2s .6s ease-in both',
-        keyframes: '0%{opacity:0;transform:translate(60px,-40px)}20%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translate(-80px,260px)}' }
+      // spins up through three turns and slows down again
+      TM.track('tr-top', 2.6, t => TM.tf(0, 0, -1080 * (t < 0.5 ? 2 * t * t : 1 - 2 * (1 - t) * (1 - t))), { origin: `${ROTOR.cx}px ${ROTOR.cy}px`, n: 90 }),
+      { parts: ['tr-body', 'tr-front'], timing: '2.6s linear',
+        keyframes: '0%,100%{transform:translate(0,0)}' + [15, 30, 45, 60, 75].map(p => `${p}%{transform:translate(-2px,1px)}${p + 7}%{transform:translate(2px,0)}`).join('') },
+      plumeTrack('fx-tr', 3.4),
+      plumeTrack('fx-tr-2', 3.2)
     ]
   });
 
@@ -77,8 +82,7 @@
       'fx-tr': g => glowDots(g, '#fff4c2', [[138,345,18],[80,435,20],[162,435,20]])
     },
     tracks: [
-      { parts: 'tr-top', timing: '1.4s ease-out',
-        keyframes: '0%,100%{transform:translateY(0)}15%{transform:translateY(-22px)}30%{transform:translateY(0)}45%{transform:translateY(-10px)}60%{transform:translateY(0)}75%{transform:translateY(-4px)}' },
+      TM.track('tr-top', 1.4, t => TM.tf(0, -22 * Math.abs(TM.spring(t, 0, 2.2, 3)))),
       { parts: ['tr-body', 'tr-front'], timing: '1.6s ease-in-out',
         keyframes: '0%,100%{transform:translateX(0)}50%{transform:translateX(-18px)}' },
       { parts: 'fx-tr', timing: '1.6s ease-in-out',
@@ -100,8 +104,7 @@
         <circle cx="950" cy="520" r="16"/><circle cx="1120" cy="400" r="13"/></g>`
     },
     tracks: [
-      { parts: 'tr-top', timing: '1.5s ease-out',
-        keyframes: '0%,100%{transform:translateY(0)}18%{transform:translateY(-14px)}36%{transform:translateY(3px)}54%{transform:translateY(-6px)}72%{transform:translateY(1px)}' },
+      TM.track('tr-top', 1.5, t => TM.tf(0, -14 * Math.abs(TM.spring(t, 0, 2.6, 3.2)))),
       { parts: 'fx-tr', box: 'fill-box', origin: '50% 50%', timing: '1.6s ease-in-out',
         keyframes: '0%{opacity:0;transform:scale(.6)}30%{opacity:1;transform:scale(1.05)}50%{opacity:.4}70%{opacity:1}100%{opacity:0;transform:scale(1)}' }
     ]
@@ -157,14 +160,14 @@
     },
     fx: {
       'fx-tr': `<g transform="translate(880 650)"><polygon points="${cog(0, 0, 62, 12)}" fill="#c9ccd1" stroke="#5f646b" stroke-width="5"/>
-        <circle r="24" fill="#8a9098" stroke="#5f646b" stroke-width="5"/><circle r="8" fill="#3d4046"/></g>`
+        <circle r="24" fill="#8a9098" stroke="#5f646b" stroke-width="5"/><circle r="8" fill="#3d4046"/></g>`,
+      'fx-tr-2': g => glowDots(g, '#fff4c2', [[700, 435, 22]])
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front'], timing: '2.4s ease-in-out',
-        keyframes: '0%,100%{transform:translate(0,0)}12%,18%{transform:translate(-10px,-4px)}30%,36%{transform:translate(-20px,-8px)}' +
-          '48%,54%{transform:translate(-30px,-12px)}66%,74%{transform:translate(-40px,-16px)}' },
-      { parts: 'fx-tr', box: 'fill-box', origin: '50% 50%', timing: '2.4s ease-in-out',
-        keyframes: '0%{opacity:0;transform:rotate(0)}12%{opacity:1}80%{opacity:1}100%{opacity:0;transform:rotate(-300deg)}' }
+      // up the slope (direction of the track in the photo) and gently back down
+      TM.track(['tr-body', 'tr-front'], 2.8, t => { const d = 44 * TM.out(t, 0.6, 0.8) + 1.2 * TM.chuff(t, 14) * TM.env(t); return TM.tf(-0.93 * d, -0.36 * d); }),
+      TM.track('fx-tr', 2.8, t => TM.tf(0, 0, -340 * TM.out(t, 0.6, 0.8)) + ';' + TM.op(TM.env(t, 0.08, 0.85)), { box: 'fill-box', origin: '50% 50%' }),
+      TM.track('fx-tr-2', 2.8, t => TM.op(TM.lamp(t, 0.04, 0.85)))
     ]
   });
 
@@ -225,8 +228,7 @@
       'fx-tr': g => `<circle cx="1432" cy="140" r="50" fill="#fff2b0" filter="${g}"/><circle cx="1432" cy="140" r="18" fill="#fff"/>`
     },
     tracks: [
-      { parts: 'tr-top', origin: '1340px 262px', timing: '2.6s ease-in-out',
-        keyframes: '0%,100%{transform:rotate(0)}20%{transform:rotate(8deg)}45%{transform:rotate(-6deg)}68%{transform:rotate(4deg)}86%{transform:rotate(-2deg)}' },
+      TM.track('tr-top', 2.6, t => TM.tf(0, 0, 9 * TM.spring(t, 0, 2.2, 2.2) * TM.sm(0, 0.08, t)), { origin: '1340px 262px' }),
       { parts: 'fx-tr', timing: '2.6s linear',
         keyframes: '0%{opacity:0}10%{opacity:1}25%{opacity:.3}40%{opacity:1}55%{opacity:.3}70%{opacity:1}100%{opacity:0}' }
     ]
@@ -249,8 +251,7 @@
         ${sparks([[250, 716], [900, 776], [1420, 816]])}`
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front'], timing: '1.6s linear',
-        keyframes: '0%,100%{transform:translate(0,0)}10%,30%,50%,70%,90%{transform:translate(-3px,1px)}20%,40%,60%,80%{transform:translate(3px,-1px)}' },
+      TM.track(['tr-body', 'tr-front'], 1.6, t => { const [x, y] = TM.jitter(t, 2.2 * TM.env(t), 30, 3); return TM.tf(x, y); }),
       { parts: 'fx-tr', timing: '1.6s linear',
         keyframes: '0%{opacity:0}10%{opacity:1}20%{opacity:.2}35%{opacity:1}50%{opacity:.2}65%{opacity:1}85%{opacity:.6}100%{opacity:0}' },
       { parts: 'fx-tr-2', timing: '1.6s .1s linear both',
@@ -272,8 +273,7 @@
         <ellipse cx="280" cy="235" rx="80" ry="6" fill="#fff" transform="rotate(-12 280 235)"/>`
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front'], origin: '1000px 900px', timing: '1.8s ease-in-out',
-        keyframes: '0%,100%{transform:rotate(0)}25%{transform:rotate(-.9deg)}55%{transform:rotate(.6deg)}80%{transform:rotate(-.25deg)}' },
+      TM.track(['tr-body', 'tr-front'], 1.8, t => TM.tf(0, 0, -1 * TM.spring(t, 0, 2, 2.6)), { origin: '1000px 900px' }),
       { parts: 'fx-tr', timing: '1.6s .1s ease-in-out both',
         keyframes: '0%{opacity:0;transform:translate(0,0)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(760px,-165px)}' }
     ]
@@ -295,12 +295,13 @@
       'fx-tr-2': sleeper(230) + sleeper(310)
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front'], timing: '2.4s ease-in-out',
-        keyframes: '0%,100%{transform:translateX(0)}40%,70%{transform:translateX(-24px)}' },
-      { parts: 'fx-tr', timing: '2.4s ease-in',
-        keyframes: '0%{opacity:0;transform:translateY(-90px)}15%{opacity:1;transform:translateY(-90px)}35%{transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(0)}' },
-      { parts: 'fx-tr-2', timing: '2.4s .5s ease-in both',
-        keyframes: '0%{opacity:0;transform:translateY(-90px)}15%{opacity:1;transform:translateY(-90px)}35%{transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(0)}' }
+      TM.track(['tr-body', 'tr-front'], 2.8, t => { const [x, y] = TM.jitter(t, 0.9 * TM.env(t), 22, 6); return TM.tf(-24 * TM.out(t, 0.45, 0.75) + x, y, 0.25 * TM.spring(t, 0.45, 3, 6)); }, { origin: '800px 700px' }),
+      // a sleeper falls (speeding up), lands, bounces twice and stays
+      ...[['fx-tr', 0.12], ['fx-tr-2', 0.32]].map(([p, t0]) => TM.track(p, 2.8, t => {
+        const u = Math.max(0, t - t0) * 2.8, fall = Math.min(1, u / 0.35);
+        const y = u < 0.35 ? -90 * (1 - fall * fall) : -8 * Math.abs(TM.spring(u - 0.35, 0, 2.2, 7));
+        return TM.tf(0, y) + ';' + TM.op(t < t0 ? 0 : TM.env(t, t0 + 0.02, 0.88));
+      }))
     ]
   });
 

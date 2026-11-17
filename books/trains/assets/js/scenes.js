@@ -29,7 +29,8 @@
     ]
   });
 
-  // 2 — Stephenson's Rocket: a big smoke ring pops out of the tall chimney
+  // 2 — Stephenson's Rocket: puffs of smoke billow out of the tall chimney
+  //     and drift back over the train while the chimney shakes
   T.rocket = () => buildTrain({
     img: 'rocket',
     cuts: {
@@ -38,15 +39,12 @@
       'tr-top': [[1112,80],[1215,80],[1212,620],[1118,620]]
     },
     fx: {
-      'fx-tr': `<ellipse cx="1165" cy="40" rx="70" ry="26" fill="none" stroke="#e8e6e2" stroke-width="22" opacity=".9"/>
-        <ellipse cx="1165" cy="40" rx="70" ry="26" fill="none" stroke="#fff" stroke-width="6" opacity=".6"/>`
+      'fx-tr': plume({ x: 1165, y: 70, dx: -300, dy: -330, n: 12, r: 38, grow: 3.4, life: 1.9, every: 0.13, color: '#ecebe7', shade: '#9a9893', seed: 3 })
     },
     tracks: [
-      { parts: 'fx-tr', box: 'fill-box', origin: '50% 50%', timing: '1.8s ease-out',
-        keyframes: '0%{opacity:0;transform:translate(0,40px) scale(.3)}15%{opacity:1}' +
-          '100%{opacity:0;transform:translate(-120px,-60px) scale(2.6)}' },
-      { parts: 'tr-top', timing: '.5s ease-in-out',
-        keyframes: '0%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}' }
+      plumeTrack('fx-tr', 3.5),
+      { parts: 'tr-top', timing: '1.6s linear',
+        keyframes: '0%,100%{transform:translateY(0)}' + [10, 25, 40, 55, 70, 85].map(p => `${p}%{transform:translateY(-5px)}${p + 7}%{transform:translateY(0)}`).join('') }
     ]
   });
 
@@ -62,14 +60,14 @@
       'fx-tr': g => `<circle cx="1110" cy="383" r="70" fill="#ffe9a0" filter="${g}" opacity=".95"/>
         <circle cx="1110" cy="383" r="34" fill="#fff8d8"/>
         <path d="M880 360 q-30 -30 0 -60 M860 380 q-50 -50 0 -100 M985 360 q30 -30 0 -60 M1005 380 q50 -50 0 -100"
-          fill="none" stroke="#fff3b0" stroke-width="7" stroke-linecap="round"/>`
+          fill="none" stroke="#fff3b0" stroke-width="7" stroke-linecap="round"/>`,
+      'fx-tr-2': plume({ x: 1000, y: 190, dx: -340, dy: -240, n: 11, r: 36, grow: 3.2, life: 2, every: 0.15, color: '#f2f1ee', shade: '#a7a6a2', seed: 5 })
     },
     tracks: [
-      { parts: 'tr-top', origin: '932px 378px', timing: '1.6s ease-in-out',
-        keyframes: '0%,100%{transform:rotate(0)}15%{transform:rotate(22deg)}35%{transform:rotate(-20deg)}' +
-          '55%{transform:rotate(16deg)}75%{transform:rotate(-10deg)}90%{transform:rotate(4deg)}' },
+      TM.track('tr-top', 1.8, t => TM.tf(0, 0, 24 * TM.spring(t, 0, 2.6, 2.4) * TM.sm(0, 0.06, t)), { origin: '932px 378px' }),
       { parts: 'fx-tr', timing: '1.6s linear',
-        keyframes: '0%{opacity:0}10%{opacity:1}20%{opacity:.3}30%{opacity:1}45%{opacity:.5}60%{opacity:1}100%{opacity:0}' }
+        keyframes: '0%{opacity:0}10%{opacity:1}20%{opacity:.3}30%{opacity:1}45%{opacity:.5}60%{opacity:1}100%{opacity:0}' },
+      plumeTrack('fx-tr-2', 3.7)
     ]
   });
 
@@ -125,20 +123,13 @@
       'tr-top': [[408,160],[512,160],[512,385],[408,385]]
     },
     fx: {
-      'fx-tr': `<g fill="#3d3a38">${[[460,120,50],[430,60,62],[500,10,72],[420,-10,58]].map(p =>
-          `<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" opacity=".85"/>`).join('')}</g>`,
-      'fx-tr-2': `<g fill="#fff">${[[330,800,40],[260,820,52],[200,790,44],[150,830,36]].map(p =>
-          `<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" opacity=".8"/>`).join('')}</g>`
+      'fx-tr': plume({ x: 460, y: 150, dx: -200, dy: -330, n: 12, r: 40, grow: 3.4, life: 1.9, every: 0.12, color: '#5a5653', shade: '#2b2928', opacity: 0.9, seed: 8 }),
+      'fx-tr-2': plume({ x: 330, y: 810, dx: -280, dy: -60, n: 9, r: 30, grow: 3, life: 1.1, every: 0.09, color: '#ffffff', shade: '#cfd2d6', billow: 26, seed: 11 })
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front', 'tr-top'], timing: '1.2s linear',
-        keyframes: '0%,100%{transform:translate(0,0)}10%{transform:translate(-4px,2px)}20%{transform:translate(3px,0)}' +
-          '30%{transform:translate(-4px,2px)}40%{transform:translate(3px,0)}50%{transform:translate(-4px,2px)}' +
-          '60%{transform:translate(3px,0)}70%{transform:translate(-3px,1px)}80%{transform:translate(2px,0)}' },
-      { parts: 'fx-tr', box: 'fill-box', origin: '50% 100%', timing: '1.8s ease-out',
-        keyframes: '0%{opacity:0;transform:translateY(60px) scale(.3)}20%{opacity:1}100%{opacity:0;transform:translate(-60px,-80px) scale(1.5)}' },
-      { parts: 'fx-tr-2', box: 'fill-box', origin: '100% 50%', timing: '1.3s .3s ease-out both',
-        keyframes: '0%{opacity:0;transform:scale(.2)}25%{opacity:1}100%{opacity:0;transform:translateX(-80px) scale(1.4)}' }
+      TM.track(['tr-body', 'tr-front', 'tr-top'], 1.8, t => TM.tf(-4 * TM.chuff(t, 6) * TM.env(t), 2 * TM.chuff(t, 6) * TM.env(t))),
+      plumeTrack('fx-tr', 3.4),
+      plumeTrack('fx-tr-2', 2)
     ]
   });
 
@@ -150,17 +141,16 @@
       'tr-front': [[1080,180],[1146,78],[1200,168],[1340,248],[1442,400],[1500,520],[1500,700],[1382,832],[1100,842],[1060,600]]
     },
     fx: {
-      'fx-tr': `<g stroke="#fff" stroke-linecap="round" opacity=".9">
-        <line x1="0" y1="330" x2="260" y2="330" stroke-width="10"/><line x1="40" y1="420" x2="340" y2="420" stroke-width="14"/>
-        <line x1="0" y1="510" x2="220" y2="510" stroke-width="9"/><line x1="60" y1="600" x2="300" y2="600" stroke-width="12"/>
-        <line x1="10" y1="690" x2="200" y2="690" stroke-width="8"/></g>`
+      'fx-tr': `<g stroke="#fff" stroke-linecap="round" opacity=".85">
+        <line x1="0" y1="330" x2="260" y2="330" stroke-width="8"/><line x1="40" y1="420" x2="340" y2="420" stroke-width="11"/>
+        <line x1="0" y1="510" x2="220" y2="510" stroke-width="7"/><line x1="60" y1="600" x2="300" y2="600" stroke-width="10"/>
+        <line x1="10" y1="690" x2="200" y2="690" stroke-width="6"/></g>`,
+      'fx-tr-2': plume({ x: 1050, y: 80, dx: -760, dy: -50, n: 14, r: 30, grow: 3, life: 1.3, every: 0.09, color: '#f4f4f1', shade: '#b4b7bc', billow: 30, seed: 6 })
     },
     tracks: [
-      { parts: ['tr-body', 'tr-front'], timing: '1.5s ease-in-out',
-        keyframes: '0%,100%{transform:translateX(0)}30%,70%{transform:translateX(26px)}' },
-      { parts: 'fx-tr', timing: '1.5s linear',
-        keyframes: '0%{opacity:0;transform:translateX(120px)}20%{opacity:1}' +
-          '50%{transform:translateX(-60px)}80%{opacity:1}100%{opacity:0;transform:translateX(-200px)}' }
+      TM.track(['tr-body', 'tr-front'], 1.8, t => { const [jx, jy] = TM.jitter(t, 1.2 * TM.env(t), 20, 2); return TM.tf(26 * TM.out(t, 0.35, 0.72) + jx, jy, -0.6 * TM.out(t, 0.35, 0.72)); }, { origin: '1300px 820px' }),
+      plumeTrack('fx-tr-2', 2.6),
+      TM.track('fx-tr', 1.8, t => TM.tf(140 - 420 * t) + ';' + TM.op(TM.env(t, 0.15, 0.7)))
     ]
   });
 
@@ -172,15 +162,17 @@
       'tr-front': [[165,560],[188,300],[230,198],[330,138],[540,118],[720,188],[760,420],[760,742],[165,742]]
     },
     fx: {
-      'fx-tr': `<g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="10">
-        <path d="M480 90 q60 -50 120 0"/><path d="M450 60 q90 -80 180 0" stroke-width="8"/>
-        <path d="M420 30 q120 -110 240 0" stroke-width="6"/></g>`
+      'fx-tr': g => `<g fill="#fff6d0" filter="${g}"><circle cx="352" cy="195" r="46"/><circle cx="338" cy="330" r="40"/></g>
+        <g fill="#ffffff"><circle cx="352" cy="195" r="20"/><circle cx="338" cy="330" r="17"/></g>`,
+      'fx-tr-2': plume({ x: 900, y: 300, dx: 120, dy: -300, n: 9, r: 26, grow: 3.4, life: 1.6, every: 0.14, color: '#6a6a6a', shade: '#2e2e2e', opacity: 0.75, seed: 12 }),
+      'fx-tr-back': `<g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="9" opacity=".9">
+        <path d="M480 90 q60 -50 120 0"/><path d="M450 60 q90 -80 180 0"/><path d="M420 30 q120 -110 240 0"/></g>`
     },
     tracks: [
-      { parts: 'tr-front', timing: '1s linear',
-        keyframes: '0%,100%{transform:translate(0,0)}10%,30%,50%,70%{transform:translate(-3px,-2px)}20%,40%,60%,80%{transform:translate(3px,1px)}' },
-      { parts: 'fx-tr', box: 'fill-box', origin: '50% 100%', timing: '1.2s ease-out',
-        keyframes: '0%{opacity:0;transform:scale(.4)}20%{opacity:1}100%{opacity:0;transform:translateY(-40px) scale(1.5)}' }
+      TM.track(['tr-front', 'tr-body'], 2, t => { const [x, y] = TM.jitter(t, 2.4 * TM.env(t, 0.1, 0.7), 26, 4); return TM.tf(x, y); }),
+      TM.track('fx-tr', 2, t => TM.op(TM.lamp(t, 0.02, 0.8))),
+      plumeTrack('fx-tr-2', 2.8),
+      TM.track('fx-tr-back', 1.4, t => { const u = (t * 2) % 1; return TM.tf(0, -30 * u, 0, 0.5 + u) + ';' + TM.op(t < 0.95 ? 1 - u : 0); }, { box: 'fill-box', origin: '50% 100%' })
     ]
   });
 })();

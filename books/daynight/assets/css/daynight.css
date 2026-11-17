@@ -72,8 +72,18 @@ body.dn-slider-on .obj-slot.is-caption { display: none !important; }
   top: 0; bottom: 0;
   left: 0;
   will-change: transform;
-  width: 64px;                 /* wide invisible grab strip, full height */
-  margin-left: -32px;
+  width: 48px;                 /* wide invisible grab strip (see .dn-grab) */
+  margin-left: -24px;
+  pointer-events: none;
+  touch-action: none;
+}
+/* the part of the strip that takes pointers stops short of the bottom, so
+   the page-turn corners and the near edge of the book stay tappable even
+   when the divider is pushed to the side */
+.dn-grab {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  bottom: clamp(70px, 16%, 140px);
   pointer-events: auto;
   touch-action: none;
 }

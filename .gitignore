@@ -8,3 +8,5 @@
 # Scratch / preview artifacts (write these to /tmp, never the repo)
 /tmp/
 *.scratch.*
+# Style preview: local only, not on the shelf
+/books/preview/

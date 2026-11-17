@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <pattern id="w" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#1b2440"/><rect width="1" height="1" fill="#26325a"/><rect x="1" y="1" width="1" height="1" fill="#26325a"/></pattern>
+    <linearGradient id="r" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d6a6"/><stop offset="1" stop-color="#a87a45"/></linearGradient>
+  </defs>
+  <circle cx="32" cy="33" r="27" fill="url(#w)"/>
+  <!-- stitched Moon ground, rocket and stars -->
+  <path d="M8 46 Q32 38 56 46 L52 54 Q32 64 12 54 Z" fill="#bdbcb5"/>
+  <g stroke="#d8d6cf" stroke-width="1" stroke-dasharray="2 1.4"><path d="M10 47 Q32 40 54 47"/></g>
+  <path d="M32 10 L37 21 L37 36 L27 36 L27 21 Z" fill="#f1ede2" stroke="#cfd2d8" stroke-width="0.8"/>
+  <g stroke="#ffffff" stroke-width="0.6" opacity="0.7"><path d="M29 22 V35 M32 14 V35 M35 22 V35"/></g>
+  <path d="M27 30 L22 38 L27 36 Z M37 30 L42 38 L37 36 Z" fill="#b5313b"/>
+  <circle cx="32" cy="24" r="2.4" fill="#3b7bc0" stroke="#1f3c6c" stroke-width="0.6"/>
+  <path d="M29 37 L32 45 L35 37 Z" fill="#f2b13a"/>
+  <g fill="#f4e3a6"><circle cx="15" cy="22" r="1.4"/><circle cx="48" cy="18" r="1.4"/><circle cx="46" cy="32" r="1.1"/><circle cx="18" cy="34" r="1.1"/></g>
+  <circle cx="32" cy="33" r="28" fill="none" stroke="url(#r)" stroke-width="5"/>
+  <rect x="27" y="1.5" width="10" height="6" rx="1.5" fill="#c49a4c"/>
+</svg>

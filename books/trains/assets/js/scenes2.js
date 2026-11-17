@@ -104,22 +104,25 @@
     ]
   });
 
-  // 13 — NS double-decker: the top deck lights up, then the bottom deck
+  // 13 — NS double-decker: lights come on upstairs, then downstairs, the
+  // headlights shine and the train rolls a little closer. Cut traced along
+  // the real outline of the train (roof line, cab, coupler, wheels).
   T.doubledecker = () => buildTrain({
     img: 'doubledecker',
     cuts: {
-      'tr-body': [[30,500],[400,418],[900,298],[1050,213],[1302,213],[1332,320],[1372,620],[1352,722],[1000,742],[700,682],[30,582]],
-      'tr-front': [[1020,240],[1050,213],[1302,213],[1332,320],[1372,620],[1352,722],[1000,742],[960,500]]
+      'tr-body': [[30,478],[300,430],[600,360],[900,272],[1020,222],[1120,212],[1300,262],[1326,300],[1340,440],[1350,598],[1368,604],[1368,640],[1352,652],[1350,722],[1260,727],[1140,732],[1040,742],[900,692],[600,642],[300,597],[100,572],[30,562]],
+      'tr-front': [[1010,226],[1120,212],[1300,262],[1326,300],[1340,440],[1350,598],[1368,604],[1368,640],[1352,652],[1350,722],[1260,727],[1140,732],[1040,742],[992,702],[976,380],[986,252]]
     },
     fx: {
-      'fx-tr': g => `<polygon points="640,395 900,322 900,368 640,428" fill="#fff1b8" filter="${g}"/><polygon points="160,470 620,400 620,425 160,488" fill="#fff1b8" filter="${g}"/>`,
-      'fx-tr-2': g => `<polygon points="640,470 900,410 900,560 640,575" fill="#fff1b8" filter="${g}"/><polygon points="160,520 620,470 620,560 160,560" fill="#fff1b8" filter="${g}"/>`
+      'fx-tr': g => `<g fill="#fff1b8" filter="${g}"><polygon points="645,382 888,322 890,368 645,428"/><polygon points="430,442 545,412 545,447 430,470"/><polygon points="295,465 372,450 372,477 295,490"/></g>
+        <g fill="#fff6cf" filter="${g}"><circle cx="1130" cy="563" r="26"/><circle cx="1272" cy="556" r="26"/></g>
+        <g fill="#fff"><circle cx="1130" cy="563" r="10"/><circle cx="1272" cy="556" r="10"/></g>`,
+      'fx-tr-2': g => `<g fill="#fff1b8" filter="${g}"><polygon points="645,490 860,505 860,605 645,590"/><polygon points="430,500 545,515 545,585 430,570"/><polygon points="295,520 372,527 372,585 295,578"/></g>`
     },
     tracks: [
-      { parts: 'fx-tr', timing: '1.6s ease-in-out',
-        keyframes: '0%{opacity:0}20%{opacity:.9}80%{opacity:.9}100%{opacity:0}' },
-      { parts: 'fx-tr-2', timing: '1.4s .6s ease-in-out both',
-        keyframes: '0%{opacity:0}25%{opacity:.9}80%{opacity:.9}100%{opacity:0}' }
+      TM.track('fx-tr', 2.4, t => TM.op(0.9 * TM.lamp(t, 0.04, 0.82))),
+      TM.track('fx-tr-2', 2.4, t => TM.op(0.9 * TM.lamp(t, 0.24, 0.84))),
+      TM.track(['tr-body', 'tr-front'], 2.4, t => TM.tf(-10 * TM.out(t, 0.45, 0.75), 5 * TM.out(t, 0.45, 0.75)))
     ]
   });
 

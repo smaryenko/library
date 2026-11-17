@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- Shelf card. Kept light on purpose (no filters, ~80 shapes): the shelf
+       spins covers in 3D as <img>, re-rasterising them every frame. The
+       satin look comes from small line patterns instead of real stitches. -->
+  <defs>
+    <linearGradient id="tb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a4434"/><stop offset="1" stop-color="#2c2019"/></linearGradient>
+    <pattern id="lin" width="3" height="3" patternUnits="userSpaceOnUse"><rect width="3" height="3" fill="#1b2440"/><rect width="1.5" height="1.2" fill="#26325a"/><rect x="1.5" y="1.5" width="1.5" height="1.2" fill="#26325a"/></pattern>
+    <pattern id="moon" width="9" height="2.4" patternUnits="userSpaceOnUse"><rect width="9" height="2.4" fill="#8f8e8a"/><line x1="0.6" y1="1.2" x2="8.4" y2="1.2" stroke="#c9c8c1" stroke-width="1.5" stroke-linecap="round"/></pattern>
+    <pattern id="sea" width="7" height="2.2" patternUnits="userSpaceOnUse" patternTransform="rotate(32)"><rect width="7" height="2.2" fill="#24508a"/><line x1="0.5" y1="1.1" x2="6.5" y2="1.1" stroke="#4a8bd0" stroke-width="1.4" stroke-linecap="round"/></pattern>
+    <pattern id="land" width="6" height="2.2" patternUnits="userSpaceOnUse" patternTransform="rotate(-20)"><rect width="6" height="2.2" fill="#3f7a3a"/><line x1="0.5" y1="1.1" x2="5.5" y2="1.1" stroke="#6fae5a" stroke-width="1.4" stroke-linecap="round"/></pattern>
+    <pattern id="gold" width="2.4" height="6" patternUnits="userSpaceOnUse"><rect width="2.4" height="6" fill="#a77c2e"/><line x1="1.2" y1="0.5" x2="1.2" y2="5.5" stroke="#efc66a" stroke-width="1.5" stroke-linecap="round"/></pattern>
+    <pattern id="silver" width="8" height="2.2" patternUnits="userSpaceOnUse"><rect width="8" height="2.2" fill="#9ea2a8"/><line x1="0.5" y1="1.1" x2="7.5" y2="1.1" stroke="#e4e6ea" stroke-width="1.4" stroke-linecap="round"/></pattern>
+    <pattern id="white" width="2.2" height="6" patternUnits="userSpaceOnUse"><rect width="2.2" height="6" fill="#c9c4b6"/><line x1="1.1" y1="0.5" x2="1.1" y2="5.5" stroke="#f6f2e8" stroke-width="1.4" stroke-linecap="round"/></pattern>
+    <radialGradient id="drum" cx="0.38" cy="0.34" r="0.75"><stop offset="0" stop-color="#fff" stop-opacity="0.08"/><stop offset="1" stop-color="#000" stop-opacity="0.3"/></radialGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0d6a6"/><stop offset="0.5" stop-color="#d4ad74"/><stop offset="1" stop-color="#9c6e3c"/></linearGradient>
+    <clipPath id="in"><circle cx="200" cy="152" r="112"/></clipPath>
+  </defs>
+  <rect width="400" height="300" fill="url(#tb)"/>
+  <circle cx="208" cy="160" r="124" fill="#140d07" opacity="0.4"/>
+  <circle cx="200" cy="152" r="114" fill="url(#lin)"/>
+  <g clip-path="url(#in)">
+    <!-- Moon ground with crater rims -->
+    <path d="M80 210 Q140 196 200 204 T320 200 L320 280 L80 280 Z" fill="url(#moon)"/>
+    <g fill="none" stroke="#e2e0d8" stroke-width="1.6" stroke-dasharray="3 2">
+      <path d="M110 236 a14 5 0 0 1 28 0"/><path d="M228 228 a18 6 0 0 1 36 0"/><path d="M170 250 a10 4 0 0 1 20 0"/>
+    </g>
+    <!-- Earth -->
+    <circle cx="140" cy="92" r="24" fill="url(#sea)"/>
+    <path d="M132 76 q12 2 14 14 q-2 8 4 16 q-6 6 -10 0 q-4 -10 -10 -12 q-6 -8 2 -18 z" fill="url(#land)"/>
+    <path d="M152 100 a24 24 0 0 1 -30 10 a24 24 0 0 0 40 -22 z" fill="#0f1f3d" opacity="0.45"/>
+    <circle cx="140" cy="92" r="25.5" fill="none" stroke="#9cc6ec" stroke-width="1.6" stroke-dasharray="3 1.8"/>
+    <!-- orbit arc over the horizon -->
+    <path d="M128 206 Q206 40 292 204" fill="none" stroke="#e6dcc0" stroke-width="1.4" stroke-dasharray="3 3.4"/>
+    <!-- lander -->
+    <path d="M186 178 L216 178 L218 196 L184 196 Z" fill="url(#gold)"/>
+    <path d="M189 178 L189 164 L195 156 L208 156 L214 162 L214 178 Z" fill="url(#silver)"/>
+    <rect x="195" y="162" width="6" height="6" fill="#141418"/>
+    <g stroke="#cfd2d8" stroke-width="1.6" stroke-linecap="round"><path d="M187 192 L174 214"/><path d="M215 192 L228 214"/><path d="M192 196 L186 216"/><path d="M210 196 L216 216"/></g>
+    <g fill="#cfd2d8"><ellipse cx="174" cy="215" rx="4" ry="1.6"/><ellipse cx="228" cy="215" rx="4" ry="1.6"/></g>
+    <!-- flag -->
+    <path d="M244 214 V168" stroke="#cfd2d8" stroke-width="1.6"/>
+    <rect x="245" y="169" width="21" height="13" fill="#b5313b"/>
+    <g stroke="#f1ede2" stroke-width="1.3"><path d="M245 172.5 H266 M245 176 H266 M245 179.5 H266"/></g>
+    <rect x="245" y="169" width="9" height="7" fill="#1e2d66"/>
+    <!-- astronaut -->
+    <rect x="146" y="188" width="5" height="11" fill="#8a8b8e"/>
+    <rect x="150" y="190" width="11" height="13" rx="2" fill="url(#white)"/>
+    <circle cx="155.5" cy="184" r="5.6" fill="url(#white)"/>
+    <ellipse cx="157" cy="184.4" rx="3.6" ry="2.8" fill="#e0b65c"/>
+    <g stroke="#f1ede2" stroke-width="3" stroke-linecap="round"><path d="M152 204 L151 213"/><path d="M159 204 L161 213"/><path d="M161 193 L166 199"/></g>
+    <!-- capsule on the orbit -->
+    <g transform="translate(256 120) rotate(38)"><rect x="-12" y="-4.5" width="13" height="9" fill="url(#silver)"/><path d="M1 -4.5 L10 -1.5 L10 1.5 L1 4.5 Z" fill="#f1ede2"/></g>
+    <!-- stars: knots and gold star stitches -->
+    <g fill="#f4e3a6"><circle cx="230" cy="80" r="1.6"/><circle cx="262" cy="96" r="1.3"/><circle cx="180" cy="62" r="1.5"/><circle cx="286" cy="150" r="1.3"/><circle cx="112" cy="150" r="1.3"/><circle cx="250" cy="58" r="1.6"/><circle cx="200" cy="118" r="1.2"/><circle cx="120" cy="124" r="1.2"/><circle cx="300" cy="120" r="1.2"/></g>
+    <g stroke="#e0b65c" stroke-width="1.4" stroke-linecap="round"><path d="M212 92 h10 M217 87 v10"/><path d="M276 176 h8 M280 172 v8"/></g>
+  </g>
+  <circle cx="200" cy="152" r="114" fill="url(#drum)"/>
+  <!-- hoop -->
+  <circle cx="200" cy="152" r="118" fill="none" stroke="url(#wood)" stroke-width="10"/>
+  <circle cx="200" cy="152" r="113" fill="none" stroke="#4a2f16" stroke-width="1"/>
+  <circle cx="200" cy="152" r="123" fill="none" stroke="#3e2712" stroke-width="1"/>
+  <path d="M110 76 A118 118 0 0 1 200 34" fill="none" stroke="#fff6e2" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+  <rect x="189" y="20" width="9" height="16" rx="2" fill="#c69a62" stroke="#4a2f16" stroke-width="0.8"/>
+  <rect x="202" y="20" width="9" height="16" rx="2" fill="#c69a62" stroke="#4a2f16" stroke-width="0.8"/>
+  <rect x="180" y="25" width="42" height="5" rx="2.5" fill="#c49a4c"/>
+</svg>

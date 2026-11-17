@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <radialGradient id="bg" cx="0.5" cy="0.35" r="0.85"><stop offset="0" stop-color="#f8f2e6"/><stop offset="1" stop-color="#dccdb2"/></radialGradient>
+    <!-- clay: a soft light from the top left, a darker turn, a little warm bounce at the bottom -->
+    <radialGradient id="red" cx="0.32" cy="0.28" r="0.85"><stop offset="0" stop-color="#ee9a7c"/><stop offset="0.45" stop-color="#cf5a42"/><stop offset="0.9" stop-color="#8f3424"/><stop offset="1" stop-color="#a5432f"/></radialGradient>
+    <radialGradient id="red2" cx="0.3" cy="0.3" r="0.9"><stop offset="0" stop-color="#e0806a"/><stop offset="1" stop-color="#9a3a28"/></radialGradient>
+    <radialGradient id="slate" cx="0.35" cy="0.25" r="0.9"><stop offset="0" stop-color="#6f8db5"/><stop offset="1" stop-color="#2c4364"/></radialGradient>
+    <radialGradient id="teal" cx="0.3" cy="0.25" r="0.9"><stop offset="0" stop-color="#7fc2bb"/><stop offset="0.6" stop-color="#3f8f8a"/><stop offset="1" stop-color="#275a57"/></radialGradient>
+    <radialGradient id="frg" cx="0.3" cy="0.2" r="0.95"><stop offset="0" stop-color="#eef3f5"/><stop offset="0.6" stop-color="#c3d0d7"/><stop offset="1" stop-color="#8d9ea8"/></radialGradient>
+    <radialGradient id="tan" cx="0.3" cy="0.25" r="0.9"><stop offset="0" stop-color="#f1c483"/><stop offset="1" stop-color="#b27a35"/></radialGradient>
+    <radialGradient id="cream" cx="0.3" cy="0.3" r="0.8"><stop offset="0" stop-color="#fffaf0"/><stop offset="1" stop-color="#cdb98f"/></radialGradient>
+    <radialGradient id="steam" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#d4d2cc"/></radialGradient>
+    <radialGradient id="flo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#3a2a18" stop-opacity="0.45"/><stop offset="1" stop-color="#3a2a18" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <ellipse cx="205" cy="252" rx="185" ry="20" fill="url(#flo)"/>
+  <g>
+    <!-- fridge -->
+    <rect x="30" y="66" width="86" height="182" rx="16" fill="url(#frg)"/>
+    <rect x="34" y="70" width="78" height="174" rx="13" fill="none" stroke="#9fb0ba" stroke-width="2"/>
+    <rect x="102" y="96" width="6" height="44" rx="3" fill="#3a3a3e"/>
+    <path d="M36 128 H110" stroke="#9fb0ba" stroke-width="2"/>
+    <!-- kettle on its base -->
+    <ellipse cx="205" cy="244" rx="66" ry="11" fill="url(#slate)"/>
+    <path d="M152 240 Q146 150 172 140 L238 140 Q264 150 258 240 Z" fill="url(#red)"/>
+    <path d="M254 186 Q268 160 290 128" stroke="url(#red)" stroke-width="16" stroke-linecap="round" fill="none"/>
+    <path d="M158 160 Q116 168 146 218" fill="none" stroke="url(#red2)" stroke-width="13" stroke-linecap="round"/>
+    <ellipse cx="205" cy="140" rx="38" ry="10" fill="url(#red2)"/>
+    <circle cx="205" cy="125" r="9" fill="url(#cream)"/>
+    <ellipse cx="178" cy="172" rx="10" ry="22" fill="#fff" opacity="0.18"/>
+    <!-- steam -->
+    <circle cx="296" cy="112" r="9" fill="url(#steam)"/><circle cx="304" cy="92" r="13" fill="url(#steam)"/><circle cx="296" cy="68" r="10" fill="url(#steam)"/>
+    <!-- toaster with toast -->
+    <rect x="300" y="152" width="24" height="34" rx="7" fill="url(#tan)"/><rect x="334" y="152" width="24" height="34" rx="7" fill="url(#tan)"/>
+    <rect x="288" y="172" width="92" height="74" rx="28" fill="url(#teal)"/>
+    <rect x="378" y="196" width="10" height="8" rx="3" fill="#ecdcbc"/>
+    <circle cx="350" cy="222" r="7" fill="url(#cream)"/>
+  </g>
+</svg>

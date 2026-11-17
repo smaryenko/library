@@ -35,6 +35,12 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `one-world-books.md` — books built as ONE live 3D world on the open book,
   each page a camera stop with its own tap animation (`window.BOOK_SCENE`);
   the `city` book is the reference.
+- `embroidery-books.md` — pictures stitched in a wooden hoop (stitch
+  generators, thread look, depth layers, max three reveals, tap movers);
+  the `upwego` book is the reference.
+- `clay-books.md` — clay machines raymarched as signed distance fields on a
+  transparent canvas over a normal page, morphing from one page's object
+  into the next; the `athome` book is the reference.
 
 ## Project-wide preferences (apply to all visual work)
 
