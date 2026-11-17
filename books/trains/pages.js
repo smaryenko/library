@@ -1,8 +1,8 @@
 // TRAINS THROUGH TIME — the page roster.
 //
-// Intro clock, 23 real trains (photo cut-outs, roughly oldest to newest, with
+// Intro clock, 28 real trains (photo cut-outs, roughly oldest to newest, with
 // working, freight, street and helper trains placed beside their relatives),
-// and a toy-train ending: 25 spreads. Builders live in assets/js/scenes*.js.
+// and a toy-train ending: 30 spreads. Builders live in assets/js/scenes*.js.
 // The next page's photo is prerendered by the shared engine (storybook.js),
 // opted in below so big photos are decoded before the turn.
 (function () {
@@ -22,10 +22,12 @@
     { title: "Freight Train", body: "Diesels team up, too. Three CN engines pull a long freight train through the Rocky Mountains.", build: T.freight },
     { title: "Container Train", body: "Union Pacific engines haul big boxes called containers, stacked two high, past fields of flowers.", build: T.container },
     { title: "Car Carrier", body: "Some trains carry cars! This one has two decks full of shiny new cars on their way to the shops.", build: T.carcarrier },
+    { title: "Tank Car", body: "Liquids ride in tank cars. This shiny black one is like a giant bottle on wheels.", build: T.tankcar },
     { title: "Electric Locomotive", body: "Next, electricity! The Pennsylvania GG1 took its power from a wire up high.", build: T.electric },
     { title: "Bullet Train", body: "Electric trains got faster still. Japan’s Shinkansen zooms past the blossoms.", build: T.shinkansen },
     { title: "Metro", body: "Cities filled up, so trains went under the streets: London’s Underground runs in tunnels.", build: T.underground },
-    { title: "Light Rail", body: "Back up on the street, light rail trains ride along with the traffic, like this one in Los Angeles.", build: T.lightrail },
+    { title: "Tram", body: "Back up on the street, trams share the road with cars, like this red-and-cream tram in Prague.", build: T.tram },
+    { title: "Light Rail", body: "Light rail trains are like bigger, faster trams. This one rides through Los Angeles.", build: T.lightrail },
     { title: "Tram-Train", body: "A tram-train is two in one: a tram in Kassel’s streets, then a train out to the villages.", build: T.tramtrain },
     { title: "Funicular", body: "And up steep hills: the Kyiv Funicular car is pulled by a strong cable.", build: T.funicular },
     { title: "Rack Railway", body: "Even steeper? The Pilatus train climbs on a toothed rail: the steepest rack railway in the world.", build: T.rack },
@@ -33,6 +35,9 @@
     { title: "Maglev", body: "High tracks got even cleverer: magnets lift the Shanghai Maglev so it floats and flies.", build: T.maglev },
     { title: "Double-Decker Train", body: "More riders? Add a floor! This Dutch NS train has seats upstairs and down.", build: T.doubledecker },
     { title: "Work Train", body: "Trains have helpers too. This yellow work train fixes the track and lifts heavy loads with its crane.", build: T.worktrain },
+    { title: "Track Layer", body: "Building a brand-new line? The track-laying machine puts down sleepers and rails as it rolls along.", build: T.tracklayer },
+    { title: "Railway Crane", body: "Something really heavy? The railway crane swings out its long arm and lifts it with a giant hook.", build: T.crane },
+    { title: "Rail Grinder", body: "The rail grinder rubs the rails smooth with spinning stones, and sparks fly!", build: T.grinder },
     { title: "Fire Train", body: "And if there’s trouble in a tunnel, the Swiss fire-and-rescue train rushes in with a big tank of water.", build: T.firetrain },
     { title: "The Next Train?", body: "Maybe you’ll build it. Let’s start with this wooden Brio train.", build: T.toy }
   ];

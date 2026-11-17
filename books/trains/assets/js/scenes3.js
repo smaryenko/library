@@ -186,6 +186,124 @@
     ]
   });
 
+  // Prague Tatra tram: blue sparks crackle on the wire, it rolls on, lights on
+  T.tram = () => buildTrain({
+    img: 'tram',
+    cuts: {
+      'tr-body': [[175,580],[205,550],[300,525],[450,490],[610,465],[620,480],[760,440],[900,400],[1030,375],[1150,372],[1210,378],[1240,400],[1250,445],[1300,520],[1325,600],[1330,700],[1345,760],[1340,790],[1290,800],[1240,840],[1150,860],[1050,880],[900,870],[820,870],[760,890],[640,870],[560,840],[420,820],[260,820],[190,780],[178,700]],
+      'tr-front': [[995,385],[1150,372],[1210,378],[1240,400],[1250,445],[1300,520],[1325,600],[1330,700],[1345,760],[1340,790],[1290,800],[1240,840],[1150,860],[1050,880],[1000,870],[990,600],[1000,460]]
+    },
+    fx: {
+      'fx-tr': g => `<circle cx="760" cy="82" r="56" fill="#8fdcff" filter="${g}"/>
+        <path d="M760 32 L772 70 L812 66 L780 90 L800 128 L760 102 L722 128 L740 90 L708 66 L748 70Z" fill="#fff"/>`,
+      'fx-tr-2': g => glowDots(g, '#fff4c2', [[1215,728,26],[1330,716,22]])
+    },
+    tracks: [
+      { parts: 'fx-tr', timing: '1.4s linear',
+        keyframes: '0%{opacity:0}8%{opacity:1}14%{opacity:.1}24%{opacity:1}32%{opacity:.2}44%{opacity:1}52%{opacity:0}100%{opacity:0}' },
+      { parts: ['tr-body', 'tr-front'], timing: '1.8s ease-in-out',
+        keyframes: '0%,100%{transform:translate(0,0)}50%{transform:translate(16px,4px)}' },
+      { parts: 'fx-tr-2', timing: '1.8s ease-in-out',
+        keyframes: '0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}' }
+    ]
+  });
+
+  // railway crane: the big hook swings on its cables. The hook was painted
+  // out of img/crane.jpg and is drawn back as its own layer (crane-hook.png)
+  // at its original spot, so it can move without leaving a copy behind.
+  T.crane = () => buildTrain({
+    img: 'crane',
+    cuts: {
+      'tr-body': [[40,800],[45,620],[60,580],[100,550],[160,520],[200,485],[240,480],[290,465],[340,455],[600,360],[900,250],[1050,210],[1250,130],[1300,115],[1380,115],[1420,120],[1480,210],[1440,240],[1360,280],[1250,330],[1170,370],[1100,420],[1000,460],[900,450],[830,480],[700,500],[580,570],[560,620],[600,640],[770,700],[780,740],[760,800],[700,880],[560,890],[420,870],[200,830],[100,830]]
+    },
+    parts: {
+      'tr-top': `<defs><filter id="craneHookLift" x="-20%" y="-10%" width="140%" height="130%">
+          <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity=".45"/></filter></defs>
+        <image href="img/crane-hook.png" x="1205" y="240" width="240" height="375" filter="url(#craneHookLift)"/>`
+    },
+    fx: {
+      'fx-tr': g => `<circle cx="1432" cy="140" r="50" fill="#fff2b0" filter="${g}"/><circle cx="1432" cy="140" r="18" fill="#fff"/>`
+    },
+    tracks: [
+      { parts: 'tr-top', origin: '1340px 262px', timing: '2.6s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}20%{transform:rotate(8deg)}45%{transform:rotate(-6deg)}68%{transform:rotate(4deg)}86%{transform:rotate(-2deg)}' },
+      { parts: 'fx-tr', timing: '2.6s linear',
+        keyframes: '0%{opacity:0}10%{opacity:1}25%{opacity:.3}40%{opacity:1}55%{opacity:.3}70%{opacity:1}100%{opacity:0}' }
+    ]
+  });
+
+  // Speno rail grinder: stones grind the rails smooth, sparks fly
+  const sparks = (pts) => `<g stroke-linecap="round">${pts.map(([x, y]) =>
+    [[-60,-34],[-30,-50],[10,-56],[40,-40],[-70,-8],[60,-14]].map(([dx, dy], i) =>
+      `<line x1="${x}" y1="${y}" x2="${x + dx}" y2="${y + dy}" stroke="${i % 2 ? '#ffd24a' : '#ff8a1f'}" stroke-width="${i % 3 ? 4 : 6}"/>`).join('')).join('')}</g>`;
+  T.grinder = () => buildTrain({
+    img: 'grinder',
+    cuts: {
+      'tr-body': [[50,640],[55,410],[65,380],[110,360],[160,345],[210,325],[260,265],[340,250],[345,235],[450,190],[550,175],[560,145],[700,115],[860,130],[990,75],[1050,40],[1200,25],[1500,0],[1500,830],[1300,800],[1050,800],[800,770],[600,745],[400,725],[200,710],[60,690]],
+      'tr-front': [[1040,45],[1200,25],[1500,0],[1500,830],[1300,800],[1050,800],[1035,500]]
+    },
+    fx: {
+      'fx-tr': g => `<g filter="${g}" fill="#ffb347" opacity=".9"><ellipse cx="520" cy="742" rx="70" ry="22"/><ellipse cx="1200" cy="806" rx="90" ry="26"/></g>
+        ${sparks([[520, 742], [1200, 806]])}`,
+      'fx-tr-2': g => `<g filter="${g}" fill="#ffb347" opacity=".9"><ellipse cx="250" cy="716" rx="60" ry="20"/><ellipse cx="900" cy="776" rx="80" ry="24"/><ellipse cx="1420" cy="816" rx="80" ry="24"/></g>
+        ${sparks([[250, 716], [900, 776], [1420, 816]])}`
+    },
+    tracks: [
+      { parts: ['tr-body', 'tr-front'], timing: '1.6s linear',
+        keyframes: '0%,100%{transform:translate(0,0)}10%,30%,50%,70%,90%{transform:translate(-3px,1px)}20%,40%,60%,80%{transform:translate(3px,-1px)}' },
+      { parts: 'fx-tr', timing: '1.6s linear',
+        keyframes: '0%{opacity:0}10%{opacity:1}20%{opacity:.2}35%{opacity:1}50%{opacity:.2}65%{opacity:1}85%{opacity:.6}100%{opacity:0}' },
+      { parts: 'fx-tr-2', timing: '1.6s .1s linear both',
+        keyframes: '0%{opacity:0}15%{opacity:.2}25%{opacity:1}40%{opacity:.2}55%{opacity:1}70%{opacity:.3}85%{opacity:1}100%{opacity:0}' }
+    ]
+  });
+
+  // black tank car: it rocks on its springs and a shine slides along the
+  // glossy tank. (Cropped right of the photo's rail worker so he's not in it.)
+  T.tankcar = () => buildTrain({
+    img: 'tankcar',
+    cuts: {
+      'tr-body': [[0,165],[95,130],[335,185],[600,110],[900,50],[1080,20],[1150,10],[1230,25],[1300,80],[1340,150],[1370,250],[1385,360],[1420,390],[1440,480],[1500,520],[1500,860],[1450,940],[1300,950],[1150,950],[1000,920],[820,940],[730,900],[500,860],[0,860]],
+      'tr-near': [[720,780],[760,745],[900,735],[1150,730],[1250,740],[1310,790],[1330,870],[1300,940],[1200,955],[1100,940],[1000,920],[820,940],[740,900],[720,840]],
+      'tr-front': [[1050,40],[1080,20],[1150,10],[1230,25],[1300,80],[1340,150],[1370,250],[1385,360],[1380,480],[1340,560],[1250,620],[1150,640],[1080,600],[1050,450],[1040,250]]
+    },
+    fx: {
+      'fx-tr': g => `<ellipse cx="280" cy="235" rx="150" ry="20" fill="#fff" opacity=".8" filter="${g}" transform="rotate(-12 280 235)"/>
+        <ellipse cx="280" cy="235" rx="80" ry="6" fill="#fff" transform="rotate(-12 280 235)"/>`
+    },
+    tracks: [
+      { parts: ['tr-body', 'tr-front'], origin: '1000px 900px', timing: '1.8s ease-in-out',
+        keyframes: '0%,100%{transform:rotate(0)}25%{transform:rotate(-.9deg)}55%{transform:rotate(.6deg)}80%{transform:rotate(-.25deg)}' },
+      { parts: 'fx-tr', timing: '1.6s .1s ease-in-out both',
+        keyframes: '0%{opacity:0;transform:translate(0,0)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(760px,-165px)}' }
+    ]
+  });
+
+  // CPG500 track-laying machine: it inches forward and drops new sleepers
+  // under its gantry, one after another. (Two tiny workers in the photo's
+  // background were painted out of img/tracklayer.jpg.)
+  const sleeper = x => `<rect x="${x}" y="676" width="58" height="16" rx="3" fill="#6b4a2e"/>
+    <rect x="${x}" y="676" width="58" height="5" rx="2" fill="#8a6542"/>`;
+  T.tracklayer = () => buildTrain({
+    img: 'tracklayer',
+    cuts: {
+      'tr-body': [[30,640],[60,530],[100,510],[200,495],[290,470],[450,450],[540,435],[600,428],[680,440],[695,455],[690,490],[745,490],[748,455],[785,455],[800,420],[740,420],[760,408],[1020,368],[1105,375],[1150,360],[1185,358],[1260,375],[1310,385],[1360,400],[1420,440],[1475,600],[1470,645],[1420,650],[1420,690],[1380,700],[1000,700],[700,695],[400,695],[150,690],[40,670]],
+      'tr-front': [[1150,360],[1185,358],[1260,375],[1310,385],[1360,400],[1420,440],[1475,600],[1470,645],[1420,650],[1420,690],[1380,700],[1200,700],[1180,600],[1170,450]]
+    },
+    fx: {
+      'fx-tr': sleeper(70) + sleeper(150),
+      'fx-tr-2': sleeper(230) + sleeper(310)
+    },
+    tracks: [
+      { parts: ['tr-body', 'tr-front'], timing: '2.4s ease-in-out',
+        keyframes: '0%,100%{transform:translateX(0)}40%,70%{transform:translateX(-24px)}' },
+      { parts: 'fx-tr', timing: '2.4s ease-in',
+        keyframes: '0%{opacity:0;transform:translateY(-90px)}15%{opacity:1;transform:translateY(-90px)}35%{transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(0)}' },
+      { parts: 'fx-tr-2', timing: '2.4s .5s ease-in both',
+        keyframes: '0%{opacity:0;transform:translateY(-90px)}15%{opacity:1;transform:translateY(-90px)}35%{transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(0)}' }
+    ]
+  });
+
   // SBB fire and rescue train: the roof water cannon sprays a big arc
   T.firetrain = () => buildTrain({
     img: 'firetrain',
