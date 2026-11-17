@@ -43,12 +43,12 @@ Three parts, then the toy-train ending:
 
 1. History, horse to magnets: Clock → Horse Tram → The Rocket → Jupiter →
    Mail Car → Logging Engine → Rotary Snowplow → Mallard → Diesel →
-   Electric → Shinkansen → Maglev.
+   Electric → Shinkansen.
 2. What trains carry, and the helpers that look after the track:
    Freight (CN) → Container (UP) → Car Carrier → Tank Car → Work Train →
    Track Layer → Railway Crane → Rail Grinder → Fire Train.
 3. City and passenger trains: Double-Decker → Underground → Tram (Prague) →
-   Light Rail (LA) → Tram-Train (Kassel) → Monorail → Funicular →
+   Light Rail (LA) → Tram-Train (Kassel) → Monorail → Maglev → Funicular →
    Rack Railway (Pilatus).
 
 Then The Next Train (wooden toy train). Each part's first page says what

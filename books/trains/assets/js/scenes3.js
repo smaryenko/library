@@ -316,16 +316,16 @@
     fx: {
       'fx-tr': g => `<path d="M1080 135 Q900 -80 560 70" fill="none" stroke="#9fd8ff" stroke-width="34" stroke-linecap="round" filter="${g}"/>
         <path d="M1080 135 Q900 -80 560 70" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-dasharray="40 30"/>`,
-      'fx-tr-2': `<g fill="#cfeaff">${[[560,110,12],[520,150,9],[600,160,10],[540,210,8],[480,190,11],[590,240,7]].map(p =>
-          `<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}"/>`).join('')}</g>`
+      'fx-tr-2': spray({ x: 1085, y: 130, n: 40, vx: [-620, -420], vy: [-520, -360], g: 900, life: 1.3, every: 0.035, size: [4, 9], color: ['#e6f5ff', '#bfe2ff', '#ffffff'], streak: true, seed: 3 }),
+      'fx-tr-back': plume({ x: 560, y: 120, dx: -80, dy: 120, n: 8, r: 22, grow: 3, life: 1.4, every: 0.16, color: '#e8f4ff', shade: '#a9c9e2', opacity: 0.6, seed: 4 })
     },
     tracks: [
       { parts: 'tr-top', origin: '1095px 220px', timing: '2.2s ease-in-out',
         keyframes: '0%,100%{transform:rotate(0)}20%,80%{transform:rotate(-6deg)}' },
       { parts: 'fx-tr', timing: '2.2s linear',
         keyframes: '0%{opacity:0;stroke-dashoffset:0}20%{opacity:1}80%{opacity:1}100%{opacity:0;stroke-dashoffset:-350}' },
-      { parts: 'fx-tr-2', timing: '1.6s .5s ease-in both',
-        keyframes: '0%{opacity:0;transform:translateY(0)}20%{opacity:1}100%{opacity:0;transform:translateY(160px)}' }
+      plumeTrack('fx-tr-2', 2.6),
+      TM.track('fx-tr-back', 2.6, t => TM.op(t > 0.3 ? 1 : 0)),
     ]
   });
 })();

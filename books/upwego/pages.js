@@ -32,6 +32,6 @@
     { title: 'Mars', build: () => S().mars(),
       body: 'Rovers explore Mars. In 2021 a little helicopter flew there for the first time.' },
     { title: 'Webb', build: () => S().webb(),
-      body: 'In 2021 Webb unfolded its gold mirror far from Earth. What will you explore?' }
+      body: 'Webb is a giant space telescope. Its gold mirror sees the oldest stars. What will you explore?' }
   ];
 })();
