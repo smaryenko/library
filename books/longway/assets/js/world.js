@@ -272,13 +272,13 @@ function script(A) {
     // 3 a young dolphin is caught in a net; Theo cuts it free and its family leaps
     [prop('net', 3.6)],
     [sail(86)],
-    // 4 home is in sight; Theo dozes, a gull pecks the sack open, the winds blow him away
-    [lie(1, 0.6), wait(0.3), par(prop('wind', 3.6), boat((b, k) => {
+    // 4 home is in sight; Theo waves at it, a gull pecks the sack open, the winds blow him away
+    [face(-0.6, 0.4), wait(0.3), par(prop('wind', 3.6), boat((b, k) => {
       const x0 = b.x, u = sub(k, 0.5, 1);
       b.x = x0 - 3 * ease(u);
       b.r = -0.6 * Math.sin(PI * u);
       b.roll = Math.sin(k * 26) * 0.1 * Math.sin(PI * u);
-    }, 3.6)), lie(0, 0.4)],
+    }, 3.6)), face(FACE_SEA - 0.87, 0.3)],
     [sail(101, { zig: 1.3 }), ashore([103, 9])],
     // 5 the hungry giant: Theo shares his bread, the giant gives him soft wool and points the way
     [walk([[103, 9], [106, 9], [106, 7]]), face(2.45), prop('giant', 4.2)],

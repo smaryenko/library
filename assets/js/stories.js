@@ -24,7 +24,7 @@ window.STORIES = [
     blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!',
     cover: 'books/xmas/cover.svg',
     favicon: 'books/xmas/favicon.svg',
-    og: 'books/xmas/og.svg',
+    og: 'books/xmas/og.png',
     url: 'books/xmas/',   // short link: the folder's index.html serves the book
     accent: '#ffd36e',   // shelf-card title colour
     theme: '#0a1b3a',
@@ -38,7 +38,7 @@ window.STORIES = [
     blurb: 'Four toy cars zoom and chase around the living room!',
     cover: 'books/race/cover.svg',
     favicon: 'books/race/favicon.svg',
-    og: 'books/race/og.svg',
+    og: 'books/race/og.png',
     url: 'books/race/',
     accent: '#ff9a6a',   // shelf-card title colour
     theme: '#f2f0ea',
