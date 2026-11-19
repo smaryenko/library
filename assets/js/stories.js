@@ -183,7 +183,7 @@ window.STORIES = [
     url: 'books/longway/',
     accent: '#9fd0f5',
     theme: '#e4ded3',
-    hint: 'Tap the picture or press Space for the next step \u00b7 arrows step forward and back \u00b7 swipe to turn',
+    hint: 'Tap or press Space to turn the page \u00b7 arrows go forward and back \u00b7 swipe to turn',
     backdrop: 'mountLongway' // books/longway/assets/js/backdrop.js (three.js world, no music yet)
   },
   {

@@ -45,7 +45,7 @@ const LIGHT = [
   { bg: '#c9a3a8', sun: '#ff9c80', si: 1.6, hemi: 0.65, env: 0.4, el: 14 },   // 8 dusk
   { bg: '#1d2440', sun: '#9fb4ff', si: 0.8, hemi: 0.35, env: 0.18, el: 22 },  // 9 night storm
   { bg: '#f4c6b8', sun: '#ffc2a0', si: 1.8, hemi: 0.75, env: 0.45, el: 10 },  // 10 dawn
-  { bg: '#f0b884', sun: '#ff9f5a', si: 1.7, hemi: 0.7, env: 0.42, el: 12 }   // 11 sunset, lamps on
+  { bg: '#f6dcc0', sun: '#ffe0b8', si: 2.0, hemi: 0.78, env: 0.48, el: 16 }   // 11 early morning, the lamp still burning
 ];
 const wz = z => z - GZ / 2 + 0.5;
 const ZB = wz(10) + 0.5;                 // the line the boat sails along (between grid rows 10 and 11)
@@ -411,8 +411,9 @@ G.register('longway', function (renderer) {
   const bread = cube(M('bread'), 0, 0, 0, 0.5, 0.3, 0.32);
   const woolBall = cube(M('wool'), 0, 0, 0, 0.36, 0.3, 0.3);
   const fruit = cube(M('fruit'), 0, 0, 0, 0.32, 0.32, 0.32);
-  scene.add(theo, bread, woolBall, fruit);
-  const HAND_R = new THREE.Vector3(0.45, 0.75, 0.25), HAND_L = new THREE.Vector3(-0.45, 0.75, 0.25);
+  const half = cube(M('bread'), 0, 0, 0, 0.26, 0.3, 0.32);   // the half he breaks off for the giant
+  scene.add(theo, bread, woolBall, fruit, half);
+  const HAND_R = new THREE.Vector3(0.5, 0.55, 0.3), HAND_L = new THREE.Vector3(-0.5, 0.55, 0.3);   // at his sides, below the head
   // the baker at the door of the house above Theo's start
   const baker = figure({ body: 'wool' });
   const BAKER = [2, 4];
@@ -454,7 +455,8 @@ G.register('longway', function (renderer) {
   const streaks = Array.from({ length: 7 }, () => { const m = cube(M('wool'), 0, 0, 0, 1.6, 0.14, 0.14); m.castShadow = false; scene.add(m); return m; });
 
   const giant = new THREE.Group();
-  giant.position.set(113, 0, wz(0) - 1.8);
+  const GIANT_Y = 3;                     // tune: how high on the back slope he stands
+  giant.position.set(113, GIANT_Y - 4, wz(0) - 1.8);
   giant.add(cube(M('tunic'), 0, 3.2, 0, 2.6, 3, 1.5), cube(M('tunic'), -0.6, 0.9, 0, 0.9, 1.8, 0.9), cube(M('tunic'), 0.6, 0.9, 0, 0.9, 1.8, 0.9));
   const gFaceAwake = M('giantAwake'), gFaceSleep = M('giantSleep');
   const gHeadMats = [M('giantSide'), M('giantSide'), M('giantHair'), M('giantSide'), gFaceSleep, M('giantHair')];
@@ -691,26 +693,31 @@ G.register('longway', function (renderer) {
 
     // 5 the giant rises, opens his eye, takes the bread and points the way
     const gk = p.giant || 0;
-    giant.position.y = -3.2 * (1 - ease(sub(gk, 0, 0.3)));
+    // he stands on the far slope of the hill: risen, his hands are above the top
+    giant.position.y = GIANT_Y - 4 * (1 - ease(sub(gk, 0, 0.25)));
     gHeadMats[4] = gk > 0.28 ? gFaceAwake : gFaceSleep;
     gHead.material = gHeadMats;
     gHead.rotation.z = 0.12 * Math.sin(sub(gk, 0.3, 0.4) * PI * 2);
     // his left arm comes forward for the bread, eats it (a nod), then gives wool
-    arms[0].rotation.x = -1.2 * ease(sub(gk, 0.32, 0.4)) * (1 - ease(sub(gk, 0.84, 0.92)));
+    arms[0].rotation.x = -1.5 * ease(sub(gk, 0.28, 0.36)) * (1 - ease(sub(gk, 0.84, 0.92)));
     arms[1].rotation.z = 1.5 * ease(sub(gk, 0.86, 1));
     gHead.rotation.x = 0.25 * Math.sin(PI * sub(gk, 0.56, 0.66));
     giant.updateMatrixWorld(true);
     const hand = arms[0].localToWorld(new THREE.Vector3(0, -2.3, 0));
     // the loaf: tossed by the baker (page 1), carried, given to the giant (page 5)
-    const bk = sub(gk, 0.4, 0.56);
-    bread.visible = lk > 0 && bk < 1;
-    if (gk > 0.4) { bread.position.copy(handR).lerp(hand, ease(bk)); bread.position.y += 2.5 * Math.sin(PI * bk); }
-    else if (lk < 1) { const f = ease(sub(lk, 0.3, 0.8)); bread.position.copy(bakerHand).lerp(handR, f); bread.position.y += 1.2 * Math.sin(PI * f); }
+    const bk = sub(gk, 0.36, 0.56);
+    // he breaks the loaf in two: one half flies to the giant, he keeps the other for home
+    const halved = gk > 0.36;
+    bread.visible = lk > 0;
+    bread.scale.set(halved ? 0.26 : 0.5, 0.3, 0.32);
+    half.visible = halved && bk < 1;
+    half.position.copy(handR).lerp(hand, ease(bk)); half.position.y += 3.5 * Math.sin(PI * bk);
+    if (lk < 1) { const f = ease(sub(lk, 0.3, 0.8)); bread.position.copy(bakerHand).lerp(handR, f); bread.position.y += 1.2 * Math.sin(PI * f); }
     else bread.position.copy(handR);
     // the wool: from the giant's hand to Theo (page 5), into his ears (page 7)
-    const wk2 = sub(gk, 0.66, 0.84);
-    woolBall.visible = gk > 0.66 && hatOn < 0.3;
-    woolBall.position.copy(hand).lerp(handL, ease(wk2)); woolBall.position.y += 2.5 * Math.sin(PI * wk2);
+    const wk2 = sub(gk, 0.64, 0.86);
+    woolBall.visible = gk > 0.64 && hatOn < 0.3;
+    woolBall.position.copy(hand).lerp(handL, ease(wk2)); woolBall.position.y += 3.5 * Math.sin(PI * wk2);
     if (hatOn > 0) woolBall.position.copy(handL).lerp(theo.localToWorld(new THREE.Vector3(0, 1.4, 0)), ease(sub(hatOn, 0, 0.3)));
     sheep.forEach(({ hd }, i) => { hd.position.y = 0.7 - 0.25 * Math.max(0, Math.sin(gk * PI * 6 + i)); });
 
@@ -726,7 +733,7 @@ G.register('longway', function (renderer) {
     // the fruit: picked in the orchard (page 6), thrown to the octopus (page 8)
     const fk = p.fruit || 0, ok0 = p.whirl || 0, throwK = sub(ok0, 0.42, 0.56);
     fruit.visible = fk > 0 && throwK < 1;
-    fruit.scale.setScalar(Math.max(0.001, ease(fk)));
+    fruit.scale.setScalar(Math.max(0.001, 0.32 * ease(fk)));   // cube() sized it by scale: keep 0.32
     if (throwK > 0) {
       octo.updateMatrixWorld(true);
       const mouth = octo.localToWorld(new THREE.Vector3(0, 1.2, 0.9));
@@ -774,13 +781,13 @@ G.register('longway', function (renderer) {
     }
     stormClouds.position.x = 213 + 5 * ease(sk);
 
-    // 11 Argos runs down to meet Theo and jumps for joy; the lamps come on
+    // 11 Argos runs down to meet Theo and jumps for joy; the lamp has burned all night
     const hk = p.home || 0, run = sub(hk, 0.1, 0.5), jump = sub(hk, 0.5, 1);
     const di = Math.min(1, Math.floor(run * 2)), df = run >= 1 ? 1 : run * 2 - di;
     const d0 = DOG_PATH[di], d1 = DOG_PATH[di + 1];
     dog.position.set(lerp(d0[0], d1[0], df), lerp(d0[1], d1[1], df) + 0.25 * Math.sin(PI * df) + 0.6 * Math.abs(Math.sin(jump * PI * 4)), lerp(d0[2], d1[2], df));
     dog.rotation.y = run < 0.5 ? 0 : -PI / 2;
-    winMat.emissiveIntensity = 1.8 * ease(sub(hk, 0.4, 0.8));
+    winMat.emissiveIntensity = 1.8;   // the lamp Mum and Dad kept burning all night
     const wave = Math.sin(sub(hk, 0.5, 1) * PI * 4) * 0.25;
     mum.group.rotation.z = wave; dad.group.rotation.z = -wave;
   }
@@ -789,36 +796,29 @@ G.register('longway', function (renderer) {
   let t = 0, intro = true, introStarted = false, s = 0, target = 0, page = 0, dir = 1, dirty = true;
   const segDur = i => SEGS[clamp(i, 0, N - 1)].dur;
   function finish() { if (s !== target) { s = target; dirty = true; } }
-  function enter(i = 0, atEnd = false) {
-    page = clamp(i | 0, 0, 10);
-    s = target = Math.min(N, 2 * page + (atEnd ? 1 : 0));
-    dir = atEnd ? -1 : 1;
+  // every story step is its own page: page j rests at s = j, and turning
+  // from page j to j + 1 plays segment j (an event or a journey). The
+  // engine turns the pages; forward() / back() never keep an input.
+  const LAST = N;                    // 22 pages: s = 0 .. 21
+  function enter(i = 0) {
+    page = clamp(i | 0, 0, LAST);
+    s = target = page; dir = 1;
     if (!introStarted) {
       introStarted = true; t = 0; intro = true;
       const st = evalAt(s);
       const keep = (x, z) => (Math.abs(x - Math.round(st.t[0])) < 1 && Math.abs(wz(z) - st.t[2]) < 1) || (Math.abs(x - st.b.x) <= 3 && z >= 9);
-      planIntro(CAM_X[page], keep);
+      planIntro(CAM_X[Math.min(10, page >> 1)], keep);
       placeCubes(0);
     }
     dirty = true;
   }
-  function forward() {
-    finish();
-    if (s < 2 * page + 1 - 1e-6) { target = 2 * page + 1; dir = 1; return true; }
-    return false;
-  }
-  function back() {
-    finish();
-    if (s > 2 * page + 1e-6) { target = 2 * page; dir = -1; return true; }
-    return false;
-  }
+  const forward = () => false, back = () => false;
   function show(j) {
-    j = clamp(j | 0, 0, 10);
+    j = clamp(j | 0, 0, LAST);
     if (j === page) return;
     finish();
-    if (j === page + 1) { s = Math.max(s, 2 * page + 1); target = 2 * j; dir = 1; }   // event not played yet: it's done now
-    else if (j === page - 1) { target = 2 * j + 1; dir = -1; }
-    else { s = target = 2 * j; }
+    if (Math.abs(j - page) > 1) s = j;            // a jump: no animation
+    target = j; dir = j > page ? 1 : -1;
     page = j; dirty = true;
   }
   function update(dt) {
@@ -864,7 +864,7 @@ G.register('longway', function (renderer) {
 
   return {
     scene, camera, enter, show, forward, back, resize,
-    play() { forward(); },
+    play() {},
     label: 'A world of toy building cubes on a table: Theo travels from his hill town across the sea and back home.',
     update(dt) { const a = update(dt); return placeCamera() || a; },
     tilt(x, y) { tx = clamp(x, -1, 1); ty = clamp(y, -1, 1); }
