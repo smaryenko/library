@@ -255,7 +255,7 @@ tags (shared engine, this book's builders, `pages.js`, shared `boot.js` last).
 Load optional shared modules (`motion.js`, `color.js`, `fullview.*`,
 `pinch.js`) only if the book uses them. Every shared `../../assets/` reference
 carries the SAME `?v=N` in every book; when a shared file changes, bump that
-number in every book's `index.html` (nine books now) together. Book-local files keep their
+number in every book's `index.html` (all of them, plus the local `books/preview/`) together. Book-local files keep their
 own `?v=`, bumped when they change.
 
 ## 4b. Next-page prerender (shared, on by default)
@@ -292,6 +292,17 @@ nothing special, but:
   tags, not ES modules or import maps: Chrome blocks modules on `file://`, and
   never load it from a CDN. Reference:
   `books/city/` (`assets/js/scene.js` drives it, `world.js` holds the stops).
+- **WebGL world over a normal book:** the shared `assets/js/webgl-stage.js`
+  (load after three.js and `assets/js/drawkit.js`). Pages return
+  `WEBGL_STAGE.placeholder(kind, i)`; the book registers
+  `WEBGL_STAGE.register(kind, renderer => world)`. The stage lays one canvas
+  over the stage while such a page is up, keeps consecutive pages of the same
+  kind as ONE world (`world.show(i)` on the turn), moves the caption to the
+  bottom, and gives worlds with `forward()` / `back()` story steps. Reference:
+  `books/longway/`, see `cube-world-books.md`.
+- **Code-drawn 2D books** share `assets/js/drawkit.js` (seeded random,
+  noise, polygon scan spans, blobs, Catmull-Rom paths). References:
+  `books/lighthouse/` (`pencil-books.md`), `books/rain/` (`crayon-books.md`).
 
 ## 4c. Full-screen view (shared, optional)
 

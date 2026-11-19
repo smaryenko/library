@@ -171,5 +171,47 @@ window.STORIES = [
     theme: '#efe6d6',
     hint: 'Tap the clay to make it work \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
     backdrop: 'mountAtHome' // books/athome/assets/js/backdrop.js (no music yet)
+  },
+  {
+    id: 'longway',
+    category: 'fiction',
+    title: 'The Long Way Home',
+    blurb: 'Sail with Theo through a world of toy cubes: dolphins, a giant, singing seals and a big storm!',
+    cover: 'books/longway/cover.svg',
+    favicon: 'books/longway/favicon.svg',
+    og: 'books/longway/og.svg',
+    url: 'books/longway/',
+    accent: '#9fd0f5',
+    theme: '#e4ded3',
+    hint: 'Tap the picture or press Space for the next step \u00b7 arrows step forward and back \u00b7 swipe to turn',
+    backdrop: 'mountLongway' // books/longway/assets/js/backdrop.js (three.js world, no music yet)
+  },
+  {
+    id: 'lighthouse',
+    category: 'non-fiction',
+    title: 'How a Lighthouse Works',
+    blurb: 'Climb the tower, light the big lens and see how ships find their way home!',
+    cover: 'books/lighthouse/cover.svg',
+    favicon: 'books/lighthouse/favicon.svg',
+    og: 'books/lighthouse/og.svg',
+    url: 'books/lighthouse/',
+    accent: '#ffd87a',
+    theme: '#2a201a',
+    hint: 'Tap the picture to make it move \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountLighthouse' // books/lighthouse/assets/js/backdrop.js (no music yet)
+  },
+  {
+    id: 'rain',
+    category: 'non-fiction',
+    title: 'Where Does Rain Come From?',
+    blurb: 'Puddles, clouds, rainbows and snow, drawn in crayon by a curious kid!',
+    cover: 'books/rain/cover.svg',
+    favicon: 'books/rain/favicon.svg',
+    og: 'books/rain/og.svg',
+    url: 'books/rain/',
+    accent: '#7cc4ff',
+    theme: '#a9cfe6',
+    hint: 'Tap the picture to make it move \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountRain' // books/rain/assets/js/backdrop.js (no music yet)
   }
 ];

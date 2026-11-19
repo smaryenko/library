@@ -139,6 +139,18 @@ const OBJ_DEPTH = {
   // stitch layers by role, between the linen (-14) and the ring (24)
   'em-sky': -8, 'em-ground': -5, 'em-path': -2, 'em-far': 2,
   'em-detail': 7, 'em-main': 10, 'em-mover': 12, 'em-front': 14,
+  // preview — coloured pencil lighthouse (books/preview/assets/js/pencil.js):
+  // sky far back, tower and gulls forward
+  'pc-sky': -30, 'pc-sun': -28, 'pc-cliff': -20, 'pc-sea': -12, 'pc-boat': -4,
+  'pc-rocks': 4, 'pc-beam': 8, 'pc-tower': 12, 'pc-gulls': 22,
+  // preview — child's crayon drawing (books/preview/assets/js/crayon.js)
+  'cr-sky': -30, 'cr-sun': -26, 'cr-cloud': -22, 'cr-grass': -8, 'cr-tree': -2,
+  'cr-smoke': 0, 'cr-house': 2, 'cr-flower': 10, 'cr-dog': 14, 'cr-people': 18,
+  // lighthouse — coloured pencil book (books/lighthouse/assets/js/pencil.js):
+  // extra roles round the preview's pc-* keys
+  'pc-paper': -34, 'pc-far': -22, 'pc-mid': 0, 'pc-fx': 16, 'pc-near': 20,
+  // rain — crayon book (books/rain/assets/js/crayon.js): extra roles
+  'cr-water': -6, 'cr-rain': 6, 'cr-fx': 22, 'cr-arrow': 24,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

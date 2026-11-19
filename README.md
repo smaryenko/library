@@ -5,8 +5,10 @@ shows a spinning carousel of cards, one per book; open a book and it becomes an 
 storybook lying flat in perspective. You page through it, and on each spread a
 picture pops off the page with a layered parallax "pseudo-3D" tilt. **Tap a
 picture and it plays its own little animation.** No build step. Books are
-SVG/canvas with no libraries, except `books/city/`, a live three.js pop-up
-city; three.js is vendored in `assets/vendor/three/` (MIT) so it works offline.
+SVG/canvas with no libraries, except the three.js books (`books/city/`, a
+live pop-up city; `books/athome/`, raymarched clay; `books/longway/`, a
+toy-cube world); three.js is vendored in `assets/vendor/three/` (MIT) so it
+works offline.
 A book can also use the **pop-up layout**: one wide scene over the whole spread
 with the caption at the bottom middle.
 
@@ -31,7 +33,9 @@ stories/
     css/  shelf.css, book.css, fullview.css
     js/   stories.js (manifest), shelf.js, storybook.js, boot.js,
           pseudo3d-object.js, anim.js, motion.js, music.js,
-          color.js, fullview.js, pinch.js
+          color.js, fullview.js, pinch.js,
+          drawkit.js (shapes/noise for code-drawn books),
+          webgl-stage.js (a live three.js world over a normal book)
   tools/
     build-previews.js        regenerates cover.svg + og.svg for every book
                              with a books/<id>/preview.js
@@ -59,7 +63,9 @@ engine. Full steps and the folder contract are in
 For real rendered objects instead of SVG art, see
 [`skills/real-sphere-books.md`](skills/real-sphere-books.md); for real photos
 as pop-up cut-outs, see
-[`skills/photo-cutout-books.md`](skills/photo-cutout-books.md).
+[`skills/photo-cutout-books.md`](skills/photo-cutout-books.md). Other styles
+have their own guides in [`skills/`](skills/README.md): embroidery, clay,
+toy-cube worlds, coloured pencil and crayon.
 
 ## Run
 
@@ -134,6 +140,14 @@ The shared engine is content-agnostic; each book supplies its own content.
   (`data-fullview-zoom="off"` opts out).
 - **Shared helpers** — `assets/js/color.js` provides `shade(hex, pct)`;
   `tools/build-previews.js` sets it as a node global too.
+  `assets/js/drawkit.js` (`window.DRAWKIT`) holds seeded random numbers,
+  noise, polygon scan spans, blobs and smooth path strings for code-drawn
+  books (pencil, crayon, cubes).
+- **WebGL stage** — `assets/js/webgl-stage.js` (`window.WEBGL_STAGE`) lays
+  one three.js canvas over the stage while a page's placeholder is shown,
+  keeps consecutive pages of one world continuous (the turn is a camera
+  move, no leaf flip) and turns forward / back inputs into story steps.
+  Quality tier and adaptive resolution are built in.
 - **Music** — `assets/js/music.js` loops whatever track the manifest names
   (created on first click to satisfy autoplay policies).
 - **Styles** — `assets/css/book.css` holds the book/stage/flip/overlay styles,

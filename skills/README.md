@@ -41,6 +41,19 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `clay-books.md` — clay machines raymarched as signed distance fields on a
   transparent canvas over a normal page, morphing from one page's object
   into the next; the `athome` book is the reference.
+- `cube-world-books.md` — one continuous toy-cube WebGL world laid out left
+  to right; page turn = travel, every page two story steps, the whole story
+  a pure function of one number; the `longway` book is the reference.
+- `pencil-books.md` — finished coloured-pencil illustrations (stroke-tile
+  masks over tonal gradients, sparse contours, paper tooth); the
+  `lighthouse` book is the reference.
+- `crayon-books.md` — a child's crayon drawings (wobbly lines, scribble
+  fill, wax grain, parts appear in drawing order); the `rain` book is the
+  reference.
+
+Shared helpers for code-drawn books: `assets/js/drawkit.js` (math, seeded
+random, noise, 2D shapes, path strings) and `assets/js/webgl-stage.js` (hosts
+a live three.js world over a normal book, story-step inputs, quality tier).
 
 ## Project-wide preferences (apply to all visual work)
 
