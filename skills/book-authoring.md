@@ -303,6 +303,11 @@ nothing special, but:
 - **Code-drawn 2D books** share `assets/js/drawkit.js` (seeded random,
   noise, polygon scan spans, blobs, Catmull-Rom paths). References:
   `books/lighthouse/` (`pencil-books.md`), `books/rain/` (`crayon-books.md`).
+- **Puzzle and choose-your-way books** load the shared
+  `assets/js/minigame.js` after `storybook.js` (before `webgl-stage.js`) and
+  add `task` / `choice` / `next` / `ending` to their pages. References:
+  `books/spellbook/`, `books/toyshop/`, `books/numberland/`; see
+  `minigame-books.md`.
 
 ## 4c. Full-screen view (shared, optional)
 

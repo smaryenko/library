@@ -33,12 +33,12 @@ until it is solved, then the world plays that stop's result.
 | # | Stop | Puzzle (kind) | Result in the world |
 |---|---|---|---|
 | 1 | Valley | tap One awake (tap) | One wakes, stretches, hops |
-| 2 | River | friends filling a gap of 3-6 (pick) | they lie in the gap, One crosses, all hop out |
+| 2 | River | friends (2-5, never One) filling a gap of 3-6 (pick) | the picked friends lie in the gap, One crosses, a plank stays |
 | 3 | Low door | how Six splits to fit under (choice) | Six splits, both walk under, join again |
 | 4 | Shadow wall | whose shadow (choice) | the friend steps out from behind the sheet |
 | 5 | Garden | Twelve's rectangle for the bed (choice) | Twelve rearranges flat into the bed, flowers |
-| 6 | Seesaw | balance the sum (pick) | two friends hop on, the seesaw levels |
-| 7 | Stepping stones | count in 2s / 3s (order) | the stones glow, the party hops across |
+| 6 | Seesaw | pick exactly two that balance the sum (pick) | the picked two appear, hop on, the seesaw levels |
+| 7 | Stepping stones | count in 2s, 3s, 4s or 5s (order) | the stones glow, the party hops across |
 | 8 | Cube yard | how many more make 10, ten-frame (choice) | the missing cubes drop in, the row flies to the gate |
 | 9 | Square pond | square numbers (pick) | 1 / 4 / 9 hop onto lily pads, stand as squares |
 | 10 | Glow cave | count rows × columns of crystals (choice) | the crystals light up row by row |
@@ -46,6 +46,21 @@ until it is solved, then the world plays that stop's result.
 | 12 | Staircase hill | which friend is the missing step (choice) | the missing tower rises and shines |
 | 13 | Odd camp | who has a cube left over (choice) | everyone pairs up, the lonely cube bounces |
 | 14 | Rainbow Gate | friends into gaps by size (drag) | they fill the gaps, the gate glows, a rainbow |
+
+World rules learned while testing (keep them):
+- The world shows the child's own pick (`MINIGAME.picked(id)`), never the
+  textbook answer; `specFor()` swaps it into `data.answer` and the stop is
+  re-set when the pick or seed changes (`refresh(i)` returns true then).
+- No spoilers: a stop never shows the answer before it is solved (seesaw
+  right-hand friends stay hidden until the result).
+- No twins: a stop that shows its own copy of a party friend declares
+  `shows(k)`; the walking line skips those numbers while it stands there.
+- ↻ during a result or a walk cancels both (`anim`, `trav`, `pending`) and
+  draws the stop's unsolved start pose.
+- The stop being walked to keeps `res` (solved mid-walk = result waits,
+  plays on arrival); other stops pose from their solved flag.
+- Space / Enter on the tap stop are solved by the kit before webgl-stage
+  sees them.
 
 Needs WebGL2; without it only the captions and puzzles show. No sounds.
 All art is made in code (characters after the show, user's decision).

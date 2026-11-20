@@ -35,7 +35,8 @@ stories/
           pseudo3d-object.js, anim.js, motion.js, music.js,
           color.js, fullview.js, pinch.js,
           drawkit.js (shapes/noise for code-drawn books),
-          webgl-stage.js (a live three.js world over a normal book)
+          webgl-stage.js (a live three.js world over a normal book),
+          minigame.js (puzzles, choices, branching, saved progress)
   tools/
     build-previews.js        regenerates cover.svg + og.svg for every book
                              with a books/<id>/preview.js
@@ -65,7 +66,9 @@ For real rendered objects instead of SVG art, see
 as pop-up cut-outs, see
 [`skills/photo-cutout-books.md`](skills/photo-cutout-books.md). Other styles
 have their own guides in [`skills/`](skills/README.md): embroidery, clay,
-toy-cube worlds, coloured pencil and crayon.
+toy-cube worlds, coloured pencil and crayon. Puzzle and choose-your-way
+books use the shared kit described in
+[`skills/minigame-books.md`](skills/minigame-books.md).
 
 ## Run
 
@@ -148,6 +151,12 @@ The shared engine is content-agnostic; each book supplies its own content.
   keeps consecutive pages of one world continuous (the turn is a camera
   move, no leaf flip) and turns forward / back inputs into story steps.
   Quality tier and adaptive resolution are built in.
+- **Minigames and branching** — `assets/js/minigame.js` (`window.MINIGAME`)
+  adds puzzles that lock the next page until solved, choices that branch the
+  story, endings with an "endings found" count, and progress saved in
+  `localStorage` (↻ gives a new puzzle, the corner ↺ clears the whole game).
+  No engine edits: capture-phase listeners and replayed arrow keys. See
+  [`skills/minigame-books.md`](skills/minigame-books.md).
 - **Music** — `assets/js/music.js` loops whatever track the manifest names
   (created on first click to satisfy autoplay policies).
 - **Styles** — `assets/css/book.css` holds the book/stage/flip/overlay styles,

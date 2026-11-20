@@ -50,6 +50,10 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
 - `crayon-books.md` — a child's crayon drawings (wobbly lines, scribble
   fill, wax grain, parts appear in drawing order); the `rain` book is the
   reference.
+- `minigame-books.md` — puzzle books and choose-your-way books on the
+  shared kit `assets/js/minigame.js` (task kinds, locks, saved progress,
+  caption / dock layouts, endings); `spellbook`, `toyshop` and
+  `numberland` are the references.
 
 Shared helpers for code-drawn books: `assets/js/drawkit.js` (math, seeded
 random, noise, 2D shapes, path strings) and `assets/js/webgl-stage.js` (hosts

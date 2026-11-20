@@ -27,8 +27,14 @@ finished book casts the first big spell: fireworks over the castle.
   Kinds: tap, pick (bottles, coins), choice (count, clocks, runes, cookies,
   gears), maze, drag (keys, seeds), order (dot-to-dot, page order), cells
   (mirror). Every spec has a kid prompt and a gentle hint (after 3 misses).
-- `pages.js`: 14 object pages `{ id, title, body, build, task }`, split
-  layout, prerender on.
+- `pages.js`: 14 puzzle pages + the closing page `end` (no puzzle, text back
+  on the page), `{ id, title, body, build, task }`, split layout, prerender
+  on, `MINIGAME_CAPTION = 'below'`: on a puzzle page the title and text sit
+  in a caption right under the book and the puzzle is scaled to fit the
+  visible part of the text page.
+- Puzzle rules learned while testing: a potion's extra bottles are always
+  fewer drops than the recipe (never the target itself); dot-to-dot stars
+  closer than a dot are dropped; answer buttons wrap long words.
 - Depth: the shared `pp-*` layers in `OBJ_DEPTH` (sky, moon, far, castle,
   cloud, near, trees, chars, pages).
 - Style: deep purples and lilac, gold foil, warm candle and lantern light,
