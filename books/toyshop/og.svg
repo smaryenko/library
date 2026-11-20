@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Share card for "The Toy Shop After Midnight": hand-written SVG in the book's
+       toy-shop style. Original. -->
+  <defs>
+    <radialGradient id="oG" cx=".62" cy=".05" r=".8"><stop offset="0" stop-color="#ffd59a" stop-opacity=".6"/><stop offset=".45" stop-color="#f0a050" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <radialGradient id="oV" cx=".5" cy=".45" r=".8"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0a0402" stop-opacity=".6"/></radialGradient>
+    <linearGradient id="oGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset=".35" stop-color="#e6b84c"/><stop offset=".7" stop-color="#9a7020"/><stop offset="1" stop-color="#d9a842"/></linearGradient>
+    <linearGradient id="oSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f4f7"/><stop offset=".5" stop-color="#c9ccd2"/><stop offset="1" stop-color="#7d828c"/></linearGradient>
+    <linearGradient id="oMir" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9c8d2"/><stop offset=".5" stop-color="#8fa3b0"/><stop offset="1" stop-color="#5d6f7c"/></linearGradient>
+    <linearGradient id="oRed" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8e1018"/><stop offset=".3" stop-color="#ff5a60"/><stop offset=".42" stop-color="#cf2230"/><stop offset="1" stop-color="#8e1018"/></linearGradient>
+    <linearGradient id="oBlk" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000"/><stop offset=".3" stop-color="#4a4858"/><stop offset=".45" stop-color="#14121a"/><stop offset="1" stop-color="#000"/></linearGradient>
+    <radialGradient id="oSkin" cx=".38" cy=".35" r=".7"><stop offset="0" stop-color="#ffe4cf"/><stop offset=".5" stop-color="#f2c3a0"/><stop offset="1" stop-color="#d89a76"/></radialGradient>
+    <filter id="oWood" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.25" numOctaves="3" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0.6 0 0 0 0.62  0.6 0 0 0 0.62  0.6 0 0 0 0.62  0 0 0 0 1" result="g"/>
+      <feBlend in="SourceGraphic" in2="g" mode="multiply" result="m"/><feComposite in="m" in2="SourceAlpha" operator="in"/>
+    </filter>
+    <filter id="oSoft" x="-30%" y="-200%" width="160%" height="500%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="1200" height="630" fill="#3a2216"/>
+  <g fill="#4a2c1c" opacity=".6">
+    <rect x="20" width="22" height="630"/><rect x="100" width="22" height="630"/><rect x="180" width="22" height="630"/><rect x="260" width="22" height="630"/><rect x="340" width="22" height="630"/><rect x="420" width="22" height="630"/><rect x="500" width="22" height="630"/><rect x="580" width="22" height="630"/><rect x="660" width="22" height="630"/><rect x="740" width="22" height="630"/><rect x="820" width="22" height="630"/><rect x="900" width="22" height="630"/><rect x="980" width="22" height="630"/><rect x="1060" width="22" height="630"/><rect x="1140" width="22" height="630"/>
+  </g>
+  <rect width="1200" height="630" fill="url(#oG)"/>
+  <!-- shelf -->
+  <rect x="-10" y="500" width="1220" height="22" fill="#c4844f" filter="url(#oWood)"/><rect x="-10" y="522" width="1220" height="40" fill="#a8683a" filter="url(#oWood)"/><rect x="-10" y="562" width="1220" height="70" fill="#24140c"/>
+  <!-- title -->
+  <text x="70" y="190" font-size="76" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="#ffe7b0">The Toy Shop</text>
+  <text x="70" y="280" font-size="76" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="#ffe7b0">After Midnight</text>
+  <text x="72" y="350" font-size="30" font-family="Georgia, 'Times New Roman', serif" fill="#f0c890">Choose your way. Sixteen endings to find.</text>
+  <!-- the music box, open, with notes -->
+  <g transform="translate(860 504) scale(2.6)">
+    <ellipse cx="0" cy="1" rx="52" ry="5" fill="#1a0d06" opacity=".55" filter="url(#oSoft)"/>
+    <path d="M-40 -52H40L44 -116H-44Z" fill="#9a4326"/><path d="M-35 -56H35L38 -110H-38Z" fill="#c87a4a"/><path d="M-29 -61H29L31 -104H-31Z" fill="url(#oMir)"/>
+    <path d="M-46 -38H46L40 -52H-40Z" fill="#6a2a16"/><rect x="-32" y="-48.5" width="40" height="9" rx="4.5" fill="url(#oGold)"/><rect x="12" y="-49" width="22" height="9" rx="1" fill="url(#oSteel)"/>
+    <path d="M-46 -38H46V0H-46Z" fill="#9a4326"/><rect x="-46" y="-38" width="92" height="2.4" fill="#b85a34"/>
+    <rect x="-7" y="-26" width="14" height="14" rx="2.5" fill="url(#oGold)"/><circle cx="0" cy="-20.5" r="1.6" fill="#14121a"/>
+    <circle cx="-28" cy="-20" r="9.4" fill="url(#oGold)"/><circle cx="-28" cy="-20" r="7.6" fill="#2a140a"/><circle cx="-28" cy="-20" r="5.6" fill="#e6b84c" stroke="#9a7020"/>
+    <path d="M46 -38L52 -44V-5L46 0Z" fill="#6a2a16"/>
+    <path d="M56 -19.8C56 -28 66 -30 66 -24C66 -21.5 62 -20.6 59 -19.8C62 -19 66 -18.1 66 -15.6C66 -9.6 56 -11.6 56 -19.8Z" fill="url(#oGold)"/>
+    <g stroke="#e6b84c" stroke-width="1.1" fill="#e6b84c"><path d="M-14 -126v-8l5-1.4v8" fill="none"/><ellipse cx="-15.6" cy="-126" rx="2" ry="1.5" stroke="none"/><ellipse cx="-10.6" cy="-127.4" rx="2" ry="1.5" stroke="none"/>
+      <path d="M14 -140v-8l5-1.4v8" fill="none"/><ellipse cx="12.4" cy="-140" rx="2" ry="1.5" stroke="none"/><ellipse cx="17.4" cy="-141.4" rx="2" ry="1.5" stroke="none"/></g>
+  </g>
+  <!-- the tin soldier -->
+  <g transform="translate(1112 504) scale(1.7)">
+    <ellipse cx="0" cy="-2" rx="15" ry="3.6" fill="#14121a"/>
+    <rect x="-8" y="-20" width="7.2" height="18" rx="2" fill="url(#oBlk)"/><rect x="0.8" y="-20" width="7.2" height="18" rx="2" fill="url(#oBlk)"/>
+    <rect x="-15" y="-52" width="30" height="36" rx="6" fill="url(#oRed)"/><path d="M-13 -48L13 -22M13 -48L-13 -22" stroke="#f4efe6" stroke-width="3.6"/>
+    <rect x="-15" y="-28" width="30" height="4" fill="#14121a"/><rect x="-22" y="-50" width="8.5" height="26" rx="4" fill="url(#oRed)"/><rect x="13.5" y="-50" width="8.5" height="26" rx="4" fill="url(#oRed)"/>
+    <circle cx="-17.8" cy="-23" r="3.6" fill="#f2c3a0"/><circle cx="17.8" cy="-23" r="3.6" fill="#f2c3a0"/>
+    <circle cx="0" cy="-60" r="9.5" fill="url(#oSkin)"/><circle cx="-3.5" cy="-59.5" r="1.4" fill="#14121a"/><circle cx="3.5" cy="-59.5" r="1.4" fill="#14121a"/>
+    <path d="M-3.2 -55.6Q0 -52.6 3.2 -55.6" stroke="#8e1018" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+    <path d="M-11 -62C-13 -78 -11 -96 0 -98C11 -96 13 -78 11 -62Z" fill="url(#oBlk)"/><path d="M-7 -68C-8 -78 -7 -88 -3 -93" stroke="#fff" stroke-width="2" opacity=".35" fill="none" stroke-linecap="round"/>
+    <path d="M-27 -38.4C-27 -46 -36 -47.5 -36 -42.5C-36 -40.4 -32.5 -39.2 -30 -38.4C-32.5 -37.6 -36 -36.4 -36 -34.3C-36 -29.3 -27 -30.8 -27 -38.4Z" fill="url(#oSteel)" stroke="#7d828c" stroke-width=".6"/>
+  </g>
+  <!-- the toy-sized kid -->
+  <g transform="translate(680 504) scale(1.5)">
+    <rect x="-8.5" y="-31" width="7.5" height="27" rx="3" fill="#5b86c4"/><rect x="1" y="-31" width="7.5" height="27" rx="3" fill="#5b86c4"/>
+    <ellipse cx="-4.75" cy="-2.8" rx="5.6" ry="3.1" fill="#8a3a5a"/><ellipse cx="4.75" cy="-2.8" rx="5.6" ry="3.1" fill="#8a3a5a"/>
+    <rect x="-17" y="-53" width="6.5" height="19" rx="3.2" fill="#5b86c4"/><circle cx="-13.75" cy="-33" r="3.2" fill="#f2c3a0"/>
+    <rect x="-12" y="-55" width="24" height="27" rx="7" fill="#5b86c4"/><path d="M-7.5 -53V-30M-2.5 -53V-30M2.5 -53V-30M7.5 -53V-30" stroke="#b4cdee" stroke-width="1.3" opacity=".55"/><path d="M-6 -55L0 -48.5L6 -55Z" fill="#b4cdee"/>
+    <g transform="rotate(-160 13.75 -51)"><rect x="10.5" y="-53" width="6.5" height="19" rx="3.2" fill="#5b86c4"/><circle cx="13.75" cy="-33" r="3.2" fill="#f2c3a0"/></g>
+    <circle cx="0" cy="-67" r="13" fill="url(#oSkin)"/>
+    <path d="M-13.4 -66C-15 -84 15 -84 13.4 -66C12.4 -71 9.6 -74 5 -75C1.5 -71.5 -5.5 -71 -9.5 -73.5C-11.5 -71.5 -12.8 -69 -13.4 -66Z" fill="#6a3a1e"/>
+    <ellipse cx="-4.6" cy="-65.5" rx="1.6" ry="2" fill="#3a2418"/><ellipse cx="4.6" cy="-65.5" rx="1.6" ry="2" fill="#3a2418"/><circle cx="-5.1" cy="-66.3" r=".55" fill="#fff"/><circle cx="4.1" cy="-66.3" r=".55" fill="#fff"/>
+    <path d="M-3.4 -61Q0 -58 3.4 -61" stroke="#a84048" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+  </g>
+  <rect width="1200" height="630" fill="url(#oV)"/>
+</svg>

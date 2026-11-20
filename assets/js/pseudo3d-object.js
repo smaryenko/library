@@ -151,6 +151,12 @@ const OBJ_DEPTH = {
   'pc-paper': -34, 'pc-far': -22, 'pc-mid': 0, 'pc-fx': 16, 'pc-near': 20,
   // rain — crayon book (books/rain/assets/js/crayon.js): extra roles
   'cr-water': -6, 'cr-rain': 6, 'cr-fx': 22, 'cr-arrow': 24,
+  // preview — cut-paper wizard (books/preview/assets/js/papercut.js)
+  'pp-sky': -34, 'pp-moon': -30, 'pp-far': -20, 'pp-castle': -14, 'pp-cloud': -6,
+  'pp-near': 4, 'pp-trees': 8, 'pp-chars': 14, 'pp-pages': 22,
+  // preview — toy shop at night (books/preview/assets/js/toyshop.js)
+  'ts-wall': -34, 'ts-back': -24, 'ts-shelf': -6, 'ts-box': 4, 'ts-soldier': 10,
+  'ts-doll': 14, 'ts-fx': 18, 'ts-light': 26,
   // generic fallbacks for future builders
   base: -40, mid: 0, fore: 30, top: 50
 };

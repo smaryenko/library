@@ -213,5 +213,47 @@ window.STORIES = [
     theme: '#a9cfe6',
     hint: 'Tap the picture to make it move \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
     backdrop: 'mountRain' // books/rain/assets/js/backdrop.js (no music yet)
+  },
+  {
+    id: 'spellbook',
+    category: 'fiction',
+    title: "The Little Wizard's Lost Spellbook",
+    blurb: 'Pip the cat knocked the spellbook out of the window! Solve a puzzle on every page to win back its gold pages and cast the first big spell.',
+    cover: 'books/spellbook/cover.svg',
+    favicon: 'books/spellbook/favicon.svg',
+    og: 'books/spellbook/og.png',
+    url: 'books/spellbook/',
+    accent: '#f7dd86',
+    theme: '#2a1b52',
+    hint: 'Solve the puzzle on each page to unlock the next one \u00b7 tap the picture to see the magic',
+    backdrop: 'mountSpellbook' // books/spellbook/assets/js/backdrop.js (puzzles: assets/js/minigame.js)
+  },
+  {
+    id: 'toyshop',
+    category: 'fiction',
+    title: 'The Toy Shop After Midnight',
+    blurb: 'At midnight the toys wake up! Shrink to toy size, fix the broken music box and choose your own way. Sixteen endings to find.',
+    cover: 'books/toyshop/cover.svg',
+    favicon: 'books/toyshop/favicon.svg',
+    og: 'books/toyshop/og.png',
+    url: 'books/toyshop/',
+    accent: '#e6b84c',
+    theme: '#3a2216',
+    hint: 'Pick a choice to decide where the story goes \u00b7 tap the picture to see the magic',
+    backdrop: 'mountToyshop' // books/toyshop/assets/js/backdrop.js (branching: assets/js/minigame.js)
+  },
+  {
+    id: 'numberland',
+    category: 'fiction',
+    title: 'Number Cube Land',
+    blurb: 'Wake up little One and walk with the number friends: solve puzzles to rebuild the Rainbow Gate!',
+    cover: 'books/numberland/cover.svg',
+    favicon: 'books/numberland/favicon.svg',
+    og: 'books/numberland/og.png',
+    url: 'books/numberland/',
+    accent: '#ff8a8f',
+    theme: '#dff2fd',
+    hint: 'Solve the puzzle under the picture to go on \u00b7 arrows go forward and back',
+    backdrop: 'mountNumberland' // books/numberland/assets/js/backdrop.js (three.js world + minigame.js)
   }
 ];

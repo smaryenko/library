@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- the little wizard's pointed hat with a bent tip and a gold band -->
+  <rect width="64" height="64" rx="12" fill="#2a1b52"/>
+  <path d="M8 50H56L45 34L38 20L44 8L54 6L32 14L22 32Z" fill="#3c5cc6"/>
+  <path d="M38 20L44 8L54 6L42 14Z" fill="#2c459c"/>
+  <rect x="7" y="45" width="50" height="8" rx="2" fill="#e7bf55"/>
+  <path d="M30 26L32 31L37 33L32 35L30 40L28 35L23 33L28 31Z" fill="#f7dd86"/>
+</svg>

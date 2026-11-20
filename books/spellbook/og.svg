@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- Share card for "The Little Wizard's Lost Spellbook": the cover picture on a
+       night table, with the title. Original, drawn in code. -->
+  <defs>
+    <linearGradient id="ogT" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1b52"/><stop offset="1" stop-color="#140c2e"/></linearGradient>
+    <radialGradient id="ogL" cx=".62" cy=".45" r=".6"><stop offset="0" stop-color="#ffd98a" stop-opacity=".22"/><stop offset="1" stop-color="#140c2e" stop-opacity="0"/></radialGradient>
+    <linearGradient id="sbSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#130b33"/><stop offset="1" stop-color="#3b2a78"/></linearGradient>
+    <linearGradient id="sbGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#9a7524"/><stop offset=".28" stop-color="#f7dd86"/><stop offset=".45" stop-color="#c2973a"/>
+      <stop offset=".62" stop-color="#fff0b5"/><stop offset=".8" stop-color="#b1882f"/><stop offset="1" stop-color="#e9c96a"/>
+    </linearGradient>
+    <filter id="sbPp" x="-15%" y="-15%" width="135%" height="140%">
+      <feDropShadow dx="1.4" dy="2.2" stdDeviation="1.8" flood-color="#0d0624" flood-opacity=".5"/>
+    </filter>
+    <filter id="ogSh"><feGaussianBlur stdDeviation="12"/></filter>
+    <path id="sbStar" d="M0 -1L.32 -.32L1 0L.32 .32L0 1L-.32 .32L-1 0L-.32 -.32Z"/>
+    <g id="sbPage">
+      <rect x="-8" y="-10.5" width="16" height="21" fill="#fff4d2" filter="url(#sbPp)"/>
+      <rect x="-8" y="-10.5" width="16" height="4" fill="url(#sbGold)"/>
+      <path d="M-5 -3h10M-5 0h8M-5 3h10M-5 6h6" stroke="#6b48ba" stroke-width=".9" stroke-linecap="round"/>
+    </g>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogT)"/>
+  <rect width="1200" height="630" fill="url(#ogL)"/>
+  <g fill="#e9c96a" opacity=".35">
+    <use href="#sbStar" transform="translate(70 70) scale(9)"/><use href="#sbStar" transform="translate(500 560) scale(7)"/>
+    <use href="#sbStar" transform="translate(40 520) scale(6)"/><use href="#sbStar" transform="translate(540 90) scale(6)"/>
+  </g>
+  <!-- title -->
+  <g font-family="Georgia, 'Times New Roman', serif" font-weight="700">
+    <text x="70" y="230" font-size="58" fill="#f7dd86">The Little Wizard's</text>
+    <text x="70" y="306" font-size="72" fill="#fff0b5">Lost Spellbook</text>
+    <text x="72" y="380" font-size="28" font-weight="400" fill="#cbbdf2">Solve a puzzle on every page</text>
+    <text x="72" y="418" font-size="28" font-weight="400" fill="#cbbdf2">to win back the twelve gold pages.</text>
+  </g>
+  <!-- the cover picture as a card -->
+  <rect x="628" y="118" width="520" height="390" rx="10" fill="#000" opacity=".45" filter="url(#ogSh)"/>
+  <svg x="620" y="105" width="520" height="390" viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="url(#sbSky)"/>
+    <circle cx="330" cy="62" r="40" fill="#5d4aa3" filter="url(#sbPp)"/>
+    <circle cx="330" cy="62" r="28" fill="url(#sbGold)" filter="url(#sbPp)"/>
+    <g fill="url(#sbGold)">
+      <use href="#sbStar" transform="translate(40 40) scale(4)"/><use href="#sbStar" transform="translate(96 22) scale(3)"/>
+      <use href="#sbStar" transform="translate(150 60) scale(2.4)"/><use href="#sbStar" transform="translate(210 26) scale(3.4)"/>
+      <use href="#sbStar" transform="translate(268 110) scale(2.2)"/><use href="#sbStar" transform="translate(30 120) scale(2.6)"/>
+      <use href="#sbStar" transform="translate(380 140) scale(2.4)"/><use href="#sbStar" transform="translate(120 104) scale(2)"/>
+    </g>
+    <path d="M-6 300V176Q40 150 90 168T190 160T290 170T406 158V300Z" fill="#4b3b90" filter="url(#sbPp)"/>
+    <g transform="translate(60 18)" filter="url(#sbPp)">
+      <rect x="150" y="132" width="86" height="50" fill="#c9b9f0"/><rect x="196" y="132" width="40" height="50" fill="#a08cd9"/>
+      <path d="M150 127h5v6h-5zM159 127h5v6h-5zM168 127h5v6h-5zM177 127h5v6h-5zM186 127h5v6h-5zM195 127h5v6h-5zM204 127h5v6h-5zM213 127h5v6h-5zM222 127h5v6h-5zM231 127h5v6h-5z" fill="#c9b9f0"/>
+      <path d="M184 182V166L190 160L196 166V182Z" fill="#24163f"/>
+      <rect x="138" y="108" width="16" height="74" fill="#c9b9f0"/><rect x="148" y="108" width="6" height="74" fill="#a08cd9"/>
+      <path d="M135.5 109H156.5L146.6 78H145.4Z" fill="#6b48ba"/>
+      <rect x="232.5" y="120" width="15" height="62" fill="#c9b9f0"/><rect x="241.5" y="120" width="6" height="62" fill="#a08cd9"/>
+      <path d="M230 121H250L240.6 94H239.4Z" fill="#6b48ba"/>
+      <rect x="172" y="98" width="12" height="34" fill="#c9b9f0"/><path d="M169.5 99H186.5L178.6 74H177.4Z" fill="#6b48ba"/>
+      <rect x="205.5" y="86" width="13" height="46" fill="#c9b9f0"/><path d="M203 87H221L212.6 58H211.4Z" fill="#6b48ba"/>
+      <path d="M212 58V48" stroke="#24163f" stroke-width="1.2"/><path d="M212 48L224 51L212 54Z" fill="url(#sbGold)"/>
+      <g fill="#ffd76a"><path d="M144 132v-6l2 -2.5l2 2.5v6zM238 140v-6l2 -2.5l2 2.5v6zM176 112v-6l2 -2.5l2 2.5v6zM210 104v-6l2 -2.5l2 2.5v6zM160 155v-7l2 -2.6l2 2.6v7zM172 155v-7l2 -2.6l2 2.6v7zM206 153v-7l2 -2.6l2 2.6v7zM220 157v-7l2 -2.6l2 2.6v7z"/></g>
+    </g>
+    <path d="M-6 236V214Q10 200 26 212Q42 198 58 211Q76 197 92 210Q110 198 126 212Q144 200 160 211Q178 197 196 210Q214 199 230 212Q248 199 266 210Q284 198 300 211Q318 199 336 212Q354 198 372 210Q390 200 406 212V236Z" fill="#cbbdf2" filter="url(#sbPp)"/>
+    <path d="M-6 244V222Q12 210 30 220Q50 208 68 220Q88 209 106 221Q126 210 144 220Q164 208 182 220Q202 210 220 221Q240 209 258 220Q278 208 296 221Q316 210 334 220Q354 209 372 221Q390 210 406 220V244Z" fill="#e6ddfb" filter="url(#sbPp)"/>
+    <path d="M-6 300V236Q60 228 130 234T260 242T406 236V300Z" fill="#2b1e5e" filter="url(#sbPp)"/>
+    <path d="M-6 300V256Q80 250 170 258T406 254V300Z" fill="#1f1548" filter="url(#sbPp)"/>
+    <use href="#sbPage" transform="translate(196 132) rotate(-18) scale(1.1)"/>
+    <use href="#sbPage" transform="translate(236 168) rotate(14)"/>
+    <use href="#sbPage" transform="translate(176 96) rotate(26) scale(.85)"/>
+    <use href="#sbPage" transform="translate(268 128) rotate(-30) scale(.75)"/>
+    <use href="#sbPage" transform="translate(222 76) rotate(-8) scale(.65)"/>
+    <g transform="translate(166 238) scale(1.3)" filter="url(#sbPp)">
+      <rect x="-10" y="-2" width="22" height="12" fill="#8678b9"/><rect x="2" y="-2" width="10" height="12" fill="#685b9c"/>
+      <path d="M-30 -2L0 2L30 -2V-22L0 -18L-30 -22Z" fill="#5e2179"/>
+      <path d="M-27 -5L0 -1V-20L-27 -24Z" fill="#fff4d2"/><path d="M27 -5L0 -1V-20L27 -24Z" fill="#fff4d2"/>
+    </g>
+    <g transform="translate(96 262) scale(1.45) translate(-72 -214)" filter="url(#sbPp)">
+      <path d="M59 214L62 196L66 178L72 172L78 178L82 196L86 214Z" fill="#3c5cc6"/>
+      <path d="M73 173L78 178L82 196L86 214L74 214Z" fill="#2c459c"/>
+      <g transform="rotate(-28 78 182)">
+        <path d="M76 181L89 174L91.5 178L78.5 187Z" fill="#3c5cc6"/><rect x="89" y="173" width="4" height="5" rx="1.5" fill="#f3c8a2"/>
+        <path d="M91 176L101 161" stroke="#24163f" stroke-width="2" stroke-linecap="round"/>
+        <use href="#sbStar" transform="translate(101.5 160) scale(4)" fill="url(#sbGold)"/>
+      </g>
+      <path d="M64.5 168L66 160L72 158L78 160L79.5 168L72 172.5Z" fill="#7a4422"/>
+      <path d="M65.5 166L66.5 160.5L72 159L77.5 160.5L78.5 166L76 171.5L68 171.5Z" fill="#f3c8a2"/>
+      <circle cx="69.4" cy="165.6" r="1.1" fill="#24163f"/><circle cx="74.8" cy="165.6" r="1.1" fill="#24163f"/>
+      <path d="M70.4 168.8Q72.1 170.6 73.8 168.8" fill="none" stroke="#24163f" stroke-width=".7" stroke-linecap="round"/>
+      <path d="M59 161L85 161L79 150L75 140L80 128L86 126L72 134L66 148Z" fill="#3c5cc6"/>
+      <rect x="58" y="158" width="28" height="4.5" fill="url(#sbGold)"/>
+    </g>
+    <g transform="translate(130 262) scale(1.3) translate(-122 -214)" filter="url(#sbPp)">
+      <path d="M129 212C138 210 140 198 134 192" fill="none" stroke="#c96b16" stroke-width="3.4" stroke-linecap="round"/>
+      <path d="M114 214L130 214L130 203L125 193L118 195L115 203Z" fill="#ef8d2c"/>
+      <path d="M112.5 190L113.5 184.5L113.6 178L117.5 182.5L121 182.5L124.8 178L125 184.5L126 190L119.3 195.5Z" fill="#ef8d2c"/>
+      <ellipse cx="116.6" cy="188" rx="1.5" ry="1.8" fill="#7fdc6a"/><ellipse cx="121.9" cy="188" rx="1.5" ry="1.8" fill="#7fdc6a"/>
+    </g>
+  </svg>
+</svg>
