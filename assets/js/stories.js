@@ -19,7 +19,7 @@
 window.STORIES = [
   {
     id: 'xmas',
-    category: 'fiction',  // shelf-card corner label: 'fiction' | 'non-fiction'
+    category: 'fiction',  // shelf-card corner label: 'fiction' | 'non-fiction' | 'puzzle'
     title: 'Christmas Storybook',
     blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!',
     cover: 'books/xmas/cover.svg',
@@ -216,7 +216,7 @@ window.STORIES = [
   },
   {
     id: 'spellbook',
-    category: 'fiction',
+    category: 'puzzle',
     title: "The Little Wizard's Lost Spellbook",
     blurb: 'Pip the cat knocked the spellbook out of the window! Solve a puzzle on every page to win back its gold pages and cast the first big spell.',
     cover: 'books/spellbook/cover.svg',
@@ -244,7 +244,7 @@ window.STORIES = [
   },
   {
     id: 'numberland',
-    category: 'fiction',
+    category: 'puzzle',
     title: 'Number Cube Land',
     blurb: 'Wake up little One and walk with the number friends: solve puzzles to rebuild the Rainbow Gate!',
     cover: 'books/numberland/cover.svg',

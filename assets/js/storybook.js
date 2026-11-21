@@ -85,6 +85,7 @@
       </div>
     `;
     root.appendChild(bookEl);
+    requestAnimationFrame(centreStage);
 
     // Page nav lives on <body> (NOT inside the transformed book) so its
     // position:fixed is relative to the viewport and it sits at the screen
@@ -223,6 +224,8 @@
   // TEXT lives on the (tilted) page; the pseudo-3D OBJECT lives in the flat
   // overlay slot over that page's centre, so it stands standalone.
   function renderSpread(i, { animate } = {}) {
+    // after this page's slots are laid out, re-centre (a caption changes the height)
+    requestAnimationFrame(() => requestAnimationFrame(centreStage));
     activeObjects.length = 0;
     if (sceneHost) sceneHost.remove();   // keep the live scene; never destroy it
     leftPanelEl.innerHTML = '';
@@ -548,10 +551,33 @@
       .forEach(k => { slot.style[k] = ''; });
   }
 
+  // --- phone landscape: centre the DRAWN book vertically --------------------
+  // The tilt + perspective makes the visible book sit off-centre in its box by
+  // an amount that depends on the screen size, so a fixed CSS offset can't
+  // fit every phone. Measure the projected book (plus a caption bar under it,
+  // if the page has one) and shift the stage so that block is centred.
+  const PHONE_LANDSCAPE = matchMedia('(orientation: landscape) and (max-height: 520px)');
+  function centreStage() {
+    const stage = bookEl && bookEl.parentNode;
+    if (!stage || stage.closest('.mg-book')) return;   // minigame books lay out their own caption
+    if (!PHONE_LANDSCAPE.matches) { stage.style.top = ''; return; }
+    stage.style.top = '0px';
+    const rects = [bookEl, bookEl.querySelector('.cover'),
+      ...stage.querySelectorAll('.obj-slot.is-caption .text-block')]
+      .filter(Boolean).map(el => el.getBoundingClientRect()).filter(r => r.height > 0);
+    if (!rects.length) return;
+    const top = Math.min(...rects.map(r => r.top));
+    const bottom = Math.max(...rects.map(r => r.bottom));
+    const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+    stage.style.top = Math.round(vh / 2 - (top + bottom) / 2) + 'px';
+  }
+  PHONE_LANDSCAPE.addEventListener('change', centreStage);
+
   let refitTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(refitTimer);
     refitTimer = setTimeout(() => {
+      centreStage();
       if (fitted && fitted.spread) {
         fitSpreadSlot(fitted.slot, fitted.capSlot, fitted.ar, fitted.page);
       } else if (fitted && fitted.slot.classList.contains('is-image')) {

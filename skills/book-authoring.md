@@ -69,7 +69,7 @@ window.STORIES = [
     id: 'xmas',                         // folder name under books/
     title: 'Christmas Storybook',
     blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!', // kid-friendly line under the card title
-    category: 'fiction',                // card corner label: 'fiction' | 'non-fiction'
+    category: 'fiction',                // card corner label: 'fiction' | 'non-fiction' | 'puzzle'
     cover: 'books/xmas/cover.svg',      // card preview art
     favicon: 'books/xmas/favicon.svg',
     og: 'books/xmas/og.svg',
@@ -331,7 +331,8 @@ uses the same `pinch.js` on every zoomed view.
       `boot.js` adds the back-to-library button, the `#stage` and the hint
       line. Set `hint` in the manifest entry only if the book needs
       different hint text (as `space` does). Set `category`
-      (`'fiction'` | `'non-fiction'`) for the shelf-card label.
+      (`'fiction'` | `'non-fiction'` | `'puzzle'` for puzzle/minigame books)
+      for the shelf-card label.
 - [ ] The manifest `blurb` is a short, **kid-friendly** line (what a child
       will see/meet), not a technical description of the tech.
 - [ ] One entry added to `assets/js/stories.js`.

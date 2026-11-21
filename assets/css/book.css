@@ -24,6 +24,7 @@ html, body {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;   /* mobile: the visible height, not the height without browser bars */
   display: grid;
   place-items: center;
   /* deep winter night sky */
@@ -867,7 +868,17 @@ canvas.snow {
     height: 100vh;
     height: 100dvh;
     margin: 0 0 0 64px;          /* room for the control column on the left */
+    /* vertical centring of the drawn (tilted) book is done in storybook.js
+       (centreStage), which sets an inline `top` */
+    /* real phones are often <800px wide in landscape, so the portrait-phone
+       rule (66deg tilt, short perspective) also matched and squashed the book
+       into a thin strip. Undo it, and tilt less so the short screen is filled. */
+    perspective: 3000px;
+    perspective-origin: 50% 40%;
   }
+  .book        { transform: rotateX(38deg); }
+  .book.bump-r { transform: rotateX(38deg) translateX(10px); }
+  .book.bump-l { transform: rotateX(38deg) translateX(-10px); }
   .page-nav {
     left: max(12px, env(safe-area-inset-left, 0px));
     top: 50%;

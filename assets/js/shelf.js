@@ -35,11 +35,11 @@
 
     a.appendChild(cover);
     a.appendChild(meta);
-    // top-right corner label: fiction / non-fiction
+    // top-right corner label: fiction / non-fiction / puzzle
     if (story.category) {
       const tag = document.createElement('span');
       tag.className = 'category ' + story.category;
-      tag.textContent = story.category === 'fiction' ? 'Fiction' : 'Non-fiction';
+      tag.textContent = { fiction: 'Fiction', 'non-fiction': 'Non-fiction', puzzle: 'Puzzle' }[story.category] || story.category;
       a.appendChild(tag);
     }
     return a;
