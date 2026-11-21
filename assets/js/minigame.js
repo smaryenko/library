@@ -1104,6 +1104,8 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 .mg-reset-all{position:fixed;top:24px;right:84px;z-index:30;
   width:44px;height:44px;border-radius:50%;border:0;background:rgba(20,28,48,.6);color:#fff;font-size:22px;line-height:1;cursor:pointer;
   box-shadow:0 2px 8px rgba(0,0,0,.25)}
+/* no music button (the book has no track): take the top-right corner itself */
+body:not(:has(.music-btn)) .mg-reset-all{right:24px}
 .mg-reset-all:hover{background:rgba(28,48,84,.85)}
 .mg-reset-all:focus-visible{outline:2px solid #9ec2ff;outline-offset:2px}
 .mg-dock{pointer-events:auto;background:none;box-shadow:none;padding:0;width:min(560px,92vw)}
@@ -1142,6 +1144,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
 .page-btn.mg-nudge-btn{animation:mg-wobble .42s ease-in-out}
 @media (max-aspect-ratio:3/4),(max-width:800px){
   .mg-reset-all{top:12px;right:62px;width:40px;height:40px;font-size:20px}
+  body:not(:has(.music-btn)) .mg-reset-all{right:12px}
   .mg-panel{font-size:clamp(11px,3.2vw,15px);padding:.4em .4em .45em}
   .mg-art svg{max-height:20vh}
   .mg-opt,.mg-btn,.mg-piece{min-height:44px}
@@ -1153,6 +1156,7 @@ document.head.insertAdjacentHTML('beforeend', `<style>
   /* phone landscape: lift the book so the caption fits under it */
   .mg-book .book-stage{margin-top:-16vh;margin-top:-16dvh}
   .mg-reset-all{top:10px;right:calc(max(12px, env(safe-area-inset-right, 0px)) + 46px);width:36px;height:36px;font-size:18px}
+  body:not(:has(.music-btn)) .mg-reset-all{right:max(12px, env(safe-area-inset-right, 0px))}
   .mg-caption{width:min(620px,70vw);padding:.3em .9em .4em;margin-left:32px}
   .mg-cap-title{font-size:clamp(14px,3.6vh,20px)}
   .mg-cap-body{font-size:clamp(11px,3vh,14px);line-height:1.25}
