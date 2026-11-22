@@ -235,20 +235,21 @@ function counter() {
   if (nx) nx.classList.toggle('is-disabled', end);
   if (last) last.classList.toggle('is-disabled', pos >= S.path.length - 1);
 }
-// every puzzle in the book solved (and every choice made, outside branching)
-function allSolved() {
-  const P = PAGES();
-  for (let i = 0; i < P.length; i++) {
-    if (P[i].task && !S.solved[pageId(i)]) return false;
-    if (!branching() && P[i].choice && !S.choices[pageId(i)]) return false;
-  }
-  return true;
-}
-// Next: open as soon as this page is solved. Last (»): open only when the
-// whole book is solved. Re-applied on every pointer move and on a slow tick
+// Next: open as soon as this page is solved. Last (»): open while there is a
+// further reachable page (see frontier). Re-applied on every pointer move and on a slow tick
 // as well, so nothing else (a re-render, a hover) can leave a stale look.
+// Puzzle books (not branching): the furthest page the child can reach, i.e.
+// the first page whose puzzle (or choice) is still open; the real last page
+// once everything is solved. » goes there.
+function frontier() {
+  const P = PAGES();
+  for (let i = 0; i < P.length; i++) if (locked(i)) return i;
+  return P.length - 1;
+}
 function updateLocks() {
-  const next = locked(here()), last = !branching() && !allSolved() || next;
+  // » is locked only when there is nowhere further to go: we're already at
+  // (or past) the first unsolved page
+  const next = locked(here()), last = branching() ? next : here() >= frontier();
   const set = (b, lock) => {
     if (b.classList.contains('mg-locked') !== lock) b.classList.toggle('mg-locked', lock);
     const a = lock ? 'true' : 'false';
@@ -308,7 +309,12 @@ window.addEventListener('click', e => {
     return;
   }
   if (k === 'next' && locked(here())) { eat(e); nudge(); }
-  else if (k === 'last' && !allSolved()) { eat(e); nudge(); }   // » opens only when every puzzle is solved
+  else if (k === 'last') {
+    // » goes to the first page with an unsolved puzzle (the last page once all are solved)
+    eat(e);
+    const t = frontier();
+    if (t <= here()) nudge(); else jump(t);
+  }
 }, true);
 let down = null;
 const API = { pointerInPanel: false };
