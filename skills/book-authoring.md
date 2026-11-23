@@ -111,7 +111,14 @@ story you like:
   one. Tell a real little story with the character(s) you have.
 - **Use real names.** A clownfish is a clownfish, a fox is a fox. Don't invent
   cutesy nicknames (no "Pearl the clownfish", "Bolt the car") unless the user
-  asks for named characters. Plain species/role names read best.
+  asks for named characters. Plain species/role names read best ("the ant",
+  "the cat", "the kitten"; a first-person "I" also works).
+- **Key words in colour:** a page may set `bodyHtml` (trusted static markup,
+  not escaped) instead of `body` to highlight words inline, e.g. red bold
+  `#c8231e` for every preposition in `books/wherecat/`.
+- **Step books:** when every animation is its own page (`longway`,
+  `myday`), Space / Enter / tap always advance to the next page, finishing a
+  running step first; page jumps set state instantly.
 - **No bounds on length, cast size, plot, or animations.** Page count, how many
   characters appear, what happens, and what each picture's click animation does
   are all open. Fit them to the story, not to a formula.
@@ -234,7 +241,9 @@ emit the shapes into one SVG, name the movers, write a few keyframe tracks.
 - **favicon.svg** — original vector icon for this book's tab.
 - **og image** — social/link preview (1200×630). An original `og.svg` works and
   is committable now; a raster `og.png` is the most broadly-supported form for
-  social scrapers, so export one when you can render (see the no-checks note).
+  social scrapers, so export one when you can render (see the no-checks note):
+  headless Chrome `--screenshot --window-size=1200,630` of `og.svg`, then
+  point the og/twitter meta tags and the manifest `og` at `og.png`.
   Reference it from the book's `<meta property="og:image">` and the manifest.
 - **preview.js** — node-only scene for the cover + og image, built from the
   book's own builders. `node tools/build-previews.js [id…]` regenerates
@@ -300,6 +309,10 @@ nothing special, but:
   kind as ONE world (`world.show(i)` on the turn), moves the caption to the
   bottom, and gives worlds with `forward()` / `back()` story steps. Reference:
   `books/longway/`, see `cube-world-books.md`.
+- **More three.js / clay styles:** a clay world with camera stops
+  (`books/anthill/`, `clay-world-books.md`), realistic wooden toys
+  (`books/wherecat/`, `wooden-toy-books.md`), a live town in step pages
+  (`books/myday/`, `town-step-books.md`).
 - **Code-drawn 2D books** share `assets/js/drawkit.js` (seeded random,
   noise, polygon scan spans, blobs, Catmull-Rom paths). References:
   `books/lighthouse/` (`pencil-books.md`), `books/rain/` (`crayon-books.md`).

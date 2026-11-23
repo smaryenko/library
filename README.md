@@ -6,8 +6,10 @@ storybook lying flat in perspective. You page through it, and on each spread a
 picture pops off the page with a layered parallax "pseudo-3D" tilt. **Tap a
 picture and it plays its own little animation.** No build step. Books are
 SVG/canvas with no libraries, except the three.js books (`books/city/`, a
-live pop-up city; `books/athome/`, raymarched clay; `books/longway/`, a
-toy-cube world); three.js is vendored in `assets/vendor/three/` (MIT) so it
+live pop-up city; `books/athome/` and `books/anthill/`, raymarched clay;
+`books/longway/` and `books/numberland/`, toy-cube worlds;
+`books/wherecat/`, realistic wooden toys; `books/myday/`, a live toy town
+told in step pages); three.js is vendored in `assets/vendor/three/` (MIT) so it
 works offline.
 A book can also use the **pop-up layout**: one wide scene over the whole spread
 with the caption at the bottom middle.
@@ -65,8 +67,10 @@ For real rendered objects instead of SVG art, see
 [`skills/real-sphere-books.md`](skills/real-sphere-books.md); for real photos
 as pop-up cut-outs, see
 [`skills/photo-cutout-books.md`](skills/photo-cutout-books.md). Other styles
-have their own guides in [`skills/`](skills/README.md): embroidery, clay,
-toy-cube worlds, coloured pencil and crayon. Puzzle and choose-your-way
+have their own guides in [`skills/`](skills/README.md): embroidery, clay
+(morphing objects, and a whole clay world with camera stops), toy-cube
+worlds, a live town told in step pages, realistic wooden toys, coloured
+pencil and crayon. Puzzle and choose-your-way
 books use the shared kit described in
 [`skills/minigame-books.md`](skills/minigame-books.md).
 

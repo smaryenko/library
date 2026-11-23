@@ -44,3 +44,6 @@ Reference: `books/longway/` ("The Long Way Home").
 - Going back, a walking figure is turned round (it would moonwalk otherwise).
 - Drop-in opening only near the first camera stop, bottom layer first; the
   columns under the hero and the boat are there from frame one.
+## See also
+- `town-step-books.md` (`books/myday/`): the same story-step idea with one
+  animation per page, auto-play on turn and Space always advancing.

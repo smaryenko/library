@@ -38,6 +38,13 @@ ship them **without credits**; that decision applies to this book only. Edited
 photos (e.g. `img/clock.jpg` with its hands painted out) count as the same
 source. Its `train.mp3` comes from the owner's own reference files.
 
+## Watermarked stock references
+A watermarked stock image can still be a look reference (the `anthill`
+book's clay anthill look): study it, keep it in the gitignored reference
+folder, build everything in code. Never ship, trace or sample it, and never
+reproduce its watermark or composition closely. No credit is needed because
+nothing from it ships.
+
 ## Where things live
 
 - References (do NOT commit): a gitignored folder, with a README stating they

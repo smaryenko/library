@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- The Ant and the Crumb: cutaway clay anthill, one chamber, ant + crumb -->
+  <defs>
+    <radialGradient id="a" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#a55a36"/><stop offset="1" stop-color="#2e130a"/></radialGradient>
+    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3dba8"/><stop offset="1" stop-color="#d4ab6e"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="13" fill="#fbeed4"/>
+  <rect y="52" width="64" height="12" fill="#a87848"/>
+  <path d="M5 54 C6 30 18 7 32 7 C46 7 58 30 59 54 Z" fill="#6e3f1c"/>
+  <path d="M11 54 C12 33 22 13 32 13 C42 13 52 33 53 54 Z" fill="url(#s)"/>
+  <ellipse cx="32" cy="40" rx="15" ry="8" fill="#7a5030"/>
+  <ellipse cx="25" cy="40" rx="5" ry="4" fill="url(#a)"/>
+  <ellipse cx="33" cy="39" rx="4" ry="3.2" fill="url(#a)"/>
+  <circle cx="40" cy="34" r="5" fill="#f1c070" stroke="#b8732c" stroke-width="1.5"/>
+</svg>

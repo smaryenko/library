@@ -255,5 +255,47 @@ window.STORIES = [
     theme: '#dff2fd',
     hint: 'Solve the puzzle under the picture to go on \u00b7 arrows go forward and back',
     backdrop: 'mountNumberland' // books/numberland/assets/js/backdrop.js (three.js world + minigame.js)
+  },
+  {
+    id: 'anthill',
+    category: 'fiction',
+    title: 'The Ant and the Crumb',
+    blurb: 'A little clay ant carries a bread crumb all the way down through her anthill, past the queen!',
+    cover: 'books/anthill/cover.svg',
+    favicon: 'books/anthill/favicon.svg',
+    og: 'books/anthill/og.png',
+    url: 'books/anthill/',
+    accent: '#f2c98a',
+    theme: '#e9dcc2',
+    hint: 'Tap the picture to see what happens \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountAnthill' // books/anthill/assets/js/backdrop.js (clay SDF, no music yet)
+  },
+  {
+    id: 'wherecat',
+    category: 'non-fiction',
+    title: 'Where Is the Cat?',
+    blurb: 'In, on, under, behind: a wooden cat and a blue box show little words, one tap at a time!',
+    cover: 'books/wherecat/cover.svg',
+    favicon: 'books/wherecat/favicon.svg',
+    og: 'books/wherecat/og.png',
+    url: 'books/wherecat/',
+    accent: '#ff9a8a',
+    theme: '#3a2616',
+    hint: 'Tap the picture to make the cat move \u00b7 tap the right half \u2192 next \u00b7 left half \u2192 back \u00b7 swipe to turn',
+    backdrop: 'mountWherecat' // books/wherecat/assets/js/backdrop.js
+  },
+  {
+    id: 'myday',
+    category: 'non-fiction',
+    title: 'My Day',
+    blurb: 'Wake up, brush, school, swings, bath and bed: follow a boy through his whole day in a little 3D town!',
+    cover: 'books/myday/cover.svg',
+    favicon: 'books/myday/favicon.svg',
+    og: 'books/myday/og.png',
+    url: 'books/myday/',
+    accent: '#ffd98a',
+    theme: '#3d6f9e',
+    hint: 'Every animation is a page \u00b7 tap or Space to go on (or skip to the end) \u00b7 swipe or arrows to turn',
+    backdrop: 'mountMyDay' // books/myday/assets/js/backdrop.js (three.js town, no music yet)
   }
 ];

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Where Is the Cat?: black wooden cat peeking out of the blue box -->
+  <defs>
+    <radialGradient id="k" cx=".32" cy=".28" r=".85"><stop offset="0" stop-color="#5a5652"/><stop offset=".4" stop-color="#24211f"/><stop offset="1" stop-color="#0b0a09"/></radialGradient>
+    <linearGradient id="b" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#4f8fd0"/><stop offset="1" stop-color="#1d4c86"/></linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="13" fill="#efe3cc"/>
+  <path d="M12 7 L15 26 L26 17 Z M52 7 L49 26 L38 17 Z" fill="#141110"/>
+  <ellipse cx="32" cy="29" rx="20" ry="16" fill="url(#k)"/>
+  <path d="M20 28 q4 -5 8 0 M36 28 q4 -5 8 0" fill="none" stroke="#f3e4c0" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="32" cy="33" rx="3" ry="2.2" fill="#ec8fa2"/>
+  <path d="M17 40 Q32 47 47 40" fill="none" stroke="#d2281e" stroke-width="4" stroke-linecap="round"/>
+  <rect x="5" y="41" width="54" height="20" rx="4" fill="url(#b)"/>
+  <rect x="5" y="41" width="54" height="4" rx="2" fill="#7fb2e6"/>
+</svg>

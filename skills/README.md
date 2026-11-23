@@ -54,6 +54,17 @@ Each skill is a standalone Markdown guide with a short "when to use" header.
   shared kit `assets/js/minigame.js` (task kinds, locks, saved progress,
   caption / dock layouts, endings); `spellbook`, `toyshop` and
   `numberland` are the references.
+- `clay-world-books.md` — one SDF clay set with camera stops and walking
+  creatures (bounding checks, pitch clamp, background painted in the
+  shader); the `anthill` book is the reference.
+- `wooden-toy-books.md` — realistic three.js wooden toys on a table
+  (seamless procedural wood, paint over grain, no fog, tight camera fit,
+  slide motion, closed-eye toy faces, red key words, one cycling page); the
+  `wherecat` book is the reference.
+- `town-step-books.md` — a live toy town where every animation is its own
+  page (arrive / act steps, state a pure function of page and time, walk cap
+  and gait, cutaways, character design rules); the `myday` book is the
+  reference.
 
 Shared helpers for code-drawn books: `assets/js/drawkit.js` (math, seeded
 random, noise, 2D shapes, path strings) and `assets/js/webgl-stage.js` (hosts
