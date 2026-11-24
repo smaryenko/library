@@ -525,18 +525,21 @@
       const cache = await caches.open(names.length ? names[names.length - 1] : 'library-v1');
       await cache.put(murl, r0);
       const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
-      const todo = [];
-      for (const p of all) {
-        const url = new URL(p, scope).href;
-        if (!(await cache.match(url, { ignoreSearch: true }))) todo.push(url);
-      }
-      let done = 0;
+      // what's cached already: one keys() listing, not 251 separate lookups
+      const have = new Set((await cache.keys()).map(k => k.url.split('?')[0]));
+      const todo = all.map(p => new URL(p, scope).href).filter(u => !have.has(u));
+      let done = 0, next = 0;
       const step = () => { finished = done >= todo.length; saving_(todo.length ? Math.floor(100 * done / todo.length) : 100); };
       step();
-      for (let i = 0; i < todo.length; i += 4) {
-        await Promise.all(todo.slice(i, i + 4).map(async url => {
+      // 6 lanes, each starts its next file as soon as one ends (no waiting
+      // on the slowest file of a batch). The x-offline-save header tells
+      // sw.js to pass the request straight through instead of caching it a
+      // second time.
+      const lane = async () => {
+        while (next < todo.length) {
+          const url = todo[next++];
           try {
-            const r = await fetch(url, { cache: 'no-cache' });
+            const r = await fetch(url, { headers: { 'x-offline-save': '1' } });
             if (r.ok) {
               // a redirected response can't answer a navigation: plain copy
               const body = r.redirected
@@ -546,9 +549,10 @@
             }
           } catch (err) { /* offline or gone: "Retry saving" */ }
           done++;
-        }));
-        step();
-      }
+          step();
+        }
+      };
+      await Promise.all(Array.from({ length: 6 }, lane));
       finished = true;
     }
 

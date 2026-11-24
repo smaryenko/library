@@ -162,6 +162,8 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET' || !req.url.startsWith(SCOPE)) return;
   const url = new URL(req.url);
   if (SKIP.test(url.pathname) || req.headers.has('range')) return;
+  // the shelf's "Save all" stores these itself (shelf.js saveAll)
+  if (req.headers.has('x-offline-save')) return;
   e.respondWith(serve(req, url, e));
 });
 
