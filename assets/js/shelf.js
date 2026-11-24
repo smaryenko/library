@@ -172,13 +172,21 @@
     // ---- drag / swipe (window listeners, no pointer capture, so a plain tap
     // still lands as a normal click on the card link) ----
     let dragging = false, downX = 0, downY = 0, startP = 0, moved = false;
-    let downType = 'mouse';
+    let downType = 'mouse', downId = null, downMod = false;
+    // set only for the click that ends a drag; cleared right after, so a stale
+    // flag can never swallow a later, real click (that made some clicks after
+    // a spin need a second try)
+    let eatClick = false;
     let samples = [];
     stage.addEventListener('pointerdown', e => {
       if (e.button !== 0) return;
-      if (dragging) return;              // a second finger: ignore it
+      // a second finger: ignore it. A mouse can't have two pointers down, so a
+      // drag still "on" here lost its pointerup (released outside the window,
+      // alt-tab...): drop it and take this press as new
+      if (dragging && e.pointerType !== 'mouse' && e.pointerId !== downId) return;
       dragging = true; moved = false;
-      downType = e.pointerType || 'mouse';
+      downType = e.pointerType || 'mouse'; downId = e.pointerId;
+      downMod = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;   // cmd/ctrl-click = new tab: left to the browser
       downX = e.clientX; downY = e.clientY; startP = p;
       samples = [{ x: e.clientX, t: e.timeStamp }];
       kick();
@@ -196,10 +204,12 @@
       if (samples.length > 6) samples.shift();
     });
     function release(e) {
-      if (!dragging) return;
+      if (!dragging || (downId != null && e.pointerId !== downId)) return;
       dragging = false;
       stage.classList.remove('is-dragging');
       if (moved) {
+        eatClick = true;                 // the browser's click for this drag, if any, comes next
+        setTimeout(() => { eatClick = false; }, 0);
         const a = samples[0], b = samples[samples.length - 1];
         const dtm = Math.max(1, b.t - a.t);
         const fresh = e.timeStamp - b.t < 80;          // held still = no fling
@@ -207,9 +217,12 @@
         // fling carries on a bit, capped so it never races off
         const fling = Math.max(-4, Math.min(4, v * 260));
         target = Math.round(p + fling);
-      } else if (downType !== 'mouse') {
-        // TOUCH / PEN TAP: decided entirely here, from what is on screen at
-        // this moment. Native clicks on cards are ignored for touch (below):
+      } else if (!(downType === 'mouse' && downMod)) {
+        // TAP / CLICK (touch, pen and mouse): decided entirely here, from what
+        // is on screen at this moment. Native clicks on cards are ignored
+        // (below). Mouse too: after a spin under a still cursor the browser
+        // kept its stale hover / hit target, so the first click did nothing
+        // until the mouse moved.
         // Safari's hit-testing on 3D-transformed links is flaky, and a tap
         // during the glide after a swipe used to be judged against a card
         // that wasn't visually in front yet, so it only spun.
@@ -257,14 +270,20 @@
     }
     window.addEventListener('pointerup', release);
     window.addEventListener('pointercancel', release);
+    // window lost focus mid-drag: no pointerup will come
+    window.addEventListener('blur', () => { if (dragging) { dragging = false; stage.classList.remove('is-dragging'); target = Math.round(p); kick(); } });
 
     // clicks: a drag never opens a book; a side card spins to the front first
     cards.forEach((c, i) => c.addEventListener('click', e => {
-      // touch taps are handled on pointerup (above); the browser's own click
-      // for them is ignored. (e.detail 0 = keyboard Enter: let it through.)
-      if (downType !== 'mouse' && e.detail !== 0) { e.preventDefault(); return; }
-      if (moved) { e.preventDefault(); moved = false; return; }
-      if (i !== front) { e.preventDefault(); goTo(i); }
+      // taps and plain clicks are handled on pointerup (above); the browser's
+      // own click for them is ignored. Let through: e.detail 0 = keyboard
+      // Enter, and modifier clicks (open in a new tab).
+      if (e.detail !== 0 && !(downType === 'mouse' && downMod)) { e.preventDefault(); return; }
+      if (eatClick) { e.preventDefault(); eatClick = false; return; }
+      // still gliding the last bit after a spin: the card that is (nearly) in
+      // front and is where the spin ends opens on the first click
+      const arriving = i === mod(Math.round(target), n) && Math.abs(offset(i)) < 0.75;
+      if (i !== front && !arriving) { e.preventDefault(); goTo(i); }
     }));
 
     // wheel / trackpad: accumulate, one card per ~70px, throttled
