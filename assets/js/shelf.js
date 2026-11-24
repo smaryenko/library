@@ -528,16 +528,15 @@
       // what's cached already: one keys() listing, not 251 separate lookups
       const have = new Set((await cache.keys()).map(k => k.url.split('?')[0]));
       const todo = all.map(p => new URL(p, scope).href).filter(u => !have.has(u));
-      let done = 0, next = 0;
+      let done = 0;
       const step = () => { finished = done >= todo.length; saving_(todo.length ? Math.floor(100 * done / todo.length) : 100); };
       step();
-      // 6 lanes, each starts its next file as soon as one ends (no waiting
-      // on the slowest file of a batch). The x-offline-save header tells
-      // sw.js to pass the request straight through instead of caching it a
-      // second time.
-      const lane = async () => {
-        while (next < todo.length) {
-          const url = todo[next++];
+      // every file requested at once: GitHub Pages speaks HTTP/2, so they
+      // share one connection and the browser schedules them itself. The
+      // x-offline-save header tells sw.js to pass the request straight
+      // through instead of caching it a second time.
+      const one = async url => {
+        {
           try {
             const r = await fetch(url, { headers: { 'x-offline-save': '1' } });
             if (r.ok) {
@@ -552,7 +551,7 @@
           step();
         }
       };
-      await Promise.all(Array.from({ length: 6 }, lane));
+      await Promise.all(todo.map(one));
       finished = true;
     }
 
