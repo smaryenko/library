@@ -102,9 +102,10 @@ python3 -m http.server 8777
 
 **Offline:** `sw.js` (registered by `shelf.js` and `boot.js`) caches the
 library and shared engine when the shelf loads, and each book's files when
-that book is opened; after that they work without a network. Music, og
-images, cover sources and Google Fonts are not cached (offline the music is
-off and system fonts show). The file lists come from
+that book is opened; after that they work without a network. The shelf's
+"Save all books for offline" button caches everything at once, and a dot on
+each card shows whether that book is saved (green) or not yet (red). Music, og
+images and cover sources are not cached (offline the music is off). The file lists come from
 `node tools/build-offline.js`: re-run it when files are added, removed or
 renamed. Service workers need `http(s)://` or `localhost`, not `file://`.
 
@@ -186,5 +187,7 @@ The shared engine is content-agnostic; each book supplies its own content.
 Art is original by default. Any exception (real texture maps, real photos) and
 every audio track is credited in that book's own `README.md`. Reference images
 are used only as visual style references — never copied, traced, or shipped;
-they live under the gitignored `.kiro/`. The rules are in
+they live under the gitignored `.kiro/`. The shelf fonts, Fredoka and Nunito
+(`assets/fonts/`, Latin subset from Google Fonts), are under the SIL Open
+Font License; the licence texts sit next to them. The rules are in
 [`skills/asset-licensing.md`](skills/asset-licensing.md).

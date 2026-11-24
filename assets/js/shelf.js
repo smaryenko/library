@@ -35,6 +35,13 @@
 
     a.appendChild(cover);
     a.appendChild(meta);
+    a.dataset.book = story.id;
+    // top-left: saved-for-offline dot (green = whole book cached, red = not
+    // yet); hidden until the service worker reports (wireOffline below)
+    const dot = document.createElement('span');
+    dot.className = 'offline-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    a.appendChild(dot);
     // top-right corner label: fiction / non-fiction / puzzle
     if (story.category) {
       const tag = document.createElement('span');
@@ -328,17 +335,10 @@
 
   window.Shelf = { mount: mountShelf };
 
-  // Web fonts, non-blocking: a stylesheet added from script doesn't hold up
-  // rendering, so the shelf paints at once in system fonts and swaps to
-  // Fredoka / Nunito when (if) Google Fonts answers.
-  const FONTS = 'https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700&display=swap';
-  if (!document.querySelector('link[data-webfonts]')) {
-    const l = document.createElement('link');
-    l.rel = 'stylesheet';
-    l.href = FONTS;
-    l.setAttribute('data-webfonts', '');
-    document.head.appendChild(l);
-  }
+  // Web fonts: Fredoka / Nunito are self-hosted in assets/fonts/ (@font-face
+  // in shelf.css, preloaded by index.html, cached offline by sw.js). They used
+  // to come from Google Fonts, added here after first paint, so every shelf
+  // visit painted system fonts first and then swapped (a visible flick).
 
   // --- pull to refresh (touch) -------------------------------------------
   // The shelf never scrolls (shelf.css: overflow hidden, overscroll none), so
@@ -397,13 +397,122 @@
   // The site-wide service worker (sw.js, scope = site root) caches the
   // library shell; each book page asks for its own files (boot.js). Waits
   // for the page's own load so it never competes with first paint.
+  // UI: a dot on every card (green = saved for offline, red = not yet) and a
+  // "Save all books" button that caches everything at once. Both appear only
+  // once the worker answers, so browsers without one show neither.
   function wireOffline() {
     if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
-    const go = () => {
-      navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
-      navigator.serviceWorker.ready.then(reg => {
-        if (reg.active) reg.active.postMessage({ type: 'cache' });
+    const sw = navigator.serviceWorker;
+    let saveBtn = null, saving = false, finished = false, allSaved = false;
+    const STATUS_KEY = 'library-offline-status';
+    const mb = b => b < 1048576 ? Math.max(1, Math.round(b / 1024)) + ' KB'
+      : (b / 1048576).toFixed(b < 10485760 ? 1 : 0) + ' MB';
+
+    function button(bytes) {
+      if (saveBtn) return saveBtn;
+      const controls = document.querySelector('.carousel-controls');
+      if (!controls) return null;
+      saveBtn = el('button', 'offline-save');
+      saveBtn.type = 'button';
+      saveBtn.dataset.bytes = String(bytes || 0);
+      // between the ‹ › buttons
+      controls.insertBefore(saveBtn, controls.lastChild);
+      saveBtn.addEventListener('click', () => {
+        if (saving || allSaved) return;
+        saving = true; finished = false;
+        saving_(0);
+        // a deliberate tap: ask the browser to keep the files even when the
+        // device runs low on storage (Chrome / Firefox; Safari still clears
+        // sites not opened for ~7 days unless added to the Home Screen)
+        try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+        sw.ready.then(reg => { if (reg.active) reg.active.postMessage({ type: 'cache-all' }); });
+        // fallback if a progress / done message is lost: ask now and then;
+        // a status reporting everything saved ends the wait
+        const poll = setInterval(() => {
+          if (!saving) { clearInterval(poll); return; }
+          sw.ready.then(reg => { if (reg.active) reg.active.postMessage({ type: 'status' }); });
+        }, 3000);
       });
+      return saveBtn;
+    }
+    // Short labels: the pill has one fixed width (shelf.css) for every state,
+    // so it never jumps; the long wording goes to aria-label.
+    //   idle   'Save offline · 11.3 MB'   saving 'Saving 42%' (+ fill bar)
+    //   done   '✓ Saved offline'          failed 'Retry saving'
+    function label(text, done, aria, pct) {
+      if (!saveBtn) return;
+      saveBtn.textContent = text;
+      saveBtn.setAttribute('aria-label', aria || text);
+      saveBtn.classList.toggle('is-done', !!done);
+      saveBtn.classList.toggle('is-saving', pct != null);
+      saveBtn.style.setProperty('--p', pct != null ? pct + '%' : '0%');
+      saveBtn.disabled = !!done;
+    }
+    function saving_(pct) { label('Saving ' + pct + '%', false, 'Saving all books for offline, ' + pct + ' percent', pct); }
+    function idle(bytes) {
+      label('Save offline' + (bytes ? ' · ' + mb(bytes) : ''), false,
+        'Save all books for offline' + (bytes ? ', ' + mb(bytes) : ''));
+    }
+
+    sw.addEventListener('message', e => {
+      const d = e.data || {};
+      if (d.type === 'offline-progress' && saving) {
+        finished = d.done >= d.total;
+        saving_(d.total ? Math.floor(100 * d.done / d.total) : 100);
+      } else if (d.type === 'offline-status') {
+        try { localStorage.setItem(STATUS_KEY, JSON.stringify(d)); } catch (err) {}
+        applyStatus(d);
+      }
+    });
+
+    function applyStatus(d) {
+      {
+        let all = true;
+        document.querySelectorAll('.story-card[data-book]').forEach(card => {
+          const id = card.dataset.book;
+          const ok = !!(d.books && d.books[id]);
+          if (d.books && !(id in d.books)) return;   // not in the offline list
+          if (!ok) all = false;
+          card.classList.add('has-offline');
+          card.classList.toggle('is-offline-ready', ok);
+          const title = card.getAttribute('aria-label').replace(/ \(saved for offline\)$/, '');
+          card.setAttribute('aria-label', ok ? title + ' (saved for offline)' : title);
+        });
+        all = all && d.shell;
+        allSaved = all;
+        if (!button(d.bytes)) return;
+        if (all) { saving = false; label('✓ Saved offline', true, 'All books saved for offline'); }
+        // a status from an earlier, smaller run (this page's own shell
+        // cache) can land mid-save: only a finished save-all counts
+        else if (saving && !finished) return;
+        else if (saving) { saving = false; label('Retry saving', false, 'Some books could not be saved. Try again'); }
+        // only what is left to download (an older worker sends no `missing`)
+        else idle(d.missing != null ? d.missing : d.bytes);
+      }
+    }
+
+    // last known state, shown at once (offline too): the dots and the button
+    // don't wait for the worker; its fresh status then corrects them
+    try {
+      const last = JSON.parse(localStorage.getItem(STATUS_KEY) || 'null');
+      if (last && last.type === 'offline-status') applyStatus(last);
+    } catch (err) {}
+
+    // the button shows at once; the worker's status then fills in the size,
+    // the card dots and the "all saved" state
+    const ask = () => sw.ready.then(reg => {
+      if (!reg.active) return;
+      reg.active.postMessage({ type: 'status' });
+      reg.active.postMessage({ type: 'cache' });
+    });
+    const go = () => {
+      sw.register('sw.js', { scope: './' }).then(() => {
+        if (button(0) && !saving && !allSaved && !saveBtn.textContent) idle(0);
+      }, () => {});
+      ask();
+      // an updated sw.js took over (an older worker may not know 'status'):
+      // ask the new one
+      sw.addEventListener('controllerchange', ask);
     };
     if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   }

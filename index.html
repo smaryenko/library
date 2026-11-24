@@ -16,11 +16,11 @@
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://smaryenko.github.io/library/assets/og.png">
-  <!-- Fredoka + Nunito: the stylesheet is added by shelf.js so it never
-       blocks the first paint (it can take seconds); system fonts show first -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="assets/css/shelf.css?v=28">
+  <!-- Fredoka + Nunito, self-hosted (@font-face in shelf.css): preloaded so
+       they arrive with the CSS and the text never flicks from system fonts -->
+  <link rel="preload" href="assets/fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/nunito-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/shelf.css?v=31">
 </head>
 <body>
   <div class="shelf-bg" aria-hidden="true">
@@ -38,6 +38,6 @@
 
   <!-- manifest first, then the shelf builder -->
   <script src="assets/js/stories.js?v=35"></script>
-  <script src="assets/js/shelf.js?v=32"></script>
+  <script src="assets/js/shelf.js?v=39"></script>
 </body>
 </html>

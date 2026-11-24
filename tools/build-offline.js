@@ -5,8 +5,10 @@
 //   { shell: [...], books: { <id>: [...] } }
 // shell = the library page, every shared file under assets/ and every shelf
 // card cover.jpg; books.<id> = everything under books/<id>/ the page can load.
-// sw.js caches the shell when the library (or any book) loads, and a book's
-// list when that book loads. Paths are relative to the site root, no ?v=.
+// sw.js caches the shell when the library (or any book) loads, a book's
+// list when that book loads, and everything when the shelf's "Save all
+// books" button is tapped (`bytes` = total size, shown on that button).
+// Paths are relative to the site root, no ?v=. Only books in stories.js.
 //
 //   node tools/build-offline.js
 //
@@ -32,6 +34,7 @@ const SKIP = [
   /(^|\/)preview\.(js|py)$/i,
   /\.py$/i,
   /\.md$/i,
+  /\.txt$/i,          // licence texts (assets/fonts/OFL-*.txt)
   /(^|\/)\./,
 ];
 const keep = rel => KEEP.has(rel) || !SKIP.some(re => re.test(rel));
@@ -47,8 +50,12 @@ function walk(dir) {
   return out;
 }
 
-const bookIds = fs.readdirSync(path.join(ROOT, 'books'))
-  .filter(n => n[0] !== '.' && fs.statSync(path.join(ROOT, 'books', n)).isDirectory())
+// only books on the shelf (stories.js): a local-only folder like the
+// git-ignored books/preview/ isn't deployed, so listing it would only 404
+global.window = {};
+require(path.join(ROOT, 'assets/js/stories.js'));
+const bookIds = (global.window.STORIES || []).map(s => s.id)
+  .filter(id => fs.existsSync(path.join(ROOT, 'books', id)))
   .sort();
 
 const shell = ['./', 'index.html', ...walk('assets')];
@@ -65,9 +72,17 @@ const size = list => list.reduce((s, p) => {
   return s + (p.endsWith('/') || !fs.existsSync(f) || fs.statSync(f).isDirectory() ? 0 : fs.statSync(f).size);
 }, 0);
 
+// bytes of everything (each file once), and each file's own size, so the
+// shelf's "save all" button can show only what is still left to download
+const all = [...new Set(shell.concat(...Object.values(books)))];
+const bytes = size(all);
+const sizes = {};
+all.forEach(p => { const b = size([p]); if (b) sizes[p] = b; });
+
 fs.writeFileSync(path.join(ROOT, 'offline-manifest.json'),
-  JSON.stringify({ shell, books }, null, 1) + '\n');
+  JSON.stringify({ bytes, shell, books, sizes }, null, 1) + '\n');
 
 const mb = b => (b / 1048576).toFixed(2) + ' MB';
+console.log(`all: ${all.length} files, ${mb(bytes)}`);
 console.log(`shell: ${shell.length} files, ${mb(size(shell))}`);
 bookIds.forEach(id => console.log(`  ${id}: ${books[id].length} files, ${mb(size(books[id]))}`));
