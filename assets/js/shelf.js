@@ -430,7 +430,7 @@
         // a status reporting everything saved ends the wait
         const poll = setInterval(() => {
           if (!saving) { clearInterval(poll); return; }
-          sw.ready.then(reg => { if (reg.active) reg.active.postMessage({ type: 'status' }); });
+          refreshLocal();
         }, 3000);
       });
       return saveBtn;
@@ -491,6 +491,39 @@
       }
     }
 
+    // The page reads the worker's cache itself (Cache API is available to
+    // pages too), so the size and the dots never depend on a worker message
+    // arriving (an old worker, a tab it doesn't control yet...). Same shape
+    // as sw.js status(); keep the two in step.
+    async function localStatus() {
+      if (!window.caches) return null;
+      const scope = new URL('./', location.href).href;
+      const murl = scope + 'offline-manifest.json';
+      const names = (await caches.keys()).filter(n => /^library-v/.test(n));
+      const cache = names.length ? await caches.open(names[names.length - 1]) : null;
+      let m = null;
+      try { const r = await fetch(murl, { cache: 'no-cache' }); if (r.ok) m = await r.json(); } catch (err) {}
+      if (!m && cache) { const r = await cache.match(murl); if (r) m = await r.json(); }
+      if (!m) return null;
+      const has = async p => !!cache && !!(await cache.match(new URL(p, scope).href, { ignoreSearch: true }));
+      const hasAll = async list => { for (const p of list) if (!(await has(p))) return false; return true; };
+      const shell = await hasAll(m.shell || []);
+      const books = {};
+      for (const id of Object.keys(m.books || {})) books[id] = shell && await hasAll(m.books[id]);
+      const sizes = m.sizes || {};
+      const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
+      let missing = 0;
+      for (const p of all) if (!(await has(p))) missing += sizes[p] || 0;
+      return { type: 'offline-status', shell, books, bytes: m.bytes || 0, missing };
+    }
+    function refreshLocal() {
+      localStatus().then(s => {
+        if (!s) return;
+        try { localStorage.setItem(STATUS_KEY, JSON.stringify(s)); } catch (err) {}
+        applyStatus(s);
+      }, () => {});
+    }
+
     // last known state, shown at once (offline too): the dots and the button
     // don't wait for the worker; its fresh status then corrects them
     try {
@@ -510,6 +543,9 @@
         if (button(0) && !saving && !allSaved && !saveBtn.textContent) idle(0);
       }, () => {});
       ask();
+      refreshLocal();
+      // again once the background shell caching has had time to land
+      setTimeout(refreshLocal, 4000);
       // an updated sw.js took over (an older worker may not know 'status'):
       // ask the new one
       sw.addEventListener('controllerchange', ask);
