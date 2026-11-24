@@ -1,5 +1,5 @@
 # Where Is the Cat?
-Non-fiction concept book, 8 pages, shown with realistic wooden toys on a dark
+Non-fiction concept book, 11 pages, shown with realistic wooden toys on a dark
 walnut table in a softly blurred, warm room. No names: always "the cat" and
 "the kitten". Picture on one page, text on the other.
 - Page 1 "Where is the cat?" holds every preposition: in, on, under, behind,
@@ -9,8 +9,10 @@ walnut table in a softly blurred, warm room. No names: always "the cat" and
   the sentence (cycles back to "in"; tap while moving snaps to the end).
   Props a word needs (little table, ball, door, ramp) grow in, the ones it no
   longer needs shrink away.
-- Pages 2-8 are opposites: open / closed, tall / short, big / small,
-  full / empty, near / far, asleep / awake, together. Each opens on the
+- Pages 2-11 are opposites and little words: open / closed, tall / short,
+  big / small, full / empty, near / far, asleep / awake, and, or, not,
+  together. Left / right are as the reader sees them (the little table
+  shrinks away for those two so only the box is the reference). Each opens on the
   first word of its text; tap plays to the second, the next tap plays back.
 - `assets/js/scene.js`: one three.js renderer (vendored
   `assets/vendor/three/three.global.min.js`) laid over each page's empty
@@ -18,7 +20,7 @@ walnut table in a softly blurred, warm room. No names: always "the cat" and
   built once. `STATIONS` (page 1): each has a resting pose (k = 1 is its
   word) and the move from the previous station (`path` of slides / arcs / lifts or a
   custom `move`), `show` / `hide` windows for props, optional camera `cam`.
-  `PAGES[1..7]`: `pose(u)`, u = 0 first word, u = 1 second.
+  `PAGES[1..10]`: `pose(u)`, u = 0 first word, u = 1 second.
 - Page 1's sentence: `pages.js` sets `window.WHERECAT_PREP` (same order as
   `STATIONS`) and wraps the shown sentence in `[data-wherecat-text]`;
   scene.js rewrites it halfway through each move (never in `.obj-prerender`).

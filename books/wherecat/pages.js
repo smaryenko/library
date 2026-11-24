@@ -17,6 +17,8 @@
     'The cat is ' + w('behind') + ' the box.',
     'The cat is ' + w('in front of') + ' the box.',
     'The cat is ' + w('next to') + ' the box.',
+    'The cat is ' + w('to the left of') + ' the box.',
+    'The cat is ' + w('to the right of') + ' the box.',
     'The cat is ' + w('between') + ' the box and the table.',
     'The cat is ' + w('above') + '. The ball is ' + w('below') + '.',
     'Whoosh! The cat goes ' + w('over') + ' the box.',
@@ -35,6 +37,9 @@
     ['Full and empty', 'The basket is ' + w('full') + '. Tip! Now it is ' + w('empty') + '.'],
     ['Near and far', 'The kitten is ' + w('near') + '. The cat is ' + w('far') + '.'],
     ['Asleep and awake', 'The cat is ' + w('asleep') + '\u2026 now he is ' + w('awake') + '!'],
+    ['And', 'Here is the cat ' + w('and') + ' here is the kitten.'],
+    ['Or', 'The box ' + w('or') + ' the ball? The kitten picks the ball.'],
+    ['Not', 'The cat is in the box. The kitten is ' + w('not') + '.'],
     ['Together', 'The cat and the kitten are ' + w('together') + ', in the box. Goodnight!']
   ];
   window.BOOK_PAGES = P.map(([title, bodyHtml], i) => ({

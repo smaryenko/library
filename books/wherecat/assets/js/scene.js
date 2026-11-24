@@ -1,4 +1,4 @@
-// WHERE IS THE CAT? One three.js table scene shared by all 8 pages.
+// WHERE IS THE CAT? One three.js table scene shared by all 11 pages.
 //
 // Realistic wooden toys on a dark walnut table in a softly blurred room (the
 // look approved in books/preview/assets/js/woodtoys.js): a black painted
@@ -8,7 +8,7 @@
 // Page 1 holds every preposition: it opens with the cat IN the box; each tap
 // moves the cat to the next word (STATIONS) and swaps the red label and the
 // page sentence; tap while moving snaps to the end; it cycles.
-// Pages 2-8 are opposites: pose(u), u = 0 the first word, u = 1 the second;
+// Pages 2-11 are opposites and little words (and / or / not): pose(u), u = 0 the first word, u = 1 the second;
 // tap plays to the other end, tap while playing snaps.
 // The camera auto-fits the props in use.
 //
@@ -486,7 +486,12 @@ const STATIONS = [
     path: [arc(PI, 0, { w: 1.6 })] },
   { word: 'next to', props: ['box', 'table'],
     path: [arc(0, PI / 2)] },
-  { word: 'between', props: ['box', 'table'],
+  // left / right as the child sees it; the little table steps away so only the box is the reference
+  { word: 'to the left of', props: ['box'], hide: { table: [0, 0.3] },
+    path: [arc(PI / 2, -PI / 2, { w: 1.6 })] },
+  { word: 'to the right of', props: ['box'],
+    path: [arc(-PI / 2, PI / 2, { w: 1.6 })] },
+  { word: 'between', props: ['box', 'table'], show: { table: [0, 0.3] },
     path: [arc(PI / 2, -PI / 2, { w: 1.6 }), { to: [GAP_X, 0, 0.02], kind: 'slide', w: 0.5 }] },
   { word: 'above / below', props: ['box', 'table', 'ball'], go: [0, 0.45], show: { ball: [0.35, 0.5] },
     set(P, k) { rollBall(P.ball.root, BALL_FROM, BALL_TO, easeOut(seg(k, 0.5, 1)), BIG_BALL_R); },
@@ -631,6 +636,27 @@ const PAGES = [
       const rx = lerp(lerp(0.12, -0.12, st), 0, back);
       const bounce = 0.04 * Math.sin(Math.PI * seg(u, 0.75, 0.95));
       put(P.cat, [0, bounce, 0], 0, { rx, sx, sy, awake: u >= 0.4 });
+    } },
+  { word: 'and', say: 'The cat sits on the table, and the kitten slides in next to it.', props: ['cat', 'kitten'], T: MOVE_T * 1.3,
+    pose(u, P) {
+      put(P.cat, [-0.3, 0, 0], 0.3);
+      slide(P.kitten, [0.95, 0, 0.45], [0.3, 0, 0.2], u, { y0: -0.4, y1: -0.35 });
+    } },
+  { word: 'or', say: 'The box or the ball? The kitten looks at one, then the other, and picks the ball.', props: ['box', 'ball', 'kitten'], T: 2.8,
+    pose(u, P) {
+      place(P.box.root, -0.7, 0); lid(P, 1);
+      const B = [0.75, BIG_BALL_R, 0.1]; P.ball.root.position.set(...B);
+      // looks at the box, then the ball, then slides over to the ball
+      const look = lerpAngle(-0.9, 0.9, ease(seg(u, 0.25, 0.45))) * ease(seg(u, 0, 0.15));
+      if (u < 0.5) put(P.kitten, [0, 0, 0.5], look);
+      else slide(P.kitten, [0, 0, 0.5], [0.5, 0, 0.3], seg(u, 0.5, 1), { y0: 0.9, y1: 0.5 });
+    } },
+  { word: 'not', say: 'The cat is in the box. The kitten is not: it shakes its head.', props: ['box', 'cat', 'kitten'], T: 1.6,
+    pose(u, P) {
+      lid(P, 1);
+      put(P.cat, [-0.15, IN_Y, 0], 0.2);
+      const k = seg(u, 0.1, 0.9);           // a little side-to-side head shake, "no"
+      put(P.kitten, [0.95, 0, 0.4], -0.35 + 0.5 * Math.sin(3 * 2 * PI * k) * (1 - k));
     } },
   { word: 'together', say: 'The cat and the kitten are together in the box. Goodnight.', props: ['box', 'cat', 'kitten'], T: 3.0,
     pose(u, P) {

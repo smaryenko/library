@@ -908,3 +908,35 @@ canvas.snow {
   .obj-slot.is-caption .text-block { padding: .3em .9em .4em; }
   .obj-slot.is-caption.is-scene { width: min(520px, 56vw) !important; bottom: 10px; }
 }
+
+/* ---- loading screen for heavy (three.js / WebGL) books ----------------------
+   The book's index.html puts <div class="book-loading"> first in <body> and
+   loads every script with `defer`, so this paints at once; boot.js fades it
+   out when the backdrop and first page are up (see skills/book-authoring.md). */
+.book-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--loading-bg, #0e1222);
+  color: var(--loading-fg, #eaf2ff);
+  font: 600 16px/1.3 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  transition: opacity 0.45s ease;
+}
+.book-loading.is-done { opacity: 0; pointer-events: none; }
+.book-loading .spinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 4px solid color-mix(in srgb, currentColor 25%, transparent);
+  border-top-color: currentColor;
+  animation: book-loading-spin 0.9s linear infinite;
+}
+@keyframes book-loading-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .book-loading .spinner { animation-duration: 2.4s; }
+}

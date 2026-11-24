@@ -40,7 +40,7 @@ stories/
           webgl-stage.js (a live three.js world over a normal book),
           minigame.js (puzzles, choices, branching, saved progress)
   tools/
-    build-previews.js        regenerates cover.svg + og.svg for every book
+    build-previews.js        regenerates cover.svg + og.svg for every book (the shelf loads a cover.jpg export)
                              with a books/<id>/preview.js
   books/<id>/                ONE folder per book (see its README.md)
     index.html, pages.js, README.md, favicon.svg, cover.*, og.*,

@@ -107,7 +107,7 @@
       var backdropFn =
         (entry && entry.backdrop && typeof window[entry.backdrop] === 'function')
           ? window[entry.backdrop] : null;
-      if (backdropFn) backdropFn();
+      if (backdropFn) var backdropReady = backdropFn();
     } catch (e) { /* non-fatal */ }
 
     // 3) the book itself.
@@ -118,6 +118,31 @@
         stage.focus();
       }
     } catch (e) { /* non-fatal */ }
+
+    // 4) heavy books show a .book-loading screen from the first paint (it is
+    // in their HTML, scripts are deferred). Fade it out once the page has
+    // fully loaded, the backdrop is ready (a backdrop may return a Promise
+    // for async work) and two frames have drawn (WebGL first frame is up).
+    hideLoading(backdropReady);
+  }
+
+  function hideLoading(ready) {
+    var el = document.querySelector('.book-loading');
+    if (!el) return;
+    var loaded = new Promise(function (res) {
+      if (document.readyState === 'complete') res(); else window.addEventListener('load', res);
+    });
+    var bd = ready && typeof ready.then === 'function' ? ready.catch(function () {}) : null;
+    var safety = new Promise(function (res) { setTimeout(res, 20000); });   // never stuck behind a failed load
+    Promise.race([Promise.all([loaded, bd]), safety]).then(function () {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          el.classList.add('is-done');
+          el.setAttribute('aria-hidden', 'true');
+          setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 600);
+        });
+      });
+    });
   }
 
   if (document.readyState === 'loading') {

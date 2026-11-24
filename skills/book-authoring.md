@@ -33,9 +33,10 @@ stories/
       index.html             book entry page (so books/<id>/ is a short link)
       pages.js               this book's page roster (title/body/build per page)
       preview.js             optional node scene for cover.svg / og.svg (tools/build-previews.js)
-      cover.svg|png          the shelf-card preview art
+      cover.svg              source art for the shelf card (not loaded by the shelf)
+      cover.jpg              the shelf-card preview the manifest points at
       favicon.svg            per-book favicon
-      og.svg|png             per-book Open Graph / social preview image
+      og.svg + og.png        per-book Open Graph / social preview image (both required)
       assets/                book-specific media + character builders
         js/    backdrop.js   this book's backdrop scene (e.g. winter night)
                <character>.js builders returning layered data-part SVG
@@ -70,7 +71,7 @@ window.STORIES = [
     title: 'Christmas Storybook',
     blurb: 'Meet Santa, a merry elf, and nine reindeer on a snowy night!', // kid-friendly line under the card title
     category: 'fiction',                // card corner label: 'fiction' | 'non-fiction' | 'puzzle'
-    cover: 'books/xmas/cover.svg',      // card preview art
+    cover: 'books/xmas/cover.jpg',      // card preview: always a raster image
     favicon: 'books/xmas/favicon.svg',
     og: 'books/xmas/og.svg',
     url: 'books/xmas/',                 // short link (folder's index.html)
@@ -236,15 +237,23 @@ emit the shapes into one SVG, name the movers, write a few keyframe tracks.
 
 ## 4. Per-book assets
 
-- **cover** — the shelf card preview. A single flat SVG scene is ideal (crisp,
-  tiny, themeable). Draw it original (see `svg-character-authoring.md`).
+- **cover** — the shelf card preview. The shelf only ever loads a raster
+  **`cover.jpg`** (800×600, JPEG q≈82, ~20–90 KB): never point the manifest
+  at an SVG or at code, big vector covers (filters, thousands of paths) made
+  the main page slow. Author the art as `cover.svg` (by hand or via
+  `preview.js`, original, see `svg-character-authoring.md`), then export it:
+  headless Chrome `--screenshot --window-size=400,300
+  --force-device-scale-factor=2` of `cover.svg`, flattened to `cover.jpg`
+  (PIL). Re-export whenever `cover.svg` changes. Screenshot an HTML wrapper
+  (`<img src="cover.svg" style="display:block;width:400px;height:300px">`,
+  body margin 0), not the bare SVG: a viewBox-only SVG gets letterboxed and
+  leaves a white strip (this hit upwego and athome). Same for `og.svg`.
 - **favicon.svg** — original vector icon for this book's tab.
-- **og image** — social/link preview (1200×630). An original `og.svg` works and
-  is committable now; a raster `og.png` is the most broadly-supported form for
-  social scrapers, so export one when you can render (see the no-checks note):
-  headless Chrome `--screenshot --window-size=1200,630` of `og.svg`, then
-  point the og/twitter meta tags and the manifest `og` at `og.png`.
-  Reference it from the book's `<meta property="og:image">` and the manifest.
+- **og image** — social/link preview (1200×630). REQUIRED, in BOTH forms:
+  `og.svg` (the source art) and `og.png` (headless Chrome
+  `--screenshot --window-size=1200,630` of `og.svg`). The og/twitter meta
+  tags and the manifest `og` point at `og.png`, the most broadly supported
+  form for social scrapers. Re-export the PNG whenever `og.svg` changes.
 - **preview.js** — node-only scene for the cover + og image, built from the
   book's own builders. `node tools/build-previews.js [id…]` regenerates
   `cover.svg` / `og.svg` for every book that has one (the generic tool lives in
@@ -266,6 +275,20 @@ Load optional shared modules (`motion.js`, `color.js`, `fullview.*`,
 carries the SAME `?v=N` in every book; when a shared file changes, bump that
 number in every book's `index.html` (all of them, plus the local `books/preview/`) together. Book-local files keep their
 own `?v=`, bumped when they change.
+
+### Heavy books: loading screen first
+
+A book that pulls in three.js / WebGL or other big scripts (longway, city,
+numberland, athome) must open at once from the shelf with a loading
+indicator, not a blank page while the scripts download:
+- first thing in `<body>`:
+  `<div class="book-loading" role="status" aria-live="polite" style="--loading-bg:<theme>;--loading-fg:<readable text>"><span class="spinner" aria-hidden="true"></span><span>Loading the book…</span></div>`
+  (styles in shared `book.css`);
+- every `<script>` gets `defer` (order is kept; the loader paints before
+  any script runs);
+- shared `boot.js` fades it out after window `load`, the backdrop is mounted
+  (a backdrop fn may return a Promise for async textures etc.) and two
+  frames have drawn; a 20 s safety timeout never leaves it stuck.
 
 ## 4b. Next-page prerender (shared, on by default)
 
@@ -338,7 +361,9 @@ uses the same `pinch.js` on every zoomed view.
 
 ## 5. Checklist for a new book
 
-- [ ] `books/<id>/` folder created with `index.html`, `pages.js`, `cover`,
+- [ ] Every book ships its preview images: `cover.svg` + `cover.jpg` (shelf
+  card) and `og.svg` + `og.png` (social preview), see §4.
+- [ ] `books/<id>/` folder created with `index.html`, `pages.js`, `cover.jpg` (raster, see §4),
       `favicon.svg`, `og` image, and `assets/js/` character builders.
 - [ ] The book page `<body>` holds **only `<script>` tags**. The shared
       `boot.js` adds the back-to-library button, the `#stage` and the hint
