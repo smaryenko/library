@@ -425,13 +425,10 @@
         // device runs low on storage (Chrome / Firefox; Safari still clears
         // sites not opened for ~7 days unless added to the Home Screen)
         try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
-        sw.ready.then(reg => { if (reg.active) reg.active.postMessage({ type: 'cache-all' }); });
-        // fallback if a progress / done message is lost: ask now and then;
-        // a status reporting everything saved ends the wait
-        const poll = setInterval(() => {
-          if (!saving) { clearInterval(poll); return; }
-          refreshLocal();
-        }, 3000);
+        // the page downloads into the worker's cache itself: no message to a
+        // worker that may be an older version (one that ignored 'cache-all'
+        // left the button on 0% for good)
+        saveAll().then(refreshLocal, refreshLocal);
       });
       return saveBtn;
     }
@@ -516,6 +513,45 @@
       for (const p of all) if (!(await has(p))) missing += sizes[p] || 0;
       return { type: 'offline-status', shell, books, bytes: m.bytes || 0, missing };
     }
+    // "Save all": every manifest file not cached yet, 4 at a time, progress on
+    // the button. Same cache name as sw.js (CACHE = 'library-v' + VERSION).
+    async function saveAll() {
+      const scope = new URL('./', location.href).href;
+      const murl = scope + 'offline-manifest.json';
+      const r0 = await fetch(murl, { cache: 'no-cache' });
+      if (!r0.ok) throw new Error('manifest');
+      const m = await r0.clone().json();
+      const names = (await caches.keys()).filter(n => /^library-v/.test(n));
+      const cache = await caches.open(names.length ? names[names.length - 1] : 'library-v1');
+      await cache.put(murl, r0);
+      const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
+      const todo = [];
+      for (const p of all) {
+        const url = new URL(p, scope).href;
+        if (!(await cache.match(url, { ignoreSearch: true }))) todo.push(url);
+      }
+      let done = 0;
+      const step = () => { finished = done >= todo.length; saving_(todo.length ? Math.floor(100 * done / todo.length) : 100); };
+      step();
+      for (let i = 0; i < todo.length; i += 4) {
+        await Promise.all(todo.slice(i, i + 4).map(async url => {
+          try {
+            const r = await fetch(url, { cache: 'no-cache' });
+            if (r.ok) {
+              // a redirected response can't answer a navigation: plain copy
+              const body = r.redirected
+                ? new Response(await r.blob(), { status: r.status, statusText: r.statusText, headers: r.headers })
+                : r;
+              await cache.put(url, body);
+            }
+          } catch (err) { /* offline or gone: "Retry saving" */ }
+          done++;
+        }));
+        step();
+      }
+      finished = true;
+    }
+
     function refreshLocal() {
       localStatus().then(s => {
         if (!s) return;

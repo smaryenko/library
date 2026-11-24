@@ -1,5 +1,5 @@
 {
- "bytes": 11943917,
+ "bytes": 11945550,
  "shell": [
   "./",
   "index.html",
@@ -333,7 +333,7 @@
   "assets/js/music.js": 2602,
   "assets/js/pinch.js": 3550,
   "assets/js/pseudo3d-object.js": 14758,
-  "assets/js/shelf.js": 25998,
+  "assets/js/shelf.js": 27631,
   "assets/js/stories.js": 12364,
   "assets/js/storybook.js": 49583,
   "assets/js/webgl-stage.js": 13068,
