@@ -502,16 +502,34 @@
       try { const r = await fetch(murl, { cache: 'no-cache' }); if (r.ok) m = await r.json(); } catch (err) {}
       if (!m && cache) { const r = await cache.match(murl); if (r) m = await r.json(); }
       if (!m) return null;
-      const has = async p => !!cache && !!(await cache.match(new URL(p, scope).href, { ignoreSearch: true }));
-      const hasAll = async list => { for (const p of list) if (!(await has(p))) return false; return true; };
-      const shell = await hasAll(m.shell || []);
-      const books = {};
-      for (const id of Object.keys(m.books || {})) books[id] = shell && await hasAll(m.books[id]);
-      const sizes = m.sizes || {};
       const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
-      let missing = 0;
-      for (const p of all) if (!(await has(p))) missing += sizes[p] || 0;
+      // cached AND same content as the manifest (x-hash, see sw.js fresh())
+      const ok = {};
+      await Promise.all(all.map(async p => { ok[p] = await fresh(cache, scope, p, m); }));
+      const hasAll = list => list.every(p => ok[p]);
+      const shell = hasAll(m.shell || []);
+      const books = {};
+      for (const id of Object.keys(m.books || {})) books[id] = shell && hasAll(m.books[id]);
+      const sizes = m.sizes || {};
+      const missing = all.reduce((s, p) => s + (ok[p] ? 0 : sizes[p] || 0), 0);
       return { type: 'offline-status', shell, books, bytes: m.bytes || 0, missing };
+    }
+    async function fresh(cache, scope, p, m) {
+      if (!cache) return false;
+      const r = await cache.match(new URL(p, scope).href, { ignoreSearch: true });
+      if (!r) return false;
+      const want = m.hashes && m.hashes[p];
+      return !want || r.headers.get('x-hash') === want;
+    }
+    // stored copy with x-hash = SHA-1 of the body (first 16 hex); also turns
+    // a redirected response into a plain one. Same as sw.js clean().
+    async function stamp(r) {
+      const buf = await r.arrayBuffer();
+      const d = new Uint8Array(await crypto.subtle.digest('SHA-1', buf));
+      const h = Array.from(d, b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+      const headers = new Headers(r.headers);
+      headers.set('x-hash', h);
+      return new Response(buf, { status: r.status, statusText: r.statusText, headers });
     }
     // "Save all": every manifest file not cached yet, 4 at a time, progress on
     // the button. Same cache name as sw.js (CACHE = 'library-v' + VERSION).
@@ -525,9 +543,12 @@
       const cache = await caches.open(names.length ? names[names.length - 1] : 'library-v1');
       await cache.put(murl, r0);
       const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
-      // what's cached already: one keys() listing, not 251 separate lookups
-      const have = new Set((await cache.keys()).map(k => k.url.split('?')[0]));
-      const todo = all.map(p => new URL(p, scope).href).filter(u => !have.has(u));
+      // new or changed files (all checks run at once)
+      const ok = await Promise.all(all.map(p => fresh(cache, scope, p, m)));
+      const todo = all.filter((p, i) => !ok[i]).map(p => new URL(p, scope).href);
+      // files no longer in the manifest (removed from a book): drop them
+      const keep = new Set(all.map(p => new URL(p, scope).href).concat(murl));
+      (await cache.keys()).forEach(k => { if (!keep.has(k.url.split('?')[0])) cache.delete(k); });
       let done = 0;
       const step = () => { finished = done >= todo.length; saving_(todo.length ? Math.floor(100 * done / todo.length) : 100); };
       step();
@@ -538,13 +559,13 @@
       const one = async url => {
         {
           try {
-            const r = await fetch(url, { headers: { 'x-offline-save': '1' } });
+            // no-cache: a changed file must not come from the HTTP cache
+            const r = await fetch(url, { cache: 'no-cache', headers: { 'x-offline-save': '1' } });
             if (r.ok) {
-              // a redirected response can't answer a navigation: plain copy
-              const body = r.redirected
-                ? new Response(await r.blob(), { status: r.status, statusText: r.statusText, headers: r.headers })
-                : r;
-              await cache.put(url, body);
+              // old ?v= copies of this file go, the fresh stamped copy stays
+              const olds = await cache.keys(url, { ignoreSearch: true });
+              await cache.put(url, await stamp(r));
+              await Promise.all(olds.filter(k => k.url !== url).map(k => cache.delete(k)));
             }
           } catch (err) { /* offline or gone: "Retry saving" */ }
           done++;

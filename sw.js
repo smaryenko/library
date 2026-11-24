@@ -81,22 +81,17 @@ async function status() {
   const m = await storedManifest();
   if (!m) return null;
   const cache = await caches.open(CACHE);
-  const has = async list => {
-    for (const p of list) {
-      if (!(await cache.match(new URL(p, SCOPE).href, { ignoreSearch: true }))) return false;
-    }
-    return true;
-  };
-  const shell = await has(m.shell || []);
-  const books = {};
-  for (const id of Object.keys(m.books || {})) books[id] = shell && await has(m.books[id]);
-  // bytes still to download for "save all" (each file once)
-  const sizes = m.sizes || {};
   const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
-  let missing = 0;
-  for (const p of all) {
-    if (!(await cache.match(new URL(p, SCOPE).href, { ignoreSearch: true }))) missing += sizes[p] || 0;
-  }
+  // each file checked once: cached AND the same content as the manifest
+  const ok = {};
+  await Promise.all(all.map(async p => { ok[p] = await fresh(cache, p, m); }));
+  const has = list => list.every(p => ok[p]);
+  const shell = has(m.shell || []);
+  const books = {};
+  for (const id of Object.keys(m.books || {})) books[id] = shell && has(m.books[id]);
+  // bytes still to download for "save all" (new + changed files)
+  const sizes = m.sizes || {};
+  const missing = all.reduce((s, p) => s + (ok[p] ? 0 : sizes[p] || 0), 0);
   return { type: 'offline-status', shell, books, bytes: m.bytes || 0, missing };
 }
 
@@ -122,17 +117,28 @@ function precache(books, onProgress) {
     if (!m) return;
     const ids = books === 'all' ? Object.keys(m.books || {}) : (books || []);
     const list = [...new Set((m.shell || []).concat(...ids.map(id => (m.books || {})[id] || [])))];
-    await fill(list, onProgress);
+    await fill(list, onProgress, m);
   });
   return busy;
 }
 
-async function fill(paths, onProgress) {
+// Content fingerprints: tools/build-offline.js writes `hashes` (first 16 hex
+// of each file's SHA-1) into the manifest; every cached copy carries the
+// SHA-1 of what was actually stored in an x-hash header. A copy whose hash
+// differs (the file changed in a deploy) counts as missing: the card goes
+// red, "Save all" fetches just those files. Same scheme in shelf.js.
+async function fresh(cache, p, m) {
+  const r = await cache.match(new URL(p, SCOPE).href, { ignoreSearch: true });
+  if (!r) return false;
+  const want = m && m.hashes && m.hashes[p];
+  return !want || r.headers.get('x-hash') === want;
+}
+
+async function fill(paths, onProgress, m) {
   const cache = await caches.open(CACHE);
   const todo = [];
   for (const p of paths) {
-    const url = new URL(p, SCOPE).href;
-    if (!(await cache.match(url, { ignoreSearch: true }))) todo.push(url);
+    if (!(await fresh(cache, p, m))) todo.push(new URL(p, SCOPE).href);
   }
   // a few at a time: keeps the connection free for what the reader is doing
   let done = 0;
@@ -140,8 +146,12 @@ async function fill(paths, onProgress) {
   for (let i = 0; i < todo.length; i += 4) {
     await Promise.all(todo.slice(i, i + 4).map(async url => {
       try {
-        const r = await fetch(url);
-        if (r.ok && r.type === 'basic') await cache.put(url, await clean(r));
+        // no-cache: a changed file must not come from the HTTP cache
+        const r = await fetch(url, { cache: 'no-cache' });
+        if (r.ok && r.type === 'basic') {
+          await cache.put(url, await clean(r));
+          await dropOthers(cache, new Request(url));
+        }
       } catch (err) { /* offline or gone: try again on the next load */ }
     }));
     done = Math.min(todo.length, i + 4);
@@ -149,11 +159,16 @@ async function fill(paths, onProgress) {
   }
 }
 
-// a redirected response (books/x -> books/x/) can't answer a page navigation:
-// store a plain copy instead
+// Every stored copy is rebuilt with an x-hash header (SHA-1 of its body,
+// first 16 hex). That also makes a redirected response (books/x -> books/x/)
+// a plain one, which a page navigation can use.
 async function clean(r) {
-  if (!r.redirected) return r;
-  return new Response(await r.blob(), { status: r.status, statusText: r.statusText, headers: r.headers });
+  const buf = await r.arrayBuffer();
+  const d = new Uint8Array(await crypto.subtle.digest('SHA-1', buf));
+  const h = Array.from(d, b => b.toString(16).padStart(2, '0')).join('').slice(0, 16);
+  const headers = new Headers(r.headers);
+  headers.set('x-hash', h);
+  return new Response(buf, { status: r.status, statusText: r.statusText, headers });
 }
 
 // ---- serving ---------------------------------------------------------------

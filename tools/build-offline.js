@@ -78,9 +78,20 @@ const all = [...new Set(shell.concat(...Object.values(books)))];
 const bytes = size(all);
 const sizes = {};
 all.forEach(p => { const b = size([p]); if (b) sizes[p] = b; });
+// content fingerprints (first 16 hex of SHA-1): a cached copy with a
+// different hash is out of date, so changed files are re-downloaded.
+// Folder URLs (books/x/) are their index.html.
+const hashes = {};
+all.forEach(p => {
+  let f = path.join(ROOT, p);
+  if (p === './' || p.endsWith('/')) f = path.join(f, 'index.html');
+  if (fs.existsSync(f) && fs.statSync(f).isFile()) {
+    hashes[p] = require('crypto').createHash('sha1').update(fs.readFileSync(f)).digest('hex').slice(0, 16);
+  }
+});
 
 fs.writeFileSync(path.join(ROOT, 'offline-manifest.json'),
-  JSON.stringify({ bytes, shell, books, sizes }, null, 1) + '\n');
+  JSON.stringify({ bytes, shell, books, sizes, hashes }, null, 1) + '\n');
 
 const mb = b => (b / 1048576).toFixed(2) + ' MB';
 console.log(`all: ${all.length} files, ${mb(bytes)}`);

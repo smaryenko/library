@@ -104,7 +104,10 @@ python3 -m http.server 8777
 library and shared engine when the shelf loads, and each book's files when
 that book is opened; after that they work without a network. The shelf's
 "Save all books for offline" button caches everything at once, and a dot on
-each card shows whether that book is saved (green) or not yet (red). Music, og
+each card shows whether that book is saved (green) or not yet (red). The
+manifest carries a content hash per file, so after a deploy any new or
+changed file turns its book red again and the button fetches just those
+(files removed from the manifest are dropped from the cache). Music, og
 images and cover sources are not cached (offline the music is off). The file lists come from
 `node tools/build-offline.js`: re-run it when files are added, removed or
 renamed. Service workers need `http(s)://` or `localhost`, not `file://`.
