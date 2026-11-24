@@ -393,10 +393,26 @@
     window.addEventListener('pointercancel', reset, true);
   }
 
+  // --- offline -----------------------------------------------------------
+  // The site-wide service worker (sw.js, scope = site root) caches the
+  // library shell; each book page asks for its own files (boot.js). Waits
+  // for the page's own load so it never competes with first paint.
+  function wireOffline() {
+    if (!('serviceWorker' in navigator) || location.protocol === 'file:') return;
+    const go = () => {
+      navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
+      navigator.serviceWorker.ready.then(reg => {
+        if (reg.active) reg.active.postMessage({ type: 'cache' });
+      });
+    };
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  }
+
   function start() {
     const root = document.getElementById('shelf');
     if (root) mountShelf(root);
     wirePullToRefresh();
+    wireOffline();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);

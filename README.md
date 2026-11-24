@@ -42,6 +42,8 @@ stories/
   tools/
     build-previews.js        regenerates cover.svg + og.svg for every book (the shelf loads a cover.jpg export)
                              with a books/<id>/preview.js
+    build-offline.js         writes offline-manifest.json (the files sw.js caches)
+  sw.js                      service worker: offline cache for the shelf and every book
   books/<id>/                ONE folder per book (see its README.md)
     index.html, pages.js, README.md, favicon.svg, cover.*, og.*,
     preview.js (optional), assets/{js,css,audio}/
@@ -97,6 +99,14 @@ python3 -m http.server 8777
   pans once zoomed; on a computer the view just fits the window.
 - **Music:** the top-right button toggles the book's looping track. It's off
   by default and starts on your click; a book with no track shows no button.
+
+**Offline:** `sw.js` (registered by `shelf.js` and `boot.js`) caches the
+library and shared engine when the shelf loads, and each book's files when
+that book is opened; after that they work without a network. Music, og
+images, cover sources and Google Fonts are not cached (offline the music is
+off and system fonts show). The file lists come from
+`node tools/build-offline.js`: re-run it when files are added, removed or
+renamed. Service workers need `http(s)://` or `localhost`, not `file://`.
 
 Each spread shows one picture on one page and its text on the other; the
 image/text side alternates as you turn. Text-only spreads are optional.

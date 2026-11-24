@@ -393,6 +393,9 @@ uses the same `pinch.js` on every zoomed view.
 - [ ] If a reference image was given, the art actually **matches its distinctive
       features**, verified by rendering (and by freezing animations mid-play).
 - [ ] Card shows on the shelf and links to the book; favicon + og resolve.
+- [ ] `node tools/build-offline.js` re-run so `offline-manifest.json` lists
+      the book's files (the service worker caches the book from it). Re-run
+      it whenever a book's files are added, removed or renamed.
 - [ ] No stock art traced, embedded, or shipped (see `asset-licensing.md`).
 
 ## 6. Engine boundaries — keep content out of the engine

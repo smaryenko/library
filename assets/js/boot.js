@@ -124,6 +124,26 @@
     // fully loaded, the backdrop is ready (a backdrop may return a Promise
     // for async work) and two frames have drawn (WebGL first frame is up).
     hideLoading(backdropReady);
+
+    // 5) offline: register the site-wide service worker (sw.js at the shelf
+    // root) and ask it to cache the library shell plus this book's files.
+    wireOffline(entry);
+  }
+
+  // The book id comes from the folder (books/<id>/), so a page not in the
+  // manifest (books/preview/) still caches its own files, not stories[0]'s.
+  function wireOffline(entry) {
+    if (!('serviceWorker' in navigator) || window.location.protocol === 'file:') return;
+    var m = window.location.pathname.match(/books\/([^/]+)\//);
+    var id = m ? m[1] : (entry && entry.id);
+    function go() {
+      navigator.serviceWorker.register(fromShelfRoot('sw.js'), { scope: fromShelfRoot('./') })
+        .catch(function () {});
+      navigator.serviceWorker.ready.then(function (reg) {
+        if (reg.active) reg.active.postMessage({ type: 'cache', book: id || null });
+      });
+    }
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
   }
 
   function hideLoading(ready) {
