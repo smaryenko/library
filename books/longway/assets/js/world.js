@@ -35,17 +35,17 @@ const CAM_X = [-1, 34, 60, 86, 110, 138, 162, 188, 210, 238, 258];
 // light of each page: background (and fog), sun colour, sun strength, sky
 // light, environment, sun height
 const LIGHT = [
-  { bg: '#e4ded3', sun: '#fff4e6', si: 2.3, hemi: 0.8, env: 0.5, el: 26 },    // 1 midday
-  { bg: '#dfe4e2', sun: '#fff6ea', si: 2.3, hemi: 0.8, env: 0.5, el: 26 },    // 2
-  { bg: '#d6e6ea', sun: '#ffffff', si: 2.4, hemi: 0.85, env: 0.5, el: 28 },   // 3 calm, bright
-  { bg: '#c9ccd2', sun: '#e8ecf2', si: 1.7, hemi: 0.7, env: 0.45, el: 24 },   // 4 windy grey
-  { bg: '#efe2c4', sun: '#fff0d0', si: 2.2, hemi: 0.8, env: 0.5, el: 24 },    // 5 warm afternoon
-  { bg: '#f2dcae', sun: '#ffe2a8', si: 2.1, hemi: 0.8, env: 0.5, el: 22 },    // 6 golden, sleepy
-  { bg: '#f2c9a2', sun: '#ffb27a', si: 2.0, hemi: 0.75, env: 0.45, el: 18 },  // 7 evening
-  { bg: '#c9a3a8', sun: '#ff9c80', si: 1.6, hemi: 0.65, env: 0.4, el: 14 },   // 8 dusk
+  { bg: '#c0bab1', sun: '#fff4e6', si: 2.3, hemi: 0.8, env: 0.5, el: 26 },    // 1 midday
+  { bg: '#bbc0be', sun: '#fff6ea', si: 2.3, hemi: 0.8, env: 0.5, el: 26 },    // 2
+  { bg: '#b4c1c5', sun: '#ffffff', si: 2.4, hemi: 0.85, env: 0.5, el: 28 },   // 3 calm, bright
+  { bg: '#a9abb0', sun: '#e8ecf2', si: 1.7, hemi: 0.7, env: 0.45, el: 24 },   // 4 windy grey
+  { bg: '#c9bea5', sun: '#fff0d0', si: 2.2, hemi: 0.8, env: 0.5, el: 24 },    // 5 warm afternoon
+  { bg: '#cbb992', sun: '#ffe2a8', si: 2.1, hemi: 0.8, env: 0.5, el: 22 },    // 6 golden, sleepy
+  { bg: '#cba988', sun: '#ffb27a', si: 2.0, hemi: 0.75, env: 0.45, el: 18 },  // 7 evening
+  { bg: '#a9898d', sun: '#ff9c80', si: 1.6, hemi: 0.65, env: 0.4, el: 14 },   // 8 dusk
   { bg: '#1d2440', sun: '#9fb4ff', si: 0.8, hemi: 0.35, env: 0.18, el: 22 },  // 9 night storm
-  { bg: '#f4c6b8', sun: '#ffc2a0', si: 1.8, hemi: 0.75, env: 0.45, el: 10 },  // 10 dawn
-  { bg: '#f6dcc0', sun: '#ffe0b8', si: 2.0, hemi: 0.78, env: 0.48, el: 16 }   // 11 early morning, the lamp still burning
+  { bg: '#cda69b', sun: '#ffc2a0', si: 1.8, hemi: 0.75, env: 0.45, el: 10 },  // 10 dawn
+  { bg: '#cfb9a1', sun: '#ffe0b8', si: 2.0, hemi: 0.78, env: 0.48, el: 16 }   // 11 early morning, the lamp still burning
 ];
 const wz = z => z - GZ / 2 + 0.5;
 const ZB = wz(10) + 0.5;                 // the line the boat sails along (between grid rows 10 and 11)

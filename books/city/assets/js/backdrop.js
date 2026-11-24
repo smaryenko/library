@@ -9,13 +9,13 @@
     <svg class="winter-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="ctSweep" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#e9eef2"/><stop offset="58%" stop-color="#f4f2ec"/><stop offset="100%" stop-color="#e3ddd0"/>
+          <stop offset="0%" stop-color="#c4c8cb"/><stop offset="58%" stop-color="#cdcbc6"/><stop offset="100%" stop-color="#bfbaaf"/>
         </linearGradient>
         <radialGradient id="ctPool" cx="0.5" cy="0.42" r="0.6">
-          <stop offset="0%" stop-color="#ffffff" stop-opacity=".75"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#ffffff" stop-opacity=".25"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
         </radialGradient>
         <radialGradient id="ctVig" cx="0.5" cy="0.5" r="0.78">
-          <stop offset="62%" stop-color="#3a3428" stop-opacity="0"/><stop offset="100%" stop-color="#3a3428" stop-opacity=".22"/>
+          <stop offset="62%" stop-color="#3a3428" stop-opacity="0"/><stop offset="100%" stop-color="#3a3428" stop-opacity=".32"/>
         </radialGradient>
       </defs>
       <rect width="1600" height="900" fill="url(#ctSweep)"/>

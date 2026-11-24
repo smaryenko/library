@@ -11,10 +11,10 @@
     <svg class="winter-scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="lwT" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#e4ded3"/><stop offset="100%" stop-color="#cfc6b6"/>
+          <stop offset="0%" stop-color="#c0bab1"/><stop offset="100%" stop-color="#aea699"/>
         </linearGradient>
         <radialGradient id="lwL" cx="0.45" cy="0.35" r="0.7">
-          <stop offset="0%" stop-color="#fff6e6" stop-opacity=".5"/><stop offset="100%" stop-color="#fff6e6" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#fff6e6" stop-opacity=".18"/><stop offset="100%" stop-color="#fff6e6" stop-opacity="0"/>
         </radialGradient>
       </defs>
       <rect width="1600" height="900" fill="url(#lwT)"/>
