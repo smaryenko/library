@@ -179,6 +179,10 @@ self.addEventListener('fetch', e => {
   if (SKIP.test(url.pathname) || req.headers.has('range')) return;
   // the shelf's "Save all" stores these itself (shelf.js saveAll)
   if (req.headers.has('x-offline-save')) return;
+  // the manifest: a page that asks for it wants the live copy (shelf.js
+  // saveAll / localStatus). Serving it cache-first here handed back the old
+  // copy AND fired a second, background request to refresh it.
+  if (url.origin + url.pathname === MANIFEST) return;
   e.respondWith(serve(req, url, e));
 });
 

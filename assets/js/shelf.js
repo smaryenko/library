@@ -498,9 +498,13 @@
       const murl = scope + 'offline-manifest.json';
       const names = (await caches.keys()).filter(n => /^library-v/.test(n));
       const cache = names.length ? await caches.open(names[names.length - 1]) : null;
+      // stored copy first: the worker's precache run (ask() -> 'cache')
+      // already fetches a fresh manifest on every load and stores it here, so
+      // fetching it again from the page doubled the request. The network is
+      // only used when nothing is stored yet (first visit, no worker).
       let m = null;
-      try { const r = await fetch(murl, { cache: 'no-cache' }); if (r.ok) m = await r.json(); } catch (err) {}
-      if (!m && cache) { const r = await cache.match(murl); if (r) m = await r.json(); }
+      if (cache) { const r = await cache.match(murl); if (r) m = await r.json(); }
+      if (!m) { try { const r = await fetch(murl, { cache: 'no-cache' }); if (r.ok) m = await r.json(); } catch (err) {} }
       if (!m) return null;
       const all = [...new Set((m.shell || []).concat(...Object.values(m.books || {})))];
       // cached AND same content as the manifest (x-hash, see sw.js fresh())

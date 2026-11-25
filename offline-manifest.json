@@ -1,5 +1,5 @@
 {
- "bytes": 11947659,
+ "bytes": 11947966,
  "shell": [
   "./",
   "index.html",
@@ -334,7 +334,7 @@
   "assets/js/music.js": 2602,
   "assets/js/pinch.js": 3550,
   "assets/js/pseudo3d-object.js": 14758,
-  "assets/js/shelf.js": 29112,
+  "assets/js/shelf.js": 29419,
   "assets/js/stories.js": 12364,
   "assets/js/storybook.js": 49583,
   "assets/js/webgl-stage.js": 13068,
@@ -550,8 +550,8 @@
   "books/xmas/pages.js": 4680
  },
  "hashes": {
-  "./": "4f0fa69fc0298264",
-  "index.html": "4f0fa69fc0298264",
+  "./": "37d51b071daa5014",
+  "index.html": "37d51b071daa5014",
   "assets/css/book.css": "7a42b70287aa9ea0",
   "assets/css/fullview.css": "6bb110c40afa1ac1",
   "assets/css/shelf.css": "e2a51963a5487012",
@@ -568,7 +568,7 @@
   "assets/js/music.js": "77f35c20cc7345ca",
   "assets/js/pinch.js": "ed78a5050e0f1d06",
   "assets/js/pseudo3d-object.js": "d2e344273173dd1f",
-  "assets/js/shelf.js": "6187cc5da8b8bebc",
+  "assets/js/shelf.js": "b7b70cf13025354f",
   "assets/js/stories.js": "d9c0be114c3bb870",
   "assets/js/storybook.js": "860737fd3d65e947",
   "assets/js/webgl-stage.js": "5719b11f00acf2ba",
