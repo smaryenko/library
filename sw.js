@@ -77,6 +77,18 @@ async function storedManifest() {
   return old ? old.json() : manifest();
 }
 
+// path -> hash from the newest manifest this worker has seen; kept in memory
+// so serving a file doesn't parse the manifest each time. Refreshed by
+// manifest() on every precache run (each library / book page load).
+let hashes = null;
+async function knownHashes() {
+  if (!hashes) {
+    try { const r = await caches.match(MANIFEST); hashes = (r && (await r.json()).hashes) || {}; }
+    catch (err) { hashes = {}; }
+  }
+  return hashes;
+}
+
 async function status() {
   const m = await storedManifest();
   if (!m) return null;
@@ -101,7 +113,9 @@ async function manifest() {
     const r = await fetch(MANIFEST, { cache: 'no-cache' });
     if (r.ok) {
       await (await caches.open(CACHE)).put(MANIFEST, r.clone());
-      return await r.json();
+      const m = await r.json();
+      hashes = (m && m.hashes) || {};
+      return m;
     }
   } catch (err) { /* offline: use the stored copy */ }
   const old = await caches.match(MANIFEST);
@@ -221,13 +235,16 @@ async function serve(req, url, e) {
   }
 
   const hit = await cache.match(req);
-  const net = fetch(req).then(store);
   if (hit) {
-    e.waitUntil(net.catch(() => {}));
+    // a manifest file whose stored copy has the manifest's hash is current:
+    // no background refresh (that downloaded every image a second time on
+    // each load). Unknown or changed files still refresh in the background.
+    const want = (await knownHashes())[url.href.slice(SCOPE.length)];
+    if (!want || hit.headers.get('x-hash') !== want) e.waitUntil(fetch(req).then(store).catch(() => {}));
     return hit;
   }
   try {
-    return await net;
+    return await fetch(req).then(store);
   } catch (err) {
     const old = await cache.match(req, { ignoreSearch: true });
     if (old) return old;
