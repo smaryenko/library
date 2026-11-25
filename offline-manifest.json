@@ -1,5 +1,5 @@
 {
- "bytes": 11947648,
+ "bytes": 11947659,
  "shell": [
   "./",
   "index.html",
@@ -538,7 +538,7 @@
   "books/wherecat/favicon.svg": 1106,
   "books/wherecat/index.html": 1842,
   "books/wherecat/pages.js": 2714,
-  "books/xmas/assets/css/xmas.css": 534,
+  "books/xmas/assets/css/xmas.css": 545,
   "books/xmas/assets/js/backdrop.js": 10328,
   "books/xmas/assets/js/elf.js": 12445,
   "books/xmas/assets/js/fireplace.js": 13777,
@@ -792,7 +792,7 @@
   "books/wherecat/index.html": "95b0eb8b2407ff11",
   "books/wherecat/pages.js": "8a5a2b969048b595",
   "books/xmas/": "0fc8e23dd6d7b0eb",
-  "books/xmas/assets/css/xmas.css": "40b9cf743a8571f2",
+  "books/xmas/assets/css/xmas.css": "fb9469cc81c029e8",
   "books/xmas/assets/js/backdrop.js": "b6f729c9d13a9394",
   "books/xmas/assets/js/elf.js": "f1691678541de310",
   "books/xmas/assets/js/fireplace.js": "c261814d687da9a7",
