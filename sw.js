@@ -30,10 +30,26 @@ const CACHE = 'library-v' + VERSION;
 const SCOPE = self.registration.scope;
 const MANIFEST = SCOPE + 'offline-manifest.json';
 const SKIP = /\/og\.(png|svg)$|\.mp3$/i;
-// the browser knows it's offline: don't try the network just to see it fail
-// (each try is a red "failed" row). onLine can still be true on a network
-// without internet; then the tries fail and the cached copies are used.
-const online = () => self.navigator.onLine !== false;
+// Offline: don't try the network just to see it fail (each try is a red
+// "failed" row). navigator.onLine alone isn't enough: it stays true on a
+// network without internet, and in the worker under DevTools' "Offline"
+// throttle. So any failed request also marks the network as down for a
+// short while; the first success clears it. A page load still tries the
+// network once (network-first), which is what notices it's back.
+let netDownUntil = 0;
+const DOWN_MS = 15000;
+const online = () => self.navigator.onLine !== false && Date.now() >= netDownUntil;
+async function net(req, init) {
+  try {
+    const r = await fetch(req, init);
+    netDownUntil = 0;
+    return r;
+  } catch (err) {
+    // a cancelled request (page left mid-load) says nothing about the network
+    if (!err || err.name !== 'AbortError') netDownUntil = Date.now() + DOWN_MS;
+    throw err;
+  }
+}
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -114,7 +130,7 @@ async function status() {
 // ---- precache --------------------------------------------------------------
 async function manifest() {
   if (online()) try {
-    const r = await fetch(MANIFEST, { cache: 'no-cache' });
+    const r = await net(MANIFEST, { cache: 'no-cache' });
     if (r.ok) {
       await (await caches.open(CACHE)).put(MANIFEST, r.clone());
       const m = await r.json();
@@ -163,10 +179,11 @@ async function fill(paths, onProgress, m) {
   if (onProgress) await onProgress(0, todo.length);
   if (!online()) return;   // offline: try again on the next online load
   for (let i = 0; i < todo.length; i += 4) {
+    if (!online()) return;   // the connection dropped mid-way
     await Promise.all(todo.slice(i, i + 4).map(async url => {
       try {
         // no-cache: a changed file must not come from the HTTP cache
-        const r = await fetch(url, { cache: 'no-cache' });
+        const r = await net(url, { cache: 'no-cache' });
         if (r.ok && r.type === 'basic') {
           await cache.put(url, await clean(r));
           await dropOthers(cache, new Request(url));
@@ -215,11 +232,16 @@ async function serve(req, url, e) {
     return r;
   };
 
+  // network known to be down: any stored copy (another ?v=) beats a failed try
+  const offlineCopy = async () => !online() && await cache.match(req, { ignoreSearch: true });
+
   if (url.search) {
     const hit = await cache.match(req);
     if (hit) return hit;
+    const old = await offlineCopy();
+    if (old) return old;
     try {
-      return await store(await fetch(req));
+      return await store(await net(req));
     } catch (err) {
       const old = await cache.match(req, { ignoreSearch: true });
       if (old) return old;
@@ -230,12 +252,13 @@ async function serve(req, url, e) {
   // pages (index.html): network first, so a deploy (new book, new ?v= in the
   // script tags) shows on the very next load; the cached copy only offline
   if (req.mode === 'navigate') {
-    if (!online()) {
+    // only the browser's own offline flag skips it: this request is the probe
+    if (self.navigator.onLine === false) {
       const old = await cache.match(req, { ignoreSearch: true });
       if (old) return old;
     }
     try {
-      return await store(await fetch(req));
+      return await store(await net(req));
     } catch (err) {
       const old = await cache.match(req, { ignoreSearch: true });
       if (old) return old;
@@ -249,11 +272,13 @@ async function serve(req, url, e) {
     // no background refresh (that downloaded every image a second time on
     // each load). Unknown or changed files still refresh in the background.
     const want = (await knownHashes())[url.href.slice(SCOPE.length)];
-    if (online() && (!want || hit.headers.get('x-hash') !== want)) e.waitUntil(fetch(req).then(store).catch(() => {}));
+    if (online() && (!want || hit.headers.get('x-hash') !== want)) e.waitUntil(net(req).then(store).catch(() => {}));
     return hit;
   }
+  const old = await offlineCopy();
+  if (old) return old;
   try {
-    return await fetch(req).then(store);
+    return await net(req).then(store);
   } catch (err) {
     const old = await cache.match(req, { ignoreSearch: true });
     if (old) return old;
