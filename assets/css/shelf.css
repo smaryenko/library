@@ -14,6 +14,11 @@ html, body {
      doesn't fit is clipped rather than rescaled. */
   overflow: hidden;
   overscroll-behavior: none;
+  /* one-finger drags belong to the page (pull to refresh, shelf.js): with the
+     default touch-action the browser claimed a downward drag on the title /
+     header as a pan and sent pointercancel, so the pull only worked over the
+     carousel (touch-action: none there). Pinch zoom still works. */
+  touch-action: pinch-zoom;
 }
 
 /* Self-hosted variable fonts (Latin subset, SIL OFL: assets/fonts/OFL-*.txt).

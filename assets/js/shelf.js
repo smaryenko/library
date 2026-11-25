@@ -179,6 +179,9 @@
     // ---- drag / swipe (window listeners, no pointer capture, so a plain tap
     // still lands as a normal click on the card link) ----
     let dragging = false, downX = 0, downY = 0, startP = 0, moved = false;
+    // the finger went up or down by more than a tap's wobble (a pull to
+    // refresh, a vertical swipe): not a tap, so it never opens a book
+    let strayed = false;
     let downType = 'mouse', downId = null, downMod = false;
     // set only for the click that ends a drag; cleared right after, so a stale
     // flag can never swallow a later, real click (that made some clicks after
@@ -191,7 +194,7 @@
       // drag still "on" here lost its pointerup (released outside the window,
       // alt-tab...): drop it and take this press as new
       if (dragging && e.pointerType !== 'mouse' && e.pointerId !== downId) return;
-      dragging = true; moved = false;
+      dragging = true; moved = false; strayed = false;
       downType = e.pointerType || 'mouse'; downId = e.pointerId;
       downMod = e.metaKey || e.ctrlKey || e.shiftKey || e.altKey;   // cmd/ctrl-click = new tab: left to the browser
       downX = e.clientX; downY = e.clientY; startP = p;
@@ -203,7 +206,9 @@
       const dx = e.clientX - downX;
       // a finger wobbles more than a mouse: a bigger threshold before a tap
       // turns into a drag (a drag never opens a book)
-      if (!moved && Math.abs(dx) > (e.pointerType === 'mouse' ? 6 : 14)) { moved = true; stage.classList.add('is-dragging'); }
+      const slop = e.pointerType === 'mouse' ? 6 : 14;
+      if (!moved && Math.abs(e.clientY - downY) > slop) strayed = true;
+      if (!moved && Math.abs(dx) > slop) { moved = true; stage.classList.add('is-dragging'); }
       if (!moved) return;
       // one card width of drag = one card of travel
       p = startP - dx / (ring.offsetWidth * 1.05);
@@ -224,6 +229,8 @@
         // fling carries on a bit, capped so it never races off
         const fling = Math.max(-4, Math.min(4, v * 260));
         target = Math.round(p + fling);
+      } else if (strayed) {
+        target = Math.round(target);
       } else if (!(downType === 'mouse' && downMod)) {
         // TAP / CLICK (touch, pen and mouse): decided entirely here, from what
         // is on screen at this moment. Native clicks on cards are ignored
