@@ -1,5 +1,5 @@
 {
- "bytes": 11947057,
+ "bytes": 11947648,
  "shell": [
   "./",
   "index.html",
@@ -303,6 +303,7 @@
   ],
   "xmas": [
    "books/xmas/",
+   "books/xmas/assets/css/xmas.css",
    "books/xmas/assets/js/backdrop.js",
    "books/xmas/assets/js/elf.js",
    "books/xmas/assets/js/fireplace.js",
@@ -537,6 +538,7 @@
   "books/wherecat/favicon.svg": 1106,
   "books/wherecat/index.html": 1842,
   "books/wherecat/pages.js": 2714,
+  "books/xmas/assets/css/xmas.css": 534,
   "books/xmas/assets/js/backdrop.js": 10328,
   "books/xmas/assets/js/elf.js": 12445,
   "books/xmas/assets/js/fireplace.js": 13777,
@@ -544,7 +546,7 @@
   "books/xmas/assets/js/santa.js": 14333,
   "books/xmas/assets/js/tree.js": 9517,
   "books/xmas/favicon.svg": 1942,
-  "books/xmas/index.html": 2399,
+  "books/xmas/index.html": 2456,
   "books/xmas/pages.js": 4680
  },
  "hashes": {
@@ -789,7 +791,8 @@
   "books/wherecat/favicon.svg": "71bad3e459c07aed",
   "books/wherecat/index.html": "95b0eb8b2407ff11",
   "books/wherecat/pages.js": "8a5a2b969048b595",
-  "books/xmas/": "53bc5e2997985163",
+  "books/xmas/": "0fc8e23dd6d7b0eb",
+  "books/xmas/assets/css/xmas.css": "40b9cf743a8571f2",
   "books/xmas/assets/js/backdrop.js": "b6f729c9d13a9394",
   "books/xmas/assets/js/elf.js": "f1691678541de310",
   "books/xmas/assets/js/fireplace.js": "c261814d687da9a7",
@@ -797,7 +800,7 @@
   "books/xmas/assets/js/santa.js": "d9beb84f1ef43f84",
   "books/xmas/assets/js/tree.js": "302c08ad045c2258",
   "books/xmas/favicon.svg": "a198cdd3a97e830a",
-  "books/xmas/index.html": "53bc5e2997985163",
+  "books/xmas/index.html": "0fc8e23dd6d7b0eb",
   "books/xmas/pages.js": "16357a4d019f5b1c"
  }
 }

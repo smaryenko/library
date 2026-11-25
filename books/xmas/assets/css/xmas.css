@@ -1,0 +1,9 @@
+/* Christmas — book-only styles on top of the shared book.css. */
+/* Desktop only: much bigger page text (shared default is title 34–72px /
+   body 16–26px), with a slightly wider text slot so it has room.
+   Phones, portrait and short-landscape screens keep the shared sizes. */
+@media (min-width: 801px) and (min-aspect-ratio: 3 / 4) and (min-height: 521px) {
+  .obj-slot.is-text { width: 46%; }
+  .title-line { font-size: clamp(44px, 7.5vw, 100px); }
+  .body-line  { font-size: clamp(32px, 5vw, 64px); line-height: 1.15; }
+}
