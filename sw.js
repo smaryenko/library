@@ -30,6 +30,10 @@ const CACHE = 'library-v' + VERSION;
 const SCOPE = self.registration.scope;
 const MANIFEST = SCOPE + 'offline-manifest.json';
 const SKIP = /\/og\.(png|svg)$|\.mp3$/i;
+// the browser knows it's offline: don't try the network just to see it fail
+// (each try is a red "failed" row). onLine can still be true on a network
+// without internet; then the tries fail and the cached copies are used.
+const online = () => self.navigator.onLine !== false;
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -109,7 +113,7 @@ async function status() {
 
 // ---- precache --------------------------------------------------------------
 async function manifest() {
-  try {
+  if (online()) try {
     const r = await fetch(MANIFEST, { cache: 'no-cache' });
     if (r.ok) {
       await (await caches.open(CACHE)).put(MANIFEST, r.clone());
@@ -157,6 +161,7 @@ async function fill(paths, onProgress, m) {
   // a few at a time: keeps the connection free for what the reader is doing
   let done = 0;
   if (onProgress) await onProgress(0, todo.length);
+  if (!online()) return;   // offline: try again on the next online load
   for (let i = 0; i < todo.length; i += 4) {
     await Promise.all(todo.slice(i, i + 4).map(async url => {
       try {
@@ -225,6 +230,10 @@ async function serve(req, url, e) {
   // pages (index.html): network first, so a deploy (new book, new ?v= in the
   // script tags) shows on the very next load; the cached copy only offline
   if (req.mode === 'navigate') {
+    if (!online()) {
+      const old = await cache.match(req, { ignoreSearch: true });
+      if (old) return old;
+    }
     try {
       return await store(await fetch(req));
     } catch (err) {
@@ -240,7 +249,7 @@ async function serve(req, url, e) {
     // no background refresh (that downloaded every image a second time on
     // each load). Unknown or changed files still refresh in the background.
     const want = (await knownHashes())[url.href.slice(SCOPE.length)];
-    if (!want || hit.headers.get('x-hash') !== want) e.waitUntil(fetch(req).then(store).catch(() => {}));
+    if (online() && (!want || hit.headers.get('x-hash') !== want)) e.waitUntil(fetch(req).then(store).catch(() => {}));
     return hit;
   }
   try {
