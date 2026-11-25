@@ -53,7 +53,9 @@ function page(seed = 1) {
     for (let y = gap / 2; y < TILE; y += gap * (0.85 + r() * 0.3)) {
       let x = -4;
       while (x < TILE + 4) {
-        const len = 8 + r() * 20, o = 0.6 + r() * 0.4, w = 0.55 + r() * 0.4, dy = (r() - 0.5) * 0.4;
+        // heavier pressure than a light sketch (was o 0.6-1, w 0.55-0.95): the
+        // strokes cover more paper, so colours read stronger, not washed out
+        const len = 8 + r() * 20, o = 0.8 + r() * 0.2, w = 0.72 + r() * 0.4, dy = (r() - 0.5) * 0.4;
         s += `<path d="M${f1(x)} ${f1(y)}l${f1(len)} ${f1(dy)}" stroke="#fff" stroke-opacity="${o.toFixed(2)}" stroke-width="${w.toFixed(2)}" stroke-linecap="round"/>`;
         x += len + r() * 1.6;
       }
@@ -104,8 +106,12 @@ function page(seed = 1) {
     <defs>
       <filter id="${id('tooth')}" x="-5%" y="-5%" width="110%" height="110%">
         <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="5" result="n"/>
-        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -1.4 0 0 0 1.45" result="m"/>
-        <feComposite in="SourceGraphic" in2="m" operator="in" result="g"/>
+        <!-- paper tooth: lighter than before (was -1.4 / 1.45, which knocked out
+             up to half of every stroke), so the colour isn't greyed by paper -->
+        <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -0.9 0 0 0 1.4" result="m"/>
+        <!-- richer pigment: more saturated colour, same hues -->
+        <feColorMatrix in="SourceGraphic" type="saturate" values="1.35" result="s"/>
+        <feComposite in="s" in2="m" operator="in" result="g"/>
         <feDisplacementMap in="g" in2="n" scale="0.8" xChannelSelector="R" yChannelSelector="G"/>
       </filter>
       ${defs.join('\n      ')}

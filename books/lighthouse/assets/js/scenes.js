@@ -193,7 +193,8 @@ S.lens = function () {
   P.area('pc-sky', rect(10, 10, 290, 290), C.indigo, 'h2', 0.4);
   let bars = '';
   for (let x = -120; x < 300; x += 46) bars += `M${x} 290L${x + 140} 10M${x + 140} 290L${x} 10`;
-  P.accent('pc-far', bars, '#11182e', 1.4, 0.7);
+  // window bars kept quiet (were 1.4 wide at 0.7): background, not a pattern
+  P.accent('pc-far', bars, '#11182e', 0.9, 0.32);
   P.accent('pc-far', 'M10 236Q150 230 290 236', C.seaMid, 0.6, 0.5);
   // the lamp: a small flame in a glass chimney
   const L = [92, 150];
